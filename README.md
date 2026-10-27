@@ -4,7 +4,7 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 
 | File | Page |
 |---|---|
-| `index.html` | Landing page: what it is, date/time/place, sign-up button |
+| `index.html` | Landing page: what it is, date/time/place, a note to sign up via the emailed link (the form link is not public) |
 | `faq.html` | Questions and answers |
 | `code-of-conduct.html` | Working together, AI use, logs and data, authorship, ownership |
 | `resources.html` | Placeholder for the resource pack (not linked yet) |
@@ -26,7 +26,6 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 
 Search for `REPLACE_WITH_` and replace each occurrence:
 
-- `REPLACE_WITH_FORM_LINK`: the expression-of-interest form (index.html)
 - `REPLACE_WITH_CONTACT_EMAIL`: the organisers' contact address (index.html, faq.html)
 
 The room is Å4002 (linked to MazeMap in index.html).

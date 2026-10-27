@@ -119,18 +119,7 @@ main.wide { max-width: 60rem; }
   .essentials li { grid-template-columns: 1fr; gap: 0; }
 }
 
-.signup {
-  display: inline-block;
-  margin: 0.8rem 0 0.4rem;
-  background: var(--tape);
-  color: var(--tape-text);
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 600;
-  padding: 0.8em 1.4em;
-}
-.signup:hover { text-decoration: none; outline: 2px solid var(--mark); outline-offset: 3px; }
+.signup-note { display: inline-block; margin: 0.8rem 0 0.4rem; padding: 0.7em 1.1em; border: 1px dashed var(--ink); }
 
 h2 {
   font-size: 0.85rem;
