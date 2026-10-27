@@ -1,6 +1,6 @@
 # Many-Body Intelligence: event website
 
-A static site (plain HTML, CSS and a little JavaScript, with no build step) for the Materials Theory AI hackathon on 26 November 2026.
+A static site (plain HTML, CSS and a little JavaScript, with no build step) for the Materials Theory AI hackathon on 30 November 2026.
 
 | File | Page |
 |---|---|
@@ -29,7 +29,7 @@ Search for `REPLACE_WITH_` and replace each occurrence:
 - `REPLACE_WITH_FORM_LINK`: the expression-of-interest form (index.html)
 - `REPLACE_WITH_CONTACT_EMAIL`: the organisers' contact address (index.html, faq.html)
 
-Once the room is confirmed, also change "room to be confirmed" in index.html.
+The room is Å4002 (linked to MazeMap in index.html).
 
 ## Publishing on GitHub Pages
 
