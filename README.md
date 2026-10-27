@@ -22,13 +22,11 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 - **Typeface:** IBM Plex Mono throughout (Google Fonts).
 - **Logo:** `assets/mbi-logo.js` (the wave and letters) drawn by `assets/wordart.js`; see `../logo/README.md`.
 
-## Before publishing: fill in the placeholders
+## Contact and sign-up
 
-Search for `REPLACE_WITH_` and replace each occurrence:
-
-- `REPLACE_WITH_CONTACT_EMAIL`: the organisers' contact address (index.html, faq.html)
-
-The room is Å4002 (linked to MazeMap in index.html).
+The site has no email address and no form link, on purpose. The sign-up link goes out only in the
+email to the division, and each page's footer links the organisers' UU staff pages for contact
+details. The room is Å4002 (linked to MazeMap in index.html).
 
 ## Publishing on GitHub Pages
 
