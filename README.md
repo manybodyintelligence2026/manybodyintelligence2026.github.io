@@ -4,7 +4,7 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 
 | File | Page |
 |---|---|
-| `index.html` | Landing page: what it is, date/time/place, a note to sign up via the emailed link (the form link is not public) |
+| `index.html` | Landing page: what it is, date/time/place, a note to sign up via the emailed link  |
 | `faq.html` | Questions and answers |
 | `code-of-conduct.html` | Working together, AI use, logs and data, authorship, ownership |
 | `resources.html` | Placeholder for the resource pack (not linked yet) |
@@ -14,27 +14,13 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 | `assets/mbi-logo.js` | The Fermi-sea logo: mbi (MAGNON, PHONON, SPIN) rising out of an ELECTRON sea over a vibrating LATTICE; the i's dot is an excited electron that leaves a hole |
 | `.nojekyll` | Tells GitHub Pages to serve the files as they are |
 
-## Look
-
-- **Palette:** taken from the reference video still.
-  - Paper `#e3ddd5`, ink `#141210`, sepia `#2a1a10`, faded `#8d847a`.
-  - The rose `#d4506c` is used only for the small dot marking the current page and for link hovers.
-- **Typeface:** IBM Plex Mono throughout (Google Fonts).
-- **Logo:** `assets/mbi-logo.js` (the wave and letters) drawn by `assets/wordart.js`; see `../logo/README.md`.
-
-## Contact and sign-up
-
-The site has no email address and no form link, on purpose. The sign-up link goes out only in the
-email to the division, and each page's footer links the organisers' UU staff pages for contact
-details. The room is Å4002 (linked to MazeMap in index.html).
 
 ## Publishing on GitHub Pages
 
-1. The organisation is https://github.com/manybodyintelligence2026 (all four organisers as owners).
+1. The organisation is https://github.com/manybodyintelligence2026.
 2. The repository is `manybodyintelligence2026.github.io` (public); push this folder to `main`.
 3. In the repository, go to **Settings → Pages** and set **Source** to "Deploy from a branch", with branch `main` and folder `/ (root)`.
-4. The site appears at https://manybodyintelligence2026.github.io within a minute or two.
+
 
 Team repositories created later in the same organisation should be **private**.
 
-`logo-lab.html` (the logo experiments page) is kept locally but excluded from the repository via `.gitignore`.
