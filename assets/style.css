@@ -153,3 +153,33 @@ footer { max-width: 60rem; margin: 0 auto; padding: 1.4rem 1rem 2.4rem; font-siz
   letter-spacing: 0.06em; text-transform: uppercase; }
 footer p { margin: 0.3rem 0; }
 footer a { color: inherit; }
+
+/* the day in one picture (assets/journey.js): idea -> team + Claude -> paper, with the day's timeline */
+.journey { margin: 0.4rem 0 2rem; cursor: pointer; user-select: none; }
+.j-panels { display: flex; align-items: flex-start; gap: 0.3rem; }
+.j-panel { flex: 1 1 0; min-width: 0; text-align: center; transition: opacity .3s; }
+.j-panel.dim { opacity: 0.3; }
+.j-panel .tape { font-size: 0.62rem; padding: 0.45em 0.7em; margin-bottom: 0.5rem; }
+.j-arrow { flex: none; align-self: center; font-size: 0.9rem; }
+.j-art { font: 600 8px/1.1 var(--mono); white-space: pre; color: var(--sepia); overflow: hidden; text-align: left; }
+.j-art .f1 { opacity: 0.55; } .j-art .f2 { opacity: 0.28; } .j-art .fd { color: var(--faded); }
+.j-mid { color: var(--ink); }
+.j-mid svg text { font-family: var(--mono); }
+.j-strip { position: relative; height: 5.6rem; margin-top: 0.8rem; }
+.j-line { position: absolute; left: 0; right: 0; top: 1.6rem; border-top: 2px solid var(--ink); }
+.j-done { position: absolute; left: 0; top: 1.45rem; height: 0.35rem; background: var(--ink); }
+.j-tick { position: absolute; top: 1.2rem; height: 0.8rem; border-left: 1px solid var(--ink); }
+.j-lab { position: absolute; font-size: 0.62rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faded);
+  transform: translateX(-50%); white-space: nowrap; }
+.j-lab.first { transform: translateX(-15%); } .j-lab.last { transform: translateX(-85%); }
+.j-lab.on { color: var(--ink); }
+.j-lab.up { top: 0; } .j-lab.dn { top: 2.2rem; }
+.j-lab.fk { top: 4.4rem; color: var(--mark); font-weight: 600; }
+.j-tick.fk { top: 1.15rem; height: 0.9rem; border-left: 3px solid var(--mark); margin-left: -1px; }
+.j-cur { position: absolute; top: 1.15rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--mark); transform: translateX(-50%); }
+.j-end { position: absolute; top: 3.3rem; font-size: 0.72rem; }
+@media (max-width: 32rem) {
+  .j-panel .tape { font-size: 0.5rem; padding: 0.4em 0.5em; }
+  .j-arrow { font-size: 0.6rem; }
+  .j-lab { font-size: 0.5rem; letter-spacing: 0.02em; }
+}
