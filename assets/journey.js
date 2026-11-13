@@ -151,6 +151,7 @@
   }
   function play() { if (reduce) return draw(1, 0); clearTimeout(timer); t0 = performance.now(); step(); }
 
+  window.Journey = { play: play };        // the slides (announcement, onboarding) replay it when it comes up
   draw(reduce ? 1 : 0, 0);
   if (reduce) return;
   root.addEventListener("click", play);
