@@ -31,8 +31,7 @@
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
-body { display: grid; place-items: center; }
-.stage { position: relative; overflow: hidden; width: 1600px; height: 900px; transform-origin: center;
+.stage { position: absolute; left: 50%; top: 50%; overflow: hidden; width: 1600px; height: 900px; transform-origin: center;
   background: var(--bg); color: var(--ink); font-family: var(--mono); }
 
 /* one slide at a time; the others stay laid out (hidden), so the character art can measure itself */
@@ -344,7 +343,7 @@ Please set things up so that you can work with it:
 (function () {
   "use strict";
   var stage = document.getElementById("stage");
-  function fit() { stage.style.transform = "scale(" + Math.min(innerWidth / 1600, innerHeight / 900) + ")"; }
+  function fit() { stage.style.transform = "translate(-50%, -50%) scale(" + Math.min(innerWidth / 1600, innerHeight / 900) + ")"; }
   fit(); addEventListener("resize", fit);
 
   // torn tape edges, as on the website
