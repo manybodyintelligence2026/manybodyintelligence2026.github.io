@@ -143,17 +143,30 @@
     labs.forEach(function (l, i) { l.classList.toggle("on", 8 * p >= PHASES[i][1]); });
   }
 
-  var timer = null, t0 = 0;
+  var timer = null, t0 = 0, pNow = 0;
   function step() {
     var t = (performance.now() - t0) / 1000, p = Math.min(1, t / DURATION);
-    draw(p, t);
+    draw(p, t); pNow = p;
     timer = p < 1 ? setTimeout(step, 1000 / FPS) : null;
   }
   function play() { if (reduce) return draw(1, 0); clearTimeout(timer); t0 = performance.now(); step(); }
+  // run the day on from where it is to the fraction `target` of it (09:00 = 0, 17:00 = 1), at the same pace as
+  // play(), and stop there; instant jumps straight to it (the presenting slides step through the day this way)
+  function seek(target, instant) {
+    clearTimeout(timer); timer = null;
+    if (reduce || instant) { pNow = target; draw(target, 0); return; }
+    var from = pNow, t1 = performance.now(), dur = Math.max(0.6, Math.abs(target - from) * DURATION);
+    (function go() {
+      var t = (performance.now() - t1) / 1000, u = Math.min(1, t / dur);
+      pNow = from + (target - from) * u; draw(pNow, t);
+      timer = u < 1 ? setTimeout(go, 1000 / FPS) : null;
+    })();
+  }
 
-  window.Journey = { play: play };        // the slides (announcement, onboarding) replay it when it comes up
+  window.Journey = { play: play, seek: seek };   // used by the slides (announcement, onboarding)
+  var manual = root.hasAttribute("data-manual");  // driven by the page through seek(): no run of its own
   draw(reduce ? 1 : 0, 0);
-  if (reduce) return;
+  if (reduce || manual) return;
   root.addEventListener("click", play);
   // start when it comes into view (and once the font is in, so the character art is measured right)
   var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
