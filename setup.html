@@ -1,0 +1,851 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Setup guide · Many-Body Intelligence</title>
+<meta name="description" content="Setup guide for Many-Body Intelligence 2026: Discord, Claude Code and GitHub, step by step, before the onboarding meeting.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* The onboarding meeting as slides, in the announcement slide's dark palette. The stage is 1600 x 900, scaled
+   to the window. Right / PageDown / space: next build or slide; left / PageUp: back; F: full screen; #n opens
+   slide n. Only what is being discussed moves, once: the logo on the title, the day on its slide, and each
+   connection in the diagram when it comes up. Each slide builds up click by click, and the day steps through
+   its phases. */
+:root {
+  --bg: #171513;
+  --ink: #e6e0d8;
+  --sepia: #d8cbbd;
+  --faded: #8a8178;
+  --ghost: #4d4741;
+  --rule: #34302c;
+  --paper: #e3ddd5;
+  --paper-deep: #1d1a18;
+  --paper-ink: #141210;
+  --paper-faded: #6f675e;
+  --paper-rule: #c9c1b7;
+  --mark: #e07890;
+  --mono: "IBM Plex Mono", Consolas, ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+.stage { position: absolute; left: 50%; top: 50%; overflow: hidden; width: 1600px; height: 900px; transform-origin: center;
+  background: var(--bg); color: var(--ink); font-family: var(--mono); }
+
+/* one slide at a time; the others stay laid out (hidden), so the character art can measure itself */
+.slide { position: absolute; inset: 0; padding: 56px 90px 40px; visibility: hidden; opacity: 0; transition: opacity .35s; }
+.slide.on { visibility: visible; opacity: 1; }
+.tape { display: inline-block; background: var(--paper); color: var(--paper-ink); font-weight: 600; letter-spacing: 0.06em;
+  padding: 0.42em 1em; line-height: 1.2; margin: 0; text-transform: uppercase; }
+h2.tape { font-size: 30px; margin-left: -6px; }
+.sub { font-size: 25px; color: var(--sepia); margin: 22px 0 0; line-height: 1.45; }
+.sub strong, .big strong { color: var(--ink); font-weight: 600; }
+.mark { color: var(--mark); }
+.faded { color: var(--faded); }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+
+/* numbered steps */
+ol.steps { list-style: none; counter-reset: s; margin: 34px 0 0; padding: 0; }
+ol.steps > li { counter-increment: s; display: grid; grid-template-columns: 58px 1fr; gap: 10px; font-size: 25px; line-height: 1.45;
+  margin: 0 0 20px; color: var(--sepia); }
+ol.steps > li::before { content: counter(s); font-weight: 600; color: var(--paper-ink); background: var(--paper); width: 40px; height: 40px;
+  display: grid; place-items: center; font-size: 22px; margin-top: 1px; }
+ol.steps strong { color: var(--ink); font-weight: 600; }
+ol.steps .note { display: block; font-size: 20px; color: var(--faded); margin-top: 4px; }
+.check { margin-top: 26px; font-size: 24px; display: inline-flex; align-items: baseline; gap: 14px; border: 1px dashed var(--mark);
+  padding: 0.55em 1em; color: var(--ink); }
+.check b { color: var(--mark); font-weight: 600; letter-spacing: 0.06em; }
+code { font-family: var(--mono); color: var(--ink); background: var(--paper-deep); padding: 0 0.3em; border: 1px solid var(--rule); }
+
+/* two columns: text left, the diagram (small) right */
+.cols { display: grid; grid-template-columns: 1fr 600px; gap: 50px; align-items: start; margin-top: 30px; }
+.cols ol.steps { margin-top: 0; }
+
+/* a prompt to copy */
+.prompt { position: relative; margin-top: 62px; background: var(--paper); color: var(--paper-ink); padding: 26px 32px 26px; }
+.prompt pre { margin: 0; font: 16.5px/1.45 var(--mono); white-space: pre-wrap; }
+.prompt pre i { font-style: normal; color: #a8324e; }
+.copy { position: absolute; right: 0; top: -44px; font: 600 16px var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
+  background: var(--paper); color: var(--paper-ink); border: 0; padding: 0.45em 0.9em; cursor: pointer; }
+.copy:hover { background: var(--mark); }
+
+/* title slide */
+.title-row { display: flex; justify-content: center; align-items: flex-end; gap: 48px; margin-top: 30px; }
+h1.tape { font-size: 42px; white-space: nowrap; }
+.logo { flex: none; width: 380px; overflow: hidden; font: 600 4.222px/1.1 var(--mono); color: var(--sepia); white-space: pre; user-select: none; }
+.logo .f1 { opacity: 0.55; } .logo .f2 { opacity: 0.28; } .logo .sea { color: var(--faded); }
+.rule-line { display: flex; align-items: center; gap: 28px; white-space: nowrap; font-size: 28px; color: var(--sepia); margin: 30px 0 0; }
+.rule-line::before, .rule-line::after { content: ""; flex: 1; border-top: 1px solid var(--faded); }
+.agenda { display: grid; grid-template-columns: repeat(4, 1fr); gap: 26px; margin: 70px 0 0; }
+.agenda div { border-top: 2px solid var(--ink); padding-top: 16px; font-size: 22px; line-height: 1.4; color: var(--sepia); }
+.agenda b { display: block; font-size: 15px; letter-spacing: 0.1em; color: var(--faded); margin-bottom: 8px; font-weight: 500; }
+.agenda strong { color: var(--ink); font-weight: 600; }
+footer.org { position: absolute; left: 90px; bottom: 40px; font-size: 18px; color: var(--faded); letter-spacing: 0.04em; }
+footer.org span { color: var(--sepia); }
+
+/* the day in one picture (assets/journey.js), at the website's size, zoomed */
+.journey { width: 620px; zoom: 1.6; margin: 30px auto 0; --rule: #34302c; }
+.j-panels { display: flex; align-items: flex-start; gap: 0.3rem; }
+.j-panel { flex: 1 1 0; min-width: 0; text-align: center; transition: opacity .3s; }
+.j-panel.dim { opacity: 0.3; }
+.j-panel .tape { font-size: 10px; padding: 0.45em 0.7em; margin-bottom: 8px; }
+.j-arrow { flex: none; align-self: center; font-size: 14px; }
+.j-art { font: 600 8px/1.1 var(--mono); white-space: pre; color: var(--sepia); overflow: hidden; text-align: left; }
+.j-art .f1 { opacity: 0.55; } .j-art .f2 { opacity: 0.28; } .j-art .fd { color: var(--faded); }
+.j-mid { color: var(--ink); }
+.j-mid svg text { font-family: var(--mono); }
+.j-strip { position: relative; height: 90px; margin-top: 13px; }
+.j-line { position: absolute; left: 0; right: 0; top: 26px; border-top: 2px solid var(--ink); }
+.j-done { position: absolute; left: 0; top: 23px; height: 6px; background: var(--ink); }
+.j-tick { position: absolute; top: 19px; height: 13px; border-left: 1px solid var(--ink); }
+.j-lab { position: absolute; font-size: 10px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faded);
+  transform: translateX(-50%); white-space: nowrap; }
+.j-lab.first { transform: translateX(-15%); } .j-lab.last { transform: translateX(-85%); }
+.j-lab.on { color: var(--ink); }
+.j-lab.up { top: 0; } .j-lab.dn { top: 35px; }
+.j-lab.fk { top: 70px; color: var(--mark); font-weight: 600; }
+.j-tick.fk { top: 18px; height: 15px; border-left: 3px solid var(--mark); margin-left: -1px; }
+.j-cur { position: absolute; top: 18px; width: 14px; height: 14px; border-radius: 50%; background: var(--mark); transform: translateX(-50%); }
+.j-end { position: absolute; top: 53px; font-size: 12px; color: var(--sepia); }
+.done-line { text-align: center; font-size: 27px; color: var(--sepia); margin-top: 6px; }
+.done-line strong { color: var(--ink); }
+
+/* code of conduct */
+.rules { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 40px; margin-top: 34px; }
+.rules div { border-left: 3px solid var(--mark); padding: 4px 0 4px 20px; font-size: 22px; line-height: 1.45; color: var(--sepia); }
+.rules strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 4px; }
+.url { margin-top: 34px; font-size: 26px; }
+
+/* the folder for the brainstorm */
+.tree { font: 22px/1.55 var(--mono); color: var(--sepia); background: var(--paper-deep); border: 1px solid var(--rule); padding: 22px 28px; white-space: pre; }
+.tree b { color: var(--ink); font-weight: 600; }
+
+/* the diagram: who talks to whom */
+.diagram { color: var(--ink); }
+.diagram svg { display: block; width: 100%; overflow: visible; }
+.diagram svg text { font-family: var(--mono); }
+.diagram .link { transition: opacity .4s; opacity: 0.22; }
+.diagram .link.on { opacity: 1; }
+.diagram.all .link { opacity: 1; }
+.legend { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin-top: 18px; }
+.legend div { font-size: 21px; line-height: 1.4; color: var(--faded); transition: color .4s; border-top: 2px solid var(--ghost); padding-top: 12px; }
+.legend div.on { color: var(--sepia); border-top-color: var(--mark); }
+.legend b { display: block; color: inherit; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 18px; margin-bottom: 4px; }
+.legend div.on b { color: var(--mark); }
+
+/* before the 30th */
+.ticks { list-style: none; padding: 0; margin: 30px 0 0; font-size: 25px; line-height: 1.45; color: var(--sepia); }
+.ticks li { display: grid; grid-template-columns: 50px 1fr; margin: 0 0 16px; }
+.ticks li::before { content: ""; width: 26px; height: 26px; border: 2px solid var(--ink); margin-top: 6px; }
+/* plain lists: a short dash, not a box */
+.ticks.bullets li::before { width: 18px; height: 0; border: 0; border-top: 3px solid var(--mark); margin-top: 18px; }
+/* checkpoint lists: boxes you can tick (remembered in this browser) */
+.ticks.checks li { cursor: pointer; user-select: none; }
+.ticks.checks li::before { display: grid; place-items: center; font-size: 22px; font-weight: 600; color: var(--bg); }
+.ticks.checks li:hover::before { border-color: var(--mark); }
+.ticks.checks li.done::before { content: "✓"; background: var(--mark); border-color: var(--mark); }
+.ticks.checks li.done > span { color: var(--faded); }
+.cp-intro { font-size: 23px; color: var(--mark); margin: 20px 0 0; }
+.ticks strong { color: var(--ink); font-weight: 600; }
+.day { margin-top: 26px; display: grid; grid-template-columns: 170px 1fr; gap: 10px 20px; font-size: 23px; background: var(--paper);
+  color: var(--paper-ink); padding: 18px 30px; }
+.day .k { color: var(--paper-faded); text-transform: uppercase; letter-spacing: 0.08em; font-size: 18px; padding-top: 3px; }
+
+/* builds (<html class="present">): an element with data-step="k" comes in at click k, so the eye follows one
+   thing at a time. Without the class every slide shows whole. */
+.present [data-step] { transition: opacity .45s, transform .45s; }
+.present [data-step].later { opacity: 0; transform: translateY(14px); }
+.present .noanim [data-step] { transition: none !important; }     /* arriving on a slide: hide its builds at once */
+
+/* the day, step by step: the caption under the picture says what happens at each phase */
+.day-cap { display: none; }
+.present .day-cap { display: grid; grid-template-columns: 250px 1fr; gap: 24px; align-items: baseline; width: 1060px; margin: 14px auto 0;
+  font-size: 27px; line-height: 1.45; color: var(--sepia); min-height: 120px; }
+.day-cap b { color: var(--mark); font-weight: 600; font-size: 28px; white-space: nowrap; }
+.day-cap strong { color: var(--ink); font-weight: 600; }
+.present .done-line { display: none; }
+
+/* navigation, bottom right */
+.nav { position: absolute; right: 26px; bottom: 18px; display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--faded); z-index: 5; }
+.nav button { font: 600 18px var(--mono); background: none; border: 1px solid var(--ghost); color: var(--faded); width: 38px; height: 34px; cursor: pointer; }
+.nav button:hover { color: var(--ink); border-color: var(--ink); }
+.nav .home { margin-right: 14px; color: var(--faded); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; }
+.nav .home:hover { color: var(--ink); }
+
+/* ---- setup guide ------------------------------------------------------------------------------------------- */
+.badge { display: inline-block; font-size: 17px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.3em 0.8em;
+  margin: 0 0 14px -6px; border: 1.5px solid var(--faded); color: var(--sepia); }
+.badge.setup { border-color: var(--sepia); }
+.badge.check { border-color: var(--mark); color: var(--bg); background: var(--mark); }
+.slide .badge + .tape { display: table; }
+.sub.spaced { margin-top: 30px; }
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 36px 0 10px; }
+.kind { border: 2px solid var(--sepia); padding: 22px 28px 20px; }
+.kind.cp { border-color: var(--mark); }
+.kinds p { font-size: 23px; line-height: 1.45; color: var(--sepia); margin: 6px 0 0; }
+.kinds strong { color: var(--ink); }
+.skip { position: absolute; left: 90px; bottom: 44px; font-size: 21px; color: var(--mark); text-decoration: none; border-bottom: 1px dashed var(--mark); }
+.skip:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.big-link { color: var(--ink); font-weight: 600; }
+.part { display: flex; flex-direction: column; justify-content: center; padding-left: 140px; }
+.part .tape { font-size: 46px; align-self: flex-start; }
+.part .kicker { font-size: 20px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faded); margin: 0 0 12px; }
+.part .sub { max-width: 1250px; }
+ol.when { list-style: none; margin: 40px 0 0; padding: 0; border-left: 2px solid var(--ink); }
+ol.when li { position: relative; display: grid; grid-template-columns: 330px 1fr; gap: 20px; padding: 0 0 34px 34px; font-size: 25px; line-height: 1.45; color: var(--sepia); }
+ol.when li::before { content: ""; position: absolute; left: -9px; top: 10px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); }
+ol.when li:last-child::before { background: var(--mark); }
+ol.when b { color: var(--ink); font-weight: 600; }
+ol.when strong { color: var(--ink); font-weight: 600; }
+.teams { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-top: 30px; }
+.teams code { display: block; width: max-content; font-size: 15px; margin: 2px 0 10px; }
+.pid { color: var(--mark); font-weight: 600; }
+.todo { grid-column: 1 / -1; border: 3px dashed var(--mark); padding: 30px 36px; font-size: 26px; line-height: 1.45; color: var(--sepia); margin: 0; }
+.teams .todo b { display: block; color: var(--mark); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 22px; margin-bottom: 8px; }
+.teams div { border-top: 2px solid var(--ink); padding-top: 10px; font-size: 18px; line-height: 1.55; color: var(--sepia); }
+.teams b { display: block; color: var(--ink); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 18px; margin-bottom: 4px; }
+.paths { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 40px 0 34px; }
+.paths a { display: block; text-decoration: none; border: 2px solid var(--ink); padding: 22px 24px; font-size: 21px; color: var(--sepia); line-height: 1.4; min-height: 170px; }
+.paths a:hover { border-color: var(--mark); }
+.paths b { display: block; font-size: 30px; color: var(--ink); margin-bottom: 4px; }
+.paths span { display: block; margin-top: 16px; color: var(--mark); font-weight: 600; }
+.shot { margin: 0; }
+.shot img { display: block; width: 100%; border: 1px solid var(--ghost); }
+.shot.switch img { width: 300px; image-rendering: auto; }
+.shot figcaption { font-size: 17px; color: var(--faded); margin-top: 8px; }
+.caveat { margin-top: 30px; font-size: 21px; line-height: 1.45; color: var(--sepia); border-left: 3px solid var(--mark); padding-left: 20px; max-width: 1200px; }
+.path { font-size: 21px; color: var(--sepia); background: var(--paper-deep); border: 1px solid var(--rule); padding: 12px 18px; margin: 18px 0 0; }
+.path strong { color: var(--ink); }
+.form { margin-top: 24px; background: var(--paper); color: var(--paper-ink); padding: 14px 30px; }
+.form div { display: grid; grid-template-columns: 260px 380px 1fr; gap: 20px; align-items: baseline; padding: 9px 0; border-top: 1px solid var(--paper-rule); font-size: 21px; }
+.form div:first-child { border-top: 0; }
+.form span { color: var(--paper-faded); text-transform: uppercase; letter-spacing: 0.06em; font-size: 16px; }
+.form i { font-style: normal; color: var(--paper-faded); font-size: 17px; }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- title -->
+  <section class="slide" data-name="title">
+    <div class="title-row">
+      <div class="logo" id="logo" aria-hidden="true"></div>
+      <h1 class="tape">MANY-BODY INTELLIGENCE 2026</h1>
+    </div>
+    <p class="rule-line"><span>Setup guide: getting your laptop ready with <strong>Discord, Claude and GitHub</strong></span></p>
+    <div class="agenda">
+      <div><b>01</b><strong>Discord</strong>: talk to us and to your team</div>
+      <div><b>02</b><strong>Claude Code</strong> on your laptop</div>
+      <div><b>03</b><strong>GitHub</strong>: your team's shared folder</div>
+      <div><b>04</b>Start on your team's <strong>research idea</strong></div>
+    </div>
+    <footer class="org">Organisers: <span>Konstantinos Sourounis, Pramodh Senarath Yapa, Aksel Kobiałka and Alena Vishina</span></footer>
+  </section>
+
+  <!-- how to use -->
+  <section class="slide" data-name="how">
+    <h2 class="tape">How to use this guide</h2>
+    <p class="sub spaced"><strong>Why:</strong> if everyone's laptop is set up before 30 November, we can start on the research right away on the day.</p>
+    <p class="sub spaced">The guide assumes you have <strong>never used Claude, GitHub or Discord</strong>. Then it takes about 45 minutes; if you already use them, it's much quicker. Do it on the laptop you will bring on 30 November.</p>
+    <p class="sub spaced">Most slides have one of two labels <strong>at the top</strong>, just above the title:</p>
+    <div class="kinds" style="margin-top: 18px">
+      <div class="kind"><span class="badge setup">Setup</span><p>Something to <strong>do</strong>: install, sign in, click. Already done it? At the <strong>bottom</strong> of the slide there's a pink link, like <span class="mark">Skip to the checkpoint →</span>. Click it to jump ahead.</p></div>
+      <div class="kind cp"><span class="badge check">Checkpoint</span><p>A <strong>test that everything works</strong>. Everyone does these, also if you skipped the setup. Click each box to tick it, and move on once they're all ticked.</p></div>
+    </div>
+    <p class="sub spaced">Move with the arrow keys or the arrows in the corner. <strong>Stuck for more than 10 minutes?</strong> Post a screenshot in <code>#technical-help</code> on Discord.</p>
+  </section>
+
+  <!-- schedule -->
+  <section class="slide" data-name="schedule">
+    <h2 class="tape">The schedule</h2>
+    <ol class="when">
+      <li><b>Now</b><span><strong>Setup guide</strong>: this guide, on your own, at your own pace. It gets your laptop ready.</span></li>
+      <li><b>Tue 24 Nov, 15:15</b><span><strong>Onboarding meeting</strong>, together: the day, the code of conduct, your team's idea and the bookkeeping. In Å93108, where we stay afterwards to help anyone whose setup isn't working, or online on Zoom (the link is in the email). There will also be a recording.</span></li>
+      <li><b>24–29 Nov</b><span>Your team <strong>agrees on a research idea</strong>, with Claude, GitHub and Discord.</span></li>
+      <li><b>Mon 30 Nov, 09:00–17:00</b><span><strong>The hackathon</strong> in Å4002, Ångström Laboratory.</span></li>
+    </ol>
+  </section>
+
+  <!-- teams: filled from TEAMS in the script; while that list is empty the slide shows a to-fill-in note -->
+  <section class="slide" data-name="teams">
+    <h2 class="tape">The teams</h2>
+    <p class="sub">You will work on your team's research idea together before the day, so get to know them on Discord. The <span class="pid">P</span>-number next to your name is your <strong>participant ID</strong>; you'll use it on the day.</p>
+    <div class="teams" id="teams"></div>
+  </section>
+
+  <!-- what you need -->
+  <section class="slide" data-name="need">
+    <h2 class="tape">What you need</h2>
+    <ul class="ticks bullets">
+      <li><span>The <strong>laptop you will bring</strong> on 30 November</span></li>
+      <li><span>Your <strong>Claude login</strong>: the account on your group's plan, or the one Alena gave you. (The free Claude plan does not include Claude Code.)</span></li>
+      <li><span>To know whether you have <strong>admin rights</strong> on the laptop: can you install programs yourself? If you're not sure, the next steps tell you what to do either way.</span></li>
+      <li><span>About <strong>45 minutes</strong></span></li>
+    </ul>
+    <p class="sub">You will also make a Discord account and a GitHub account on the way, if you don't have them.</p>
+  </section>
+
+  <!-- ===================== Discord ===================== -->
+  <section class="slide part" data-name="p-discord">
+    <p class="kicker">Part 1</p>
+    <h2 class="tape">Discord</h2>
+    <p class="sub">A chat app. It's where we send news, where you ask for help, and where your team talks before and during the day.</p>
+    <div class="diagram mini" data-show="discord" style="width: 760px; margin-top: 30px"></div>
+  </section>
+
+  <section class="slide" data-name="discord-join">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Join our Discord server</h2>
+    <ol class="steps">
+      <li><span>Open the invite link: <a class="big-link" href="https://discord.gg/4ftchxfwv" target="_blank" rel="noopener">discord.gg/4ftchxfwv</a>
+        <span class="note">No Discord account yet? The link lets you make one. You can use Discord in the browser or install the app.</span></span></li>
+      <li><span>Accept the invitation to <strong>Many Body Intelligence 2026</strong>.</span></li>
+      <li><span>In <code>#welcome</code>, post a short intro: <strong>who you are</strong>, <strong>your research group</strong> and <strong>your hackathon team</strong>.</span></li>
+      <li><span>In <code>#team-selection</code>, <strong>choose your team</strong>. You'll then see your team's channel.</span></li>
+    </ol>
+    <a class="skip" href="#" data-to="discord-check">Already on the server? Skip to the checkpoint →</a>
+  </section>
+
+  <section class="slide" data-name="discord-check">
+    <span class="badge check">Checkpoint 1</span>
+    <h2 class="tape">Discord works</h2>
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
+      <li><span>Your intro is in <code>#welcome</code></span></li>
+      <li><span>You can see <strong>your team's channel</strong></span></li>
+      <li><span>You know where <code>#technical-help</code> is</span></li>
+    </ul>
+  </section>
+
+  <!-- ===================== Claude ===================== -->
+  <section class="slide part" data-name="p-claude">
+    <p class="kicker">Part 2</p>
+    <h2 class="tape">Claude Code</h2>
+    <p class="sub">Claude is an AI assistant. <strong>Claude Code</strong> is the version that can work with the files on your laptop: read them, write them and run programs, when you allow it. That's the one we use, so <strong>the browser version of Claude is not enough</strong>.</p>
+    <div class="diagram mini" data-show="claude" style="width: 760px; margin-top: 30px"></div>
+  </section>
+
+  <section class="slide" data-name="claude-path">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Which way do you install it?</h2>
+    <p class="sub"><strong>Click the box that matches your laptop</strong>: its operating system, and whether you can install programs yourself (admin rights).</p>
+    <div class="paths" style="margin-top: 30px">
+      <a href="#" data-to="claude-win"><b>Windows</b>with admin rights<span>The Claude app →</span></a>
+      <a href="#" data-to="claude-vscode"><b>Windows</b>without admin rights<span>VS Code + extension →</span></a>
+      <a href="#" data-to="claude-mac"><b>Mac</b><span>The Claude app →</span></a>
+      <a href="#" data-to="claude-vscode"><b>Linux</b><span>VS Code + extension →</span></a>
+    </div>
+    <p class="sub" style="font-size: 21px">Not sure about admin rights? Try the first way. If Windows asks for an administrator password you don't have, use the second.
+      You can also ask IT services for admin rights; that needs the OK of the Head of Department.</p>
+    <a class="skip" href="#" data-to="claude-check">Already have Claude Code? Skip to the checkpoint →</a>
+  </section>
+
+  <section class="slide" data-name="claude-win">
+    <span class="badge setup">Setup · Windows with admin rights</span>
+    <h2 class="tape">Install the Claude app</h2>
+    <div class="cols" style="grid-template-columns: 1fr 460px">
+      <ol class="steps">
+        <li><span>Open the <strong>Microsoft Store</strong> and search for <strong>Claude</strong> (by Anthropic). Click <strong>Get</strong> or <strong>Install</strong>.
+          <span class="note">Or download it from <a href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>.</span></span></li>
+        <li><span>Open Claude and <strong>sign in</strong> with your Claude account: the one on your group's plan, or the one Alena gave you.</span></li>
+      </ol>
+      <figure class="shot"><img src="assets/preboarding/store-claude.png" alt="The Claude app in the Microsoft Store"><figcaption>In the Microsoft Store</figcaption></figure>
+    </div>
+    <a class="skip" href="#" data-to="claude-code-tab">Done? Next: find Claude Code →</a>
+  </section>
+
+  <section class="slide" data-name="claude-vscode">
+    <span class="badge setup">Setup · Windows without admin rights, or Linux</span>
+    <h2 class="tape">Install VS Code and Claude Code</h2>
+    <div class="cols" style="grid-template-columns: 1fr 560px">
+      <ol class="steps">
+        <li><span>Install <strong>Visual Studio Code</strong>: on a university Windows laptop from the <strong>Software Centre</strong> (or the Microsoft Store); on Linux from your package manager.</span></li>
+        <li><span>In VS Code, open <strong>Extensions</strong> (the four-squares icon on the left, or Ctrl+Shift+X), search for <strong>Claude Code</strong> and install the one by <strong>Anthropic</strong>.</span></li>
+        <li><span>Click the Claude icon that appears and <strong>sign in</strong> with your Claude account.</span></li>
+      </ol>
+      <figure class="shot"><img src="assets/preboarding/vscode-claude-code.png" alt="The Claude Code extension by Anthropic"><figcaption>The extension you want: by Anthropic, with the blue tick</figcaption></figure>
+    </div>
+    <a class="skip" href="#" data-to="claude-folder">Done? Next: your hackathon folder →</a>
+  </section>
+
+  <section class="slide" data-name="claude-mac">
+    <span class="badge setup">Setup · Mac</span>
+    <h2 class="tape">Install the Claude app</h2>
+    <ol class="steps">
+      <li><span>Download the app from <a class="big-link" href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a> and double-click the downloaded file.
+        <span class="note">On a Mac this opens a small window with the Claude icon and an Applications folder: drag the icon onto the folder. That's how Mac apps are installed. Then open Claude from Applications.</span></span></li>
+      <li><span>Open Claude and <strong>sign in</strong> with your Claude account.</span></li>
+    </ol>
+    <p class="caveat">None of the organisers has a Mac, so we haven't tried these steps ourselves. If something looks different, post a screenshot in <code>#technical-help</code>, or use VS Code with the Claude Code extension instead (the Linux steps work on a Mac too).</p>
+    <a class="skip" href="#" data-to="claude-code-tab">Done? Next: find Claude Code →</a>
+  </section>
+
+  <section class="slide" data-name="claude-code-tab">
+    <span class="badge setup">Setup · the Claude app and VS Code</span>
+    <h2 class="tape">Use Claude Code, not the chat</h2>
+    <div class="cols" style="grid-template-columns: 1fr 420px">
+      <div>
+        <p class="sub" style="margin-top: 0">Claude often opens in <strong>Chat</strong>, the ordinary conversation mode. You need <strong>Code</strong>. The switch is two small icons, easy to miss: the speech bubble is Chat, <strong>&lt;/&gt;</strong> is Code. <strong>Click &lt;/&gt;.</strong></p>
+        <ul class="ticks bullets" style="margin-top: 26px">
+          <li><span>You're in the right place when Claude asks which <strong>folder</strong> to work in, or shows a folder at the bottom of the window.</span></li>
+          <li><span>In VS Code, check this too: if the Claude panel shows the same two icons, pick <strong>&lt;/&gt;</strong>.</span></li>
+        </ul>
+      </div>
+      <figure class="shot switch"><img src="assets/preboarding/claude-switch.png" alt="Two icons: a speech bubble for Chat and &lt;/&gt; for Code, with Code selected"><figcaption>Chat (speech bubble) and Code (&lt;/&gt;, selected)</figcaption></figure>
+    </div>
+  </section>
+
+  <section class="slide" data-name="claude-folder">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Your hackathon folder</h2>
+    <ol class="steps">
+      <li><span>Make a folder called <strong>MBI-2026</strong>, for example in <strong>Documents</strong> or on your <strong>Desktop</strong>. Everything you make for the hackathon lives here.</span></li>
+      <li><span>Open it in Claude Code:
+        <span class="note">Claude app: in Code, choose MBI-2026 as the folder to work in. VS Code: File → Open Folder → MBI-2026, then click "Yes, I trust the authors" (Claude Code doesn't work in VS Code's Restricted Mode).</span></span></li>
+    </ol>
+  </section>
+
+  <section class="slide" data-name="claude-ask">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Claude asks before it acts</h2>
+    <p class="sub">Claude Code can change files and run programs on your laptop, so it <strong>asks first</strong>. You will see small boxes like "Allow Claude to run this command?" or "Allow this edit?".</p>
+    <ul class="ticks bullets" style="margin-top: 26px">
+      <li><span><strong>Read what it wants to do.</strong> If it matches what you asked for, allow it.</span></li>
+      <li><span>If you don't understand it, choose <strong>no</strong> and ask Claude: "What does that do, and why do you need it?"</span></li>
+      <li><span>Nothing happens on your laptop without your OK, so you can't break anything by saying no.</span></li>
+    </ul>
+  </section>
+
+  <section class="slide" data-name="claude-check">
+    <span class="badge check">Checkpoint 2</span>
+    <h2 class="tape">Claude Code works</h2>
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <p class="sub">Copy this into Claude Code and send it:</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Which folder are you working in? Then fetch https://manybodyintelligence2026.github.io and tell me the heading of that page. Finally, check whether Python 3.8 or newer is installed; if it isn't, help me install it (on a university Windows laptop without admin rights, from the Software Centre or the Microsoft Store).</pre></div>
+    <ul class="ticks checks" style="margin-top: 26px">
+      <li><span>Claude names your <strong>MBI-2026</strong> folder</span></li>
+      <li><span>It answers <strong>MANY-BODY INTELLIGENCE 2026</strong>, so it can reach the internet</span></li>
+      <li><span><strong>Python 3.8 or newer</strong> is installed (we need it for the bookkeeping on the day)</span></li>
+    </ul>
+  </section>
+
+  <!-- ===================== GitHub ===================== -->
+  <section class="slide part" data-name="p-github">
+    <p class="kicker">Part 3</p>
+    <h2 class="tape">GitHub</h2>
+    <p class="sub">A website for sharing folders of files (called <strong>repositories</strong>). Each team gets one, private to the team. It's how your team's Claudes share work: everyone's Claude reads and writes the same folder.</p>
+    <div class="diagram mini" data-show="github" style="width: 760px; margin-top: 30px"></div>
+  </section>
+
+  <section class="slide" data-name="github-account">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Account and invitation</h2>
+    <ol class="steps">
+      <li><span>Use the <strong>GitHub account</strong> whose username you gave us on the sign-up form. (No account? Make one at <a class="big-link" href="https://github.com/signup" target="_blank" rel="noopener">github.com/signup</a> and tell us the username in <code>#technical-help</code>.)</span></li>
+      <li><span>We invite you to the <strong>manybodyintelligence2026</strong> organisation and your team's repository. The invitation comes by email: <strong>accept it</strong>.
+        <span class="note">Your team's repository is called team1, team2, ... : github.com/manybodyintelligence2026/<i>teamN</i>. You can only see your own team's.</span></span></li>
+    </ol>
+    <a class="skip" href="#" data-to="github-token">Already invited and accepted? Next: the token →</a>
+  </section>
+
+  <section class="slide" data-name="github-token">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">A key for Claude: the token</h2>
+    <p class="sub">A <strong>token</strong> is a password for programs. It lets Claude open your team's repository for you. On GitHub, go to:</p>
+    <p class="path">Profile picture → Settings → Developer settings → Personal access tokens → Fine-grained tokens → <strong>Generate new token</strong></p>
+    <div class="form">
+      <div><span>Token name</span><b>MBI 2026</b></div>
+      <div><span>Resource owner</span><b>manybodyintelligence2026</b><i>appears once you've accepted the invitation</i></div>
+      <div><span>Expiration</span><b>30 days</b></div>
+      <div><span>Repository access</span><b>All repositories</b></div>
+      <div><span>Permissions</span><b>Contents: Read and write</b><i>under "Repository permissions"</i></div>
+    </div>
+    <p class="sub" style="font-size: 21px">Then <strong>Generate token</strong> and copy it. GitHub shows it only once.</p>
+  </section>
+
+  <section class="slide" data-name="github-keep">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Keep the token safe</h2>
+    <ul class="ticks bullets">
+      <li><span>Paste it into a text file, for example <strong>Documents\github-token.txt</strong>.</span></li>
+      <li><span>Keep that file <strong>outside the MBI-2026 folder</strong>, so it can never end up in your team's repository.</span></li>
+      <li><span>Don't paste the token into a chat, an email or a Discord message.</span></li>
+      <li><span>It stops working after 30 days. Delete the file after the hackathon.</span></li>
+    </ul>
+    <p class="sub">If GitHub says the token is waiting for approval, tell us in <code>#technical-help</code>.</p>
+  </section>
+
+  <section class="slide" data-name="github-connect">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Connect Claude to GitHub</h2>
+    <p class="sub">In Claude Code, in your MBI-2026 folder, fill in the three blanks and send:</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>I'm setting up for a hackathon. My GitHub token is saved in the file <i>[path to your token file, e.g. C:\Users\you\Documents\github-token.txt]</i>. Please:
+
+1. Check whether git is installed. If it isn't, help me install it (on a university Windows laptop without admin rights it may have to come from the Software Centre).
+2. Using the token, clone https://github.com/manybodyintelligence2026/<i>[teamN]</i> into this folder. Save the token with git's credential manager so I don't need it again. Don't write the token into any file in this folder, and don't show it in your replies.
+3. To check that you can push: in the repository, make a folder named <i>[your first name]</i> with a README.md saying who I am. Commit it and push it (pull first if the push is refused).
+4. Give me the link to that folder on GitHub.</pre></div>
+  </section>
+
+  <section class="slide" data-name="github-check">
+    <span class="badge check">Checkpoint 3</span>
+    <h2 class="tape">GitHub works</h2>
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
+      <li><span>Your team's repository is now a folder inside <strong>MBI-2026</strong></span></li>
+      <li><span>Claude's link opens <strong>your folder on GitHub</strong>, in your team's repository</span></li>
+      <li><span>Your teammates' folders show up there too, once they've done the same (next slide)</span></li>
+    </ul>
+  </section>
+
+  <section class="slide" data-name="github-picture">
+    <h2 class="tape">What your team's repository looks like</h2>
+    <p class="sub">At <strong>github.com/manybodyintelligence2026/<i>teamN</i></strong>, after everyone in a team of three has worked through this guide:</p>
+    <div class="cols" style="grid-template-columns: 760px 1fr; gap: 70px; margin-top: 26px">
+      <div class="tree"><b>teamN/</b>
++-- <b>anna/</b>
+|   +-- README.md          <span class="mark">&lt;- checkpoint 3</span>
++-- <b>ben/</b>
+|   +-- README.md
++-- <b>chen/</b>
+|   +-- README.md
++-- <b>our-idea/</b>
+    +-- team.md            <span class="mark">&lt;- checkpoint 4</span>
+    +-- papers/
+        +-- <b>anna/</b>  <span class="faded">2-3 PDFs</span>
+        +-- <b>ben/</b>
+        +-- <b>chen/</b></div>
+      <ul class="ticks bullets" style="margin-top: 0">
+        <li><span>One folder <strong>per person</strong>, named after them</span></li>
+        <li><span><strong>our-idea/</strong> is shared: everyone adds to it (Part 4)</span></li>
+        <li><span>We may add more files before the day. That's fine: leave them as they are.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===================== the idea ===================== -->
+  <section class="slide part" data-name="p-idea">
+    <p class="kicker">Part 4</p>
+    <h2 class="tape">Your team's research idea</h2>
+    <p class="sub">Before 30 November, your team agrees on what to work on. <strong>Teams are welcome to bring their own idea.</strong></p>
+    <p class="sub">This part is for teams that we put together, or where you don't yet know each other's expertise: Claude reads about all of you and suggests projects that draw on everyone. More at the onboarding meeting on Tuesday.</p>
+    <a class="skip" href="#" data-to="summary">Your team already has an idea? Skip to the summary →</a>
+  </section>
+
+  <section class="slide" data-name="idea-bio">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">A paragraph about you</h2>
+    <p class="sub">Claude uses this to see what each of you can bring. Fill in the template, or ask Claude to draft it from your papers or web page and check what it writes.</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><i>[Full name]</i> is a <i>[PhD student / postdoc / researcher / ...]</i> in <i>[group leader]</i>'s group in the Department of Physics and Astronomy at Uppsala University (since <i>[year]</i>). <i>[They are]</i> a <i>[condensed matter theorist / computational materials physicist / ...]</i>. Before Uppsala, <i>[earlier positions, and where you did your PhD, with whom and on what]</i>.
+
+Research: <i>[your main topics, a few words each]</i>.
+Methods: <i>[the methods and codes you use, e.g. DFT, tight-binding models, Monte Carlo, Green's functions, ...]</i>.</pre></div>
+  </section>
+
+  <section class="slide" data-name="idea-folder">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">Add yourself to the idea folder</h2>
+    <div class="cols" style="grid-template-columns: 1fr 520px">
+      <div>
+        <p class="sub" style="margin-top: 0">Claude also needs <strong>2–3 of your papers as PDFs</strong>, as files (it works much better with files than with links). Use the prompt with <strong>one</strong> of the two PDF lines:</p>
+        <div class="prompt" style="margin-top: 50px"><button class="copy" type="button">Copy</button><pre>In our team repository, add me to the folder our-idea (make it if it isn't there yet):
+- in our-idea/team.md, add this paragraph about me, under the heading <i>[your first name]</i>: <i>[your paragraph]</i>
+- copy these PDFs into our-idea/papers/<i>[your first name]</i>/: <i>[the paths of your PDFs]</i>
+  OR: find 2-3 of my recent papers on arXiv (author: <i>[your name]</i>) and download the PDFs into our-idea/papers/<i>[your first name]</i>/
+Then commit and push.</pre></div>
+      </div>
+      <div class="tree"><b>teamN/our-idea/</b>
++-- team.md       <span class="faded">a paragraph each</span>
++-- papers/
+    +-- <b>name-1/</b>    <span class="faded">2-3 PDFs</span>
+    +-- <b>name-2/</b>
+    +-- <b>name-3/</b></div>
+    </div>
+  </section>
+
+  <section class="slide" data-name="idea-next">
+    <span class="badge check">Checkpoint 4</span>
+    <h2 class="tape">Your part of the idea folder is in</h2>
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
+      <li><span>Your paragraph is in <strong>our-idea/team.md</strong> on GitHub, and your PDFs in <strong>our-idea/papers/</strong></span></li>
+      <li><span>You've said hello in <strong>your team's Discord channel</strong></span></li>
+    </ul>
+    <p class="sub">When everyone is in, one of you asks Claude for project ideas that draw on the whole team. We'll show the prompt for that, and how to agree on an idea, at the onboarding meeting on <strong>Tuesday 24 November, 15:15</strong> (Å93108 or Zoom).</p>
+  </section>
+
+  <!-- bookkeeping on the day -->
+  <section class="slide" data-name="record">
+    <h2 class="tape">On the day: keeping a record</h2>
+    <ul class="ticks bullets">
+      <li><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
+      <li><span><strong>Your participant ID</strong> (P11, P12, ...): in your team's repository you use it instead of your name.</span></li>
+      <li><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
+      <li><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
+      <li><span><strong>Transcripts are optional:</strong> you'll choose whether your Claude Code sessions are saved to your team's private repository. You can leave single sessions out, or withdraw them afterwards.</span></li>
+      <li><span><strong>Nothing to do yet:</strong> we'll set this up together at the onboarding meeting.</span></li>
+    </ul>
+  </section>
+
+  <!-- summary -->
+  <section class="slide" data-name="summary">
+    <h2 class="tape">Before Tuesday</h2>
+    <p class="cp-intro">Your four checkpoints. Click a box to tick it.</p>
+    <ul class="ticks checks">
+      <li><span><strong>Checkpoint 1</strong>: on Discord, intro posted, team chosen</span></li>
+      <li><span><strong>Checkpoint 2</strong>: Claude Code works in your MBI-2026 folder, and Python is installed</span></li>
+      <li><span><strong>Checkpoint 3</strong>: Claude can push to your team's repository</span></li>
+      <li><span><strong>Checkpoint 4</strong>: you're in your team's idea folder</span></li>
+    </ul>
+    <div class="day">
+      <span class="k">Stuck?</span><span>Post a screenshot in <strong>#technical-help</strong> on Discord.</span>
+      <span class="k">Onboarding</span><span><strong>Tuesday 24 November, 15:15</strong>, Å93108 or Zoom (link in the email), with a recording afterwards. We help with setup after the meeting.</span>
+      <span class="k">Hackathon</span><span><strong>Monday 30 November</strong>, 09:00–17:00, Å4002</span>
+    </div>
+  </section>
+
+  <div class="nav"><a href="index.html" class="home">Website</a><button type="button" id="prev" aria-label="Previous">&lt;</button><span id="count"></span><button type="button" id="next" aria-label="Next">&gt;</button></div>
+</div>
+
+<script src="assets/wordart.js"></script>
+<script src="assets/mbi-logo.js"></script>
+<script src="assets/journey.js"></script>
+<script>
+(function () {
+  "use strict";
+  var stage = document.getElementById("stage");
+  function fit() { stage.style.transform = "translate(-50%, -50%) scale(" + Math.min(innerWidth / 1600, innerHeight / 900) + ")"; }
+  fit(); addEventListener("resize", fit);
+
+  // torn tape edges, as on the website
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6d2b79f5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  document.querySelectorAll(".tape").forEach(function (el, i) {
+    var r = rng(17 + i), pts = [], n = 14, j = 5;
+    for (var k = 0; k <= n; k++) pts.push((k / n * 100).toFixed(1) + "% " + (r() * j).toFixed(1) + "%");
+    for (var k = 1; k < 4; k++) pts.push((100 - r() * 1.2).toFixed(1) + "% " + (k * 25).toFixed(1) + "%");
+    for (var k = n; k >= 0; k--) pts.push((k / n * 100).toFixed(1) + "% " + (100 - r() * j).toFixed(1) + "%");
+    for (var k = 3; k > 0; k--) pts.push((r() * 1.2).toFixed(1) + "% " + (k * 25).toFixed(1) + "%");
+    el.style.clipPath = "polygon(" + pts.join(",") + ")";
+  });
+
+  // ---- the diagram: organisers <-> team (Discord), each person <-> their Claude (Claude), the Claudes <-> the
+  // team's repository (GitHub). Each connection lights up and sends a few dots along itself, once, when it is
+  // being discussed; the rest stays still.
+  function person(x, y, r) {
+    return '<g transform="translate(' + x + " " + y + ')" fill="none" stroke="currentColor" stroke-width="2">' +
+      '<circle cx="0" cy="' + (-r * 0.55) + '" r="' + (r * 0.42) + '"/><path d="M' + (-r * 0.85) + " " + (r * 0.75) + " Q" + (-r * 0.8) + " " + (r * 0.05) +
+      " 0 " + (r * 0.05) + " Q" + (r * 0.8) + " " + (r * 0.05) + " " + (r * 0.85) + " " + (r * 0.75) + '"/></g>';
+  }
+  function laptop(x, y) {
+    return '<g transform="translate(' + x + " " + y + ')"><rect x="-24" y="-19" width="48" height="31" rx="3" fill="var(--paper-deep)" stroke="var(--mark)" stroke-width="2"/>' +
+      '<text x="-14" y="2" font-size="14" fill="var(--mark)">&gt;_</text><path d="M-30 16 H30" stroke="var(--mark)" stroke-width="2"/></g>';
+  }
+  var TEAM = [430, 545, 660], ORG = [70, 135, 200, 265];
+  var PATHS = {
+    discord: ["M300 160 L395 160"],
+    claude: TEAM.map(function (x) { return "M" + x + " 200 L" + x + " 262"; }),
+    github: TEAM.map(function (x, i) { return "M" + x + " 318 C" + x + " 372 760 " + (372 - 8 * i) + " 830 " + (322 + 6 * i); })   // fan out below the laptops
+  };
+  function diagram(el) {
+    var link = function (k, color) {
+      return '<g class="link" data-link="' + k + '">' + PATHS[k].map(function (d, i) {
+        return '<path id="' + el.id + k + i + '" d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2.5"' + (k === "discord" ? ' stroke-dasharray="7 6"' : "") + "/>";
+      }).join("") + "</g>";
+    };
+    el.innerHTML = '<svg viewBox="0 0 1000 390">' +
+      ORG.map(function (x) { return person(x, 160, 34); }).join("") +
+      '<text x="167" y="235" text-anchor="middle" font-size="19" fill="var(--faded)" letter-spacing="2">ORGANISERS</text>' +
+      TEAM.map(function (x) { return person(x, 160, 34); }).join("") +
+      '<text x="545" y="88" text-anchor="middle" font-size="19" fill="var(--faded)" letter-spacing="2">YOUR TEAM</text>' +
+      TEAM.map(function (x) { return laptop(x, 300); }).join("") +
+      '<text x="385" y="300" text-anchor="end" font-size="19" fill="var(--mark)" letter-spacing="2">CLAUDE,</text>' +
+      '<text x="385" y="324" text-anchor="end" font-size="19" fill="var(--mark)" letter-spacing="2">ONE EACH</text>' +
+      '<g transform="translate(830 300)"><path d="M0 -38 H42 L54 -26 H120 V40 H0 Z" fill="var(--paper)"/>' +
+      '<text x="60" y="8" text-anchor="middle" font-size="17" fill="var(--paper-ink)" font-weight="600">repo</text></g>' +
+      '<text x="890" y="88" text-anchor="middle" font-size="19" fill="var(--faded)" letter-spacing="2">GITHUB</text>' +
+      '<text x="890" y="112" text-anchor="middle" font-size="15" fill="var(--faded)">your team\'s</text>' +
+      link("discord", "currentColor") + link("claude", "var(--mark)") + link("github", "currentColor") +
+      '<g class="dots"></g></svg>';
+    return {
+      // light one connection (or none); with go, send dots along it once
+      show: function (k, go) {
+        el.querySelectorAll(".link").forEach(function (g) { g.classList.toggle("on", g.getAttribute("data-link") === k); });
+        var dots = el.querySelector(".dots");
+        dots.innerHTML = "";
+        if (!k || !go || reduce) return;
+        PATHS[k].forEach(function (d, i) {
+          var id = el.id + k + i, col = k === "claude" ? "var(--mark)" : "currentColor";
+          [["0;1", 0], ["1;0", 0.35]].forEach(function (dir, j) {   // both ways
+            dots.insertAdjacentHTML("beforeend", '<circle r="6" fill="' + col + '" opacity="0"><animateMotion dur="1.3s" begin="indefinite" ' +
+              'keyPoints="' + dir[0] + '" keyTimes="0;1" calcMode="linear" fill="freeze"><mpath href="#' + id + '"/></animateMotion>' +
+              '<set attributeName="opacity" to="1" begin="indefinite"/></circle>');
+            var c = dots.lastChild, delay = (dir[1] + 0.15 * i) * 1000;
+            setTimeout(function () {
+              c.querySelector("set").beginElement(); c.querySelector("animateMotion").beginElement();
+              setTimeout(function () { c.remove(); }, 1350);
+            }, 200 + delay);
+          });
+        });
+      }
+    };
+  }
+  var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var diagEl = document.getElementById("diag"), main = null, minis = {};
+  if (diagEl) { diagEl.id = "d0"; main = diagram(diagEl); }
+  document.querySelectorAll(".diagram.mini").forEach(function (el, i) { el.id = "m" + i; minis[el.id] = diagram(el); });
+
+  // the teams slide: one entry per team, [name, repository, [[participant ID, name], ...]] (from Teams.xlsx);
+  // while the list is empty it shows a note to fill it in
+  var TEAMS = [
+    ["Team 1", "team1", [["P11", "Martin Osmera"], ["P12", "Dominik Florjan"], ["P13", "Wojciech Marciniak"], ["P14", "Zuxian He"], ["P15", "Philipp Rieger"]]],
+    ["Team 2", "team2", [["P21", "Kuldeep Kargeti"], ["P22", "Prathibha Chandrashekhar"], ["P23", "Sushanth Varada"], ["P24", "Subhadip Santra"], ["P25", "Lucas Baldo Mesa Casa"]]],
+    ["Team 3", "team3", [["P31", "Pamela Costa Carvalho"], ["P32", "Robin Hu"], ["P33", "Nastaran Salehi"], ["P34", "Atefe Nayamadi Mahmoodabadi"], ["P35", "Thomas Bernat"]]],
+    ["Team 4", "team4", [["P41", "Zeyneb Bordjiba"], ["P42", "Alejandro Jimeno-Pozo"], ["P43", "Quentin Marshal"], ["P44", "Tara af Forselles"], ["P45", "Luca Mikadze"], ["P46", "Jyotirmoy Sau"]]],
+    ["Team 5", "team5", [["P51", "Markus Weißenhofer"], ["P52", "Biplab Sanyal"], ["P53", "Md Junaid Afsar Jami"], ["P54", "Jannes van Poppelen"], ["P55", "Håvard Falch"], ["P56", "Patrik Thunström"]]]
+  ];
+  var teamsEl = document.getElementById("teams");
+  if (teamsEl) {
+    teamsEl.innerHTML = TEAMS.length
+      ? TEAMS.map(function (t) {
+          return "<div><b>" + t[0] + "</b><code>" + t[1] + "</code>" +
+            t[2].map(function (m) { return "<span class=\"pid\">" + m[0] + "</span> " + m[1]; }).join("<br>") + "</div>";
+        }).join("")
+      : '<p class="todo"><b>To fill in before sending</b>The list of teams and their members (team1, team2, ...).</p>';
+  }
+  var ORDER = ["discord", "claude", "github"];
+  // the day, one phase per click: [where the clock stops (the phase's end), in hours after 09:00; the phase; what happens]
+  var DAY = [
+    [0.25, "09:00–09:15", "<strong>Welcome.</strong> Your team arrives with its idea already agreed, and we make sure everyone's tools work."],
+    [1.25, "09:15–10:15", "<strong>Scope.</strong> Sharpen the question, check the literature, decide what &ldquo;done&rdquo; means today, and split the tasks. <span class=\"mark\">Fika at 10:00.</span>"],
+    [2.25, "10:15–11:15", "<strong>First attempt.</strong> Get a first derivation or calculation running."],
+    [3.25, "11:15–12:15", "<strong>First result</strong>, however rough. If there isn't one, narrow the question. Lunch at 12:15."],
+    [5, "13:00–14:00", "<strong>Check.</strong> Cross-check each other's results, so you know which ones hold up."],
+    [6, "14:00–15:00", "<strong>Make figures.</strong> Figures, animations and slides for your talk."],
+    [6.75, "15:00–15:45", "<strong>Write</strong> the 2-page note, including how you used AI. <span class=\"mark\">Fika at 15:00.</span>"],
+    [7.5, "15:45–16:30", "<strong>Talks.</strong> Five minutes per team."],
+    [8, "16:30–17:00", "<strong>Peer review.</strong> Swap notes with another team and fill in the referee form. At 17:00: survey and prizes."]
+  ];
+
+  // ---- the logo on the title: plays once, then stands still
+  var logoHandle = null, logoStop = null;
+  function startLogo() {
+    var logo = document.getElementById("logo");
+    logoHandle = WordArt.mount(logo, { cols: 150, rows: 46, edge: 0.9, staticTime: MBILogo.settled, build: MBILogo.build("open") });
+    playLogo();
+  }
+  function playLogo() {
+    if (!logoHandle) return;
+    clearTimeout(logoStop); logoHandle.restart();
+    logoStop = setTimeout(function () { logoHandle.pause(); }, (MBILogo.settled + 0.5) * 1000);
+  }
+
+  // ---- slides and builds
+  var slides = Array.prototype.slice.call(document.querySelectorAll(".slide"));
+  var cur = 0, step = 0, count = document.getElementById("count");
+  var present = document.documentElement.classList.contains("present");
+  function stepsOf(i) {
+    var n = +slides[i].getAttribute("data-steps") || 0;
+    if (present) {
+      n = Math.max(n, +slides[i].getAttribute("data-present-steps") || 0);
+      slides[i].querySelectorAll("[data-step]").forEach(function (el) { n = Math.max(n, +el.getAttribute("data-step")); });
+    }
+    return n;
+  }
+  function render(entering) {
+    slides.forEach(function (s, i) { s.classList.toggle("on", i === cur); });
+    if (present) {
+      var sl = slides[cur];
+      if (entering) sl.classList.add("noanim");
+      sl.querySelectorAll("[data-step]").forEach(function (el) { el.classList.toggle("later", +el.getAttribute("data-step") > step); });
+      if (entering) { void sl.offsetWidth; sl.classList.remove("noanim"); }
+    }
+    var name = slides[cur].getAttribute("data-name");
+    if (name === "day" && present && window.Journey) {        // one phase of the day per click
+      var d = DAY[step], cap = document.getElementById("dayCap");
+      Journey.seek(d[0] / 8, entering);
+      cap.firstChild.textContent = d[1]; cap.lastChild.innerHTML = d[2];
+    }
+    if (name === "connections") {
+      var k = step ? ORDER[step - 1] : null;
+      main.show(k, true);
+      slides[cur].querySelectorAll(".legend div").forEach(function (d) { d.classList.toggle("on", d.getAttribute("data-link") === k); });
+    }
+    if (entering) {
+      if (name === "title") playLogo();
+      if (name === "day" && window.Journey && !present) Journey.play();
+      slides[cur].querySelectorAll(".diagram.mini").forEach(function (el) { minis[el.id].show(el.getAttribute("data-show"), true); });
+    }
+    count.textContent = (cur + 1) + " / " + slides.length;
+    history.replaceState(null, "", "#" + (cur + 1));
+  }
+  function go(i, back) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    if (i === cur) return;
+    cur = i; step = back ? stepsOf(i) : 0; render(true);
+  }
+  function next() { if (step < stepsOf(cur)) { step++; render(false); } else go(cur + 1); }
+  function prev() { if (step > 0) { step--; render(false); } else go(cur - 1, true); }
+  addEventListener("keydown", function (e) {
+    var k = e.key;
+    if (k === "ArrowRight" || k === "PageDown" || k === " ") { e.preventDefault(); next(); }
+    else if (k === "ArrowLeft" || k === "PageUp") { e.preventDefault(); prev(); }
+    else if (k === "Home") go(0);
+    else if (k === "End") go(slides.length - 1);
+    else if (k === "f" || k === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }
+  });
+  document.getElementById("next").addEventListener("click", next);
+  // checkpoint boxes: click to tick; remembered in this browser (if it allows storage)
+  document.querySelectorAll(".ticks.checks").forEach(function (ul) {
+    var slide = ul.closest(".slide").getAttribute("data-name");
+    Array.prototype.forEach.call(ul.children, function (li, i) {
+      var key = "mbi-pre:" + slide + ":" + i;
+      try { if (localStorage.getItem(key) === "1") li.classList.add("done"); } catch (e) { /* no storage */ }
+      li.addEventListener("click", function () {
+        var on = li.classList.toggle("done");
+        try { localStorage.setItem(key, on ? "1" : "0"); } catch (e) { /* no storage */ }
+      });
+    });
+  });
+
+  // links to another slide by name (the install paths, "skip to the checkpoint")
+  document.querySelectorAll("[data-to]").forEach(function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var i = slides.findIndex(function (s) { return s.getAttribute("data-name") === a.getAttribute("data-to"); });
+      if (i >= 0) go(i);
+    });
+  });
+  document.getElementById("prev").addEventListener("click", prev);
+
+  // ---- copy buttons
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var text = b.parentNode.querySelector("pre").innerText;
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+        b.textContent = "Copied"; setTimeout(function () { b.textContent = "Copy"; }, 1500);
+      }, function () {
+        var r = document.createRange(); r.selectNodeContents(b.parentNode.querySelector("pre"));
+        var s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Ctrl+C";
+      });
+    });
+  });
+
+  var start = parseInt(location.hash.slice(1), 10);
+  cur = isNaN(start) ? 0 : Math.max(0, Math.min(slides.length - 1, start - 1));
+  var ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+  ready.then(function () { startLogo(); render(true); });
+  render(false);
+})();
+</script>
+</body>
+</html>

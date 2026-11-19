@@ -165,6 +165,12 @@ footer.org span { color: var(--sepia); }
 .nav button:hover { color: var(--ink); border-color: var(--ink); }
 .nav .home { margin-right: 14px; color: var(--faded); text-decoration: none; letter-spacing: 0.06em; text-transform: uppercase; }
 .nav .home:hover { color: var(--ink); }
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 30px 0 10px; }
+.kind { border: 2px solid var(--sepia); padding: 22px 28px 20px; }
+.ticks.bullets li::before { width: 18px; height: 0; border: 0; border-top: 3px solid var(--mark); margin-top: 18px; }
+.kind-h { display: block; font-size: 26px; color: var(--ink); margin-bottom: 6px; }
+.kind p { font-size: 22px; line-height: 1.45; color: var(--sepia); margin: 0; }
+.kind strong { color: var(--ink); }
 </style>
 </head>
 <body>
@@ -178,12 +184,36 @@ footer.org span { color: var(--sepia); }
     </div>
     <p class="rule-line" data-step="1"><span>Onboarding for the hackathon on <strong>Monday 30 November</strong></span></p>
     <div class="agenda">
-      <div data-step="2"><b>01</b><strong>The day</strong> and the code of conduct</div>
-      <div data-step="3"><b>02</b>Finding your team's <strong>research idea</strong> with Claude</div>
-      <div data-step="4"><b>03</b>Setting up <strong>Discord, Claude and GitHub</strong></div>
-      <div data-step="5"><b>04</b>To do <strong>before 30 November</strong></div>
+      <div data-step="2"><b>01</b>Your setup: <strong>a quick check</strong></div>
+      <div data-step="3"><b>02</b><strong>The day</strong> and the code of conduct</div>
+      <div data-step="4"><b>03</b>Your team's <strong>research idea</strong></div>
+      <div data-step="5"><b>04</b><strong>Keeping a record</strong> on the day</div>
     </div>
     <footer class="org">Organisers: <span>Konstantinos Sourounis, Pramodh Senarath Yapa, Aksel Kobiałka and Alena Vishina</span></footer>
+  </section>
+
+  <!-- 2: is your laptop ready? -->
+  <section class="slide" data-name="ready">
+    <h2 class="tape">Is your laptop ready?</h2>
+    <p class="sub">Before today you worked through the <strong>setup guide</strong>. Its four checkpoints:</p>
+    <ol class="steps" style="margin-top: 30px">
+      <li data-step="1"><span><strong>Discord</strong>: you can see your team's channel</span></li>
+      <li data-step="2"><span><strong>Claude Code</strong> works in your MBI-2026 folder, and <strong>Python</strong> 3.8 or newer is installed</span></li>
+      <li data-step="3"><span><strong>GitHub</strong>: your folder is in your team's repository</span></li>
+      <li data-step="4"><span><strong>Your idea folder</strong>: your paragraph and papers are in <code>our-idea/</code></span></li>
+    </ol>
+    <div class="check" data-step="5"><b>NOT THERE YET?</b> Stay after the meeting and we'll help, or ask in #technical-help.</div>
+  </section>
+
+  <!-- 3: a quick check, now -->
+  <section class="slide" data-name="check-now">
+    <h2 class="tape">A quick check, now</h2>
+    <p class="sub">Open Claude Code in your MBI-2026 folder and send this:</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Quick check for the hackathon, in three short lines:
+1. Which folder are you working in?
+2. Is my team's repository in this folder, and can you reach it on GitHub? Show me its last three changes.
+3. Is Python 3.8 or newer installed?</pre></div>
+    <div class="check" data-step="1"><b>DONE WHEN</b> you get three yes answers. Any no: stay after the meeting.</div>
   </section>
 
   <!-- 2: the day -->
@@ -209,17 +239,17 @@ footer.org span { color: var(--sepia); }
     <p class="url" data-step="7">manybodyintelligence2026.github.io/<strong>code-of-conduct.html</strong></p>
   </section>
 
-  <!-- 4: the research idea -->
+  <!-- the research idea -->
   <section class="slide" data-name="idea">
     <h2 class="tape">Finding a research idea</h2>
-    <div class="cols" style="grid-template-columns: 1fr 470px">
+    <p class="sub">Teams are welcome to bring their own idea. If you don't have one yet, or don't know each other's expertise, Claude can help:</p>
+    <div class="cols" style="grid-template-columns: 1fr 540px">
       <ol class="steps">
-        <li data-step="1"><span>Everyone writes <strong>a few lines about themselves</strong>: group, background, the methods they know.</span></li>
-        <li data-step="2"><span>Everyone adds <strong>2–3 of their papers as PDFs</strong>.
-          <span class="note">Download the PDFs. Claude works much better with files than with links.</span></span></li>
-        <li data-step="3"><span>Open the folder in Claude and use the <strong>prompt on the next slide</strong>.</span></li>
+        <li data-step="1"><span>Everyone adds <strong>a paragraph and 2–3 papers</strong> to <code>our-idea/</code> (checkpoint 4).</span></li>
+        <li data-step="2"><span>One of you opens Claude Code in your <strong>team's folder</strong> and uses the <strong>prompt on the next slide</strong>.</span></li>
+        <li data-step="3"><span>Claude reads all of it and suggests projects that <strong>draw on everyone</strong>.</span></li>
       </ol>
-      <div class="tree" data-step="2"><b>our-idea/</b>
+      <div class="tree" data-step="1"><b>teamN/our-idea/</b>
 +-- team.md       <span class="faded">a paragraph each</span>
 +-- papers/
     +-- <b>name-1/</b>    <span class="faded">2-3 PDFs</span>
@@ -228,12 +258,11 @@ footer.org span { color: var(--sepia); }
     </div>
   </section>
 
-  <!-- 5: the brainstorm prompt -->
   <section class="slide" data-name="idea-prompt">
     <h2 class="tape">Prompt: finding a project</h2>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre id="promptIdea">We are a team of <i>[number]</i> researchers in the Materials Theory division at Uppsala University, taking part in Many-Body Intelligence 2026: a one-day hackathon (Monday 30 November, 09:00-17:00) where small teams pick a research problem none of them has worked on and see how far they get with AI assistants. Each team ends the day with a 5-minute talk and a 2-page note.
 
-This folder has team.md (a short description of each of us) and papers/ (a few papers by each of us). Read all of it first, and the event's pages at manybodyintelligence2026.github.io (home, FAQ and code of conduct).
+In this repository, the folder our-idea has team.md (a short description of each of us) and papers/ (a few papers by each of us). Read all of it first, and the event's pages at manybodyintelligence2026.github.io (home, FAQ and code of conduct).
 
 Then propose 5 projects that draw on the interests and skills of everyone on the team. Each one should be:
 - the size of a Master's project (it could become a short paper with more time)
@@ -244,104 +273,64 @@ Then propose 5 projects that draw on the interests and skills of everyone on the
 
 For each: a title, the question in 2-3 sentences, what a first result by 17:00 could look like, likely methods, and what each of us would own on the day. Check that none overlaps with our own or our groups' current research, and look for the closest existing work.
 
-Then recommend one, with the checks we should run and the main risks, and list the ideas you dropped and why. Put the result in an artifact we can share.</pre></div>
+Then recommend one, with the checks we should run and the main risks, and list the ideas you dropped and why. Write it all to our-idea/ideas.md, then commit and push it so the whole team can read it.</pre></div>
   </section>
 
-  <!-- 6: agree on it -->
   <section class="slide" data-name="idea-agree">
     <h2 class="tape">Agree on one idea</h2>
     <ol class="steps" style="margin-top: 40px">
-      <li data-step="1"><span>Pick one idea and write it up in <strong>about 100 words</strong>: title, question, what a first result by 17:00 could look like, methods.</span></li>
-      <li data-step="2"><span><strong>Share it in your team's Discord channel.</strong> The easiest way is as a Claude <strong>artifact</strong>.
-        <span class="note">An artifact is a page Claude makes (a document, a table, a small app) that you can share as a link. Ask Claude to make one.</span></span></li>
-      <li data-step="3"><span><strong>Everyone on the team reads it and agrees to it</strong> before 30 November.</span></li>
+      <li data-step="1"><span>Talk it over in your <strong>team's Discord channel</strong>, and pick one idea.</span></li>
+      <li data-step="2"><span>Write it up in <strong>about 100 words</strong>: title, question, what a first result by 17:00 could look like, methods.</span></li>
+      <li data-step="3"><span>Put it on the <strong>Q0 line of README.md</strong> in your team's repository. <strong>Everyone on the team agrees to it</strong> before 30 November.</span></li>
     </ol>
     <p class="sub" style="margin-top: 26px" data-step="4">We're happy to give feedback if you want it. Stuck? Ask us for a starter problem.</p>
   </section>
 
-  <!-- 7: three connections -->
-  <section class="slide" data-name="connections" data-steps="3">
-    <h2 class="tape">Three connections</h2>
-    <div class="diagram" id="diag" style="margin-top: 16px"></div>
-    <div class="legend">
-      <div data-link="discord" data-step="1"><b>Discord</b>So we can reach you, and you can reach us</div>
-      <div data-link="claude" data-step="2"><b>Claude</b>So you can work with your AI agent</div>
-      <div data-link="github" data-step="3"><b>GitHub</b>So the AI agents can talk to each other</div>
+  <!-- keeping a record -->
+  <section class="slide" data-name="record">
+    <h2 class="tape">On the day: keeping a record</h2>
+    <ul class="ticks bullets">
+      <li data-step="1"><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
+      <li data-step="2"><span><strong>Your participant ID</strong> (P11, P12, ...): in your team's repository you use it instead of your name.</span></li>
+      <li data-step="3"><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
+      <li data-step="4"><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
+    </ul>
+  </section>
+
+  <section class="slide" data-name="transcripts">
+    <h2 class="tape">Your choice: transcripts</h2>
+    <p class="sub">A transcript is the full record of a Claude Code session: your prompts, Claude's replies, the commands it ran. You choose whether yours are saved:</p>
+    <div class="kinds">
+      <div class="kind" data-step="1"><b class="kind-h">Yes</b><p>Every session you start in your team's folder is uploaded to your team's <strong>private repository</strong> when it ends. Your team and we can read it. We use it anonymised for the paper, and ask before quoting anything.</p></div>
+      <div class="kind" data-step="2"><b class="kind-h">No</b><p>Nothing is uploaded. Your <strong>log entries</strong> are then the only record of your AI work, so they matter more.</p></div>
     </div>
+    <p class="sub" data-step="3">Either way you can keep single sessions out, and withdraw sessions until a week after the event. Confidential material stays out of AI tools, recorded or not.</p>
   </section>
 
-  <!-- 8: Discord -->
-  <section class="slide" data-name="discord">
-    <h2 class="tape">1 · Discord</h2>
-    <div class="cols">
-      <ol class="steps">
-        <li data-step="1"><span><strong>Join the server</strong> with the invite link in your email.</span></li>
-        <li data-step="2"><span>Post a short intro in <code>#welcome</code>: <strong>who you are</strong>, <strong>your research group</strong> and <strong>your hackathon team</strong>.</span></li>
-        <li data-step="3"><span>In <code>#team-selection</code>, <strong>choose your team</strong>. You'll then see your team's channel.</span></li>
-      </ol>
-      <div class="diagram mini" data-show="discord"></div>
-    </div>
-    <div class="check" data-step="4"><b>DONE WHEN</b> your intro is in #welcome and you can see your team's channel.</div>
+  <section class="slide" data-name="record-setup">
+    <h2 class="tape">Set up the bookkeeping, now</h2>
+    <ol class="steps">
+      <li data-step="1"><span>From now on, open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026. Accept "trust this folder".
+        <span class="note">Opened anywhere else, the bookkeeping doesn't run.</span></span></li>
+      <li data-step="2"><span>Ask Claude to <strong>pull the latest changes</strong> from GitHub: we've added the bookkeeping files.</span></li>
+      <li data-step="3"><span>Send this, with your ID and your transcript choice: <code>Run sh scripts/setup --pid <i>P23</i> --transcripts <i>yes</i></code></span></li>
+      <li data-step="4"><span>Try it once: ask Claude something small, then type <code>/log-entry</code> and answer the five questions.</span></li>
+    </ol>
+    <div class="check" data-step="5"><b>DONE WHEN</b> Claude runs <code>sh scripts/mbi doctor</code> and it says <strong>Ready.</strong></div>
   </section>
 
-  <!-- 9: Claude -->
-  <section class="slide" data-name="claude">
-    <h2 class="tape">2 · Claude</h2>
-    <div class="cols">
-      <ol class="steps">
-        <li data-step="1"><span><strong>Log in to Claude</strong> with the account on the division's plan. Tell us now if you can't.</span></li>
-        <li data-step="2"><span><strong>Install Claude Code</strong>: the Claude desktop app (Windows, Mac), or VS Code with the Claude Code extension (Linux too).
-          <span class="note">On Windows, also install Git for Windows.</span></span></li>
-        <li data-step="3"><span><strong>Make a folder for the hackathon</strong> on the laptop you'll bring, and open it in Claude Code.</span></li>
-        <li data-step="4"><span><strong>Ask Claude a question</strong> there to check that it works.</span></li>
-      </ol>
-      <div class="diagram mini" data-show="claude"></div>
-    </div>
-    <div class="check" data-step="5"><b>DONE WHEN</b> Claude replies to you in your hackathon folder.</div>
-  </section>
-
-  <!-- 10: GitHub -->
-  <section class="slide" data-name="github">
-    <h2 class="tape">3 · GitHub</h2>
-    <div class="cols">
-      <ol class="steps">
-        <li data-step="1"><span><strong>Accept the invite</strong> to your team's repository (private, in <code>manybodyintelligence2026</code>).</span></li>
-        <li data-step="2"><span>In Claude Code, in your hackathon folder, <strong>paste the prompt on the next slide</strong>.
-          <span class="note">Claude installs what's missing, logs you in to GitHub (you do the browser step), copies the repository and adds a folder with your name.</span></span></li>
-        <li data-step="3"><span>From then on, your team's Claudes <strong>share work through the repository</strong>: the files, a <code>CLAUDE.md</code> describing the project, and the team log.</span></li>
-      </ol>
-      <div class="diagram mini" data-show="github"></div>
-    </div>
-    <div class="check" data-step="4"><b>DONE WHEN</b> your folder shows up in your team's repository on GitHub.</div>
-  </section>
-
-  <!-- 11: the GitHub prompt -->
-  <section class="slide" data-name="github-prompt">
-    <h2 class="tape">Prompt: connecting to GitHub</h2>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre id="promptGit">I'm taking part in a hackathon, and my team works in this GitHub repository: <i>[paste the link to your team's repository]</i>
-Please set things up so that you can work with it:
-
-1. Check that git and the GitHub CLI (gh) are installed. If they aren't, install them for my operating system (on Windows: Git for Windows and the GitHub CLI), and tell me if I need to open a new terminal afterwards.
-2. Log me in to GitHub with "gh auth login": GitHub.com, HTTPS, log in with a web browser. I'll do the browser step myself.
-3. Clone the repository into this folder.
-4. Make a folder in it named <i>[your name]</i>, with a README.md saying who I am. Commit it and push it (pull first if the push is refused).
-5. When it's done, give me the link to my folder on GitHub.</pre></div>
-  </section>
-
-  <!-- 12: before the 30th -->
+  <!-- before the 30th -->
   <section class="slide" data-name="before">
     <h2 class="tape">To do before 30 November</h2>
     <ul class="ticks">
-      <li data-step="1"><span>Read the <strong>code of conduct</strong></span></li>
-      <li data-step="2"><span>Post your intro in <strong>#welcome</strong> and choose your team</span></li>
-      <li data-step="3"><span>Check that <strong>Claude</strong> works in your hackathon folder</span></li>
-      <li data-step="4"><span>Check that your folder is in your <strong>team's repository</strong></span></li>
-      <li data-step="5"><span>Share your team's <strong>idea</strong>, and make sure everyone agrees to it</span></li>
+      <li data-step="1"><span>Agree on your team's <strong>idea</strong>, and put it on the Q0 line of README.md</span></li>
+      <li data-step="2"><span>Bookkeeping set up: <code>sh scripts/mbi doctor</code> says <strong>Ready.</strong></span></li>
+      <li data-step="3"><span>Read the <strong>code of conduct</strong></span></li>
     </ul>
-    <div class="day" data-step="6">
+    <div class="day" data-step="4">
       <span class="k">When</span><span><strong>Monday 30 November</strong>, 09:00–17:00</span>
       <span class="k">Where</span><span>Å4002, Ångström Laboratory</span>
-      <span class="k">Bring</span><span>The laptop you set up today, and its charger. Pizza and fika are provided.</span>
+      <span class="k">Bring</span><span>Your laptop, set up, and its charger. Pizza and fika are provided.</span>
     </div>
   </section>
 
@@ -438,8 +427,8 @@ Please set things up so that you can work with it:
     };
   }
   var reduce = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var diagEl = document.getElementById("diag"); diagEl.id = "d0";
-  var main = diagram(diagEl), minis = {};
+  var diagEl = document.getElementById("diag"), main = null, minis = {};
+  if (diagEl) { diagEl.id = "d0"; main = diagram(diagEl); }
   document.querySelectorAll(".diagram.mini").forEach(function (el, i) { el.id = "m" + i; minis[el.getAttribute("data-show")] = diagram(el); });
   var ORDER = ["discord", "claude", "github"];
   // the day, one phase per click: [where the clock stops (the phase's end), in hours after 09:00; the phase; what happens]
