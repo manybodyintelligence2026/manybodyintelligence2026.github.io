@@ -140,6 +140,15 @@ footer.org span { color: var(--sepia); }
 .ticks { list-style: none; padding: 0; margin: 30px 0 0; font-size: 25px; line-height: 1.45; color: var(--sepia); }
 .ticks li { display: grid; grid-template-columns: 50px 1fr; margin: 0 0 16px; }
 .ticks li::before { content: ""; width: 26px; height: 26px; border: 2px solid var(--ink); margin-top: 6px; }
+/* plain lists: a short dash, not a box */
+.ticks.bullets li::before { width: 18px; height: 0; border: 0; border-top: 3px solid var(--mark); margin-top: 18px; }
+/* checkpoint lists: boxes you can tick (remembered in this browser) */
+.ticks.checks li { cursor: pointer; user-select: none; }
+.ticks.checks li::before { display: grid; place-items: center; font-size: 22px; font-weight: 600; color: var(--bg); }
+.ticks.checks li:hover::before { border-color: var(--mark); }
+.ticks.checks li.done::before { content: "✓"; background: var(--mark); border-color: var(--mark); }
+.ticks.checks li.done > span { color: var(--faded); }
+.cp-intro { font-size: 23px; color: var(--mark); margin: 20px 0 0; }
 .ticks strong { color: var(--ink); font-weight: 600; }
 .day { margin-top: 26px; display: grid; grid-template-columns: 170px 1fr; gap: 10px 20px; font-size: 23px; background: var(--paper);
   color: var(--paper-ink); padding: 18px 30px; }
@@ -172,7 +181,10 @@ footer.org span { color: var(--sepia); }
 .badge.setup { border-color: var(--sepia); }
 .badge.check { border-color: var(--mark); color: var(--bg); background: var(--mark); }
 .slide .badge + .tape { display: table; }
+.sub.spaced { margin-top: 30px; }
 .kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin: 36px 0 10px; }
+.kind { border: 2px solid var(--sepia); padding: 22px 28px 20px; }
+.kind.cp { border-color: var(--mark); }
 .kinds p { font-size: 23px; line-height: 1.45; color: var(--sepia); margin: 6px 0 0; }
 .kinds strong { color: var(--ink); }
 .skip { position: absolute; left: 90px; bottom: 44px; font-size: 21px; color: var(--mark); text-decoration: none; border-bottom: 1px dashed var(--mark); }
@@ -188,10 +200,12 @@ ol.when li::before { content: ""; position: absolute; left: -9px; top: 10px; wid
 ol.when li:last-child::before { background: var(--mark); }
 ol.when b { color: var(--ink); font-weight: 600; }
 ol.when strong { color: var(--ink); font-weight: 600; }
-.teams { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 30px; }
+.teams { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-top: 30px; }
+.teams code { display: block; width: max-content; font-size: 15px; margin: 2px 0 10px; }
+.pid { color: var(--mark); font-weight: 600; }
 .todo { grid-column: 1 / -1; border: 3px dashed var(--mark); padding: 30px 36px; font-size: 26px; line-height: 1.45; color: var(--sepia); margin: 0; }
 .teams .todo b { display: block; color: var(--mark); font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; font-size: 22px; margin-bottom: 8px; }
-.teams div { border-top: 2px solid var(--ink); padding-top: 10px; font-size: 20px; line-height: 1.5; color: var(--sepia); }
+.teams div { border-top: 2px solid var(--ink); padding-top: 10px; font-size: 18px; line-height: 1.55; color: var(--sepia); }
 .teams b { display: block; color: var(--ink); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 18px; margin-bottom: 4px; }
 .paths { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin: 40px 0 34px; }
 .paths a { display: block; text-decoration: none; border: 2px solid var(--ink); padding: 22px 24px; font-size: 21px; color: var(--sepia); line-height: 1.4; min-height: 170px; }
@@ -234,12 +248,14 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <!-- how to use -->
   <section class="slide" data-name="how">
     <h2 class="tape">How to use this guide</h2>
-    <p class="sub">It assumes you have <strong>never used Claude, GitHub or Discord</strong>. Go through it at your own pace, on the laptop you will bring on 30 November. It takes about 45 minutes.</p>
-    <div class="kinds">
-      <div><span class="badge setup">Setup</span><p>Something to <strong>do</strong>: install, sign in, click. If you already have it, use the <strong>skip</strong> link at the bottom of the slide.</p></div>
-      <div><span class="badge check">Checkpoint</span><p>A <strong>test that everything works</strong>. Everyone does these, including people who skipped the setup.</p></div>
+    <p class="sub spaced"><strong>Why:</strong> if everyone's laptop is set up before 30 November, we can start on the research right away on the day.</p>
+    <p class="sub spaced">The guide assumes you have <strong>never used Claude, GitHub or Discord</strong>. Then it takes about 45 minutes; if you already use them, it's much quicker. Do it on the laptop you will bring on 30 November.</p>
+    <p class="sub spaced">Most slides have one of two labels <strong>at the top</strong>, just above the title:</p>
+    <div class="kinds" style="margin-top: 18px">
+      <div class="kind"><span class="badge setup">Setup</span><p>Something to <strong>do</strong>: install, sign in, click. Already done it? At the <strong>bottom</strong> of the slide there's a pink link, like <span class="mark">Skip to the checkpoint →</span>. Click it to jump ahead.</p></div>
+      <div class="kind cp"><span class="badge check">Checkpoint</span><p>A <strong>test that everything works</strong>. Everyone does these, also if you skipped the setup. Click each box to tick it, and move on once they're all ticked.</p></div>
     </div>
-    <p class="sub">Use the arrow keys or the arrows in the corner to move. <strong>Stuck for more than 10 minutes?</strong> Post a screenshot in <code>#technical-help</code> on Discord.</p>
+    <p class="sub spaced">Move with the arrow keys or the arrows in the corner. <strong>Stuck for more than 10 minutes?</strong> Post a screenshot in <code>#technical-help</code> on Discord.</p>
   </section>
 
   <!-- schedule -->
@@ -256,14 +272,14 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <!-- teams: filled from TEAMS in the script; while that list is empty the slide shows a to-fill-in note -->
   <section class="slide" data-name="teams">
     <h2 class="tape">The teams</h2>
-    <p class="sub">You will work on your team's research idea together before the day, so get to know them on Discord.</p>
+    <p class="sub">You will work on your team's research idea together before the day, so get to know them on Discord. The <span class="pid">P</span>-number next to your name is your <strong>participant ID</strong>; you'll use it on the day.</p>
     <div class="teams" id="teams"></div>
   </section>
 
   <!-- what you need -->
   <section class="slide" data-name="need">
     <h2 class="tape">What you need</h2>
-    <ul class="ticks">
+    <ul class="ticks bullets">
       <li><span>The <strong>laptop you will bring</strong> on 30 November</span></li>
       <li><span>Your <strong>Claude login</strong>: the account on your group's plan, or the one Alena gave you. (The free Claude plan does not include Claude Code.)</span></li>
       <li><span>To know whether you have <strong>admin rights</strong> on the laptop: can you install programs yourself? If you're not sure, the next steps tell you what to do either way.</span></li>
@@ -296,7 +312,8 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <section class="slide" data-name="discord-check">
     <span class="badge check">Checkpoint 1</span>
     <h2 class="tape">Discord works</h2>
-    <ul class="ticks">
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
       <li><span>Your intro is in <code>#welcome</code></span></li>
       <li><span>You can see <strong>your team's channel</strong></span></li>
       <li><span>You know where <code>#technical-help</code> is</span></li>
@@ -314,7 +331,8 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <section class="slide" data-name="claude-path">
     <span class="badge setup">Setup</span>
     <h2 class="tape">Which way do you install it?</h2>
-    <div class="paths">
+    <p class="sub"><strong>Click the box that matches your laptop</strong>: its operating system, and whether you can install programs yourself (admin rights).</p>
+    <div class="paths" style="margin-top: 30px">
       <a href="#" data-to="claude-win"><b>Windows</b>with admin rights<span>The Claude app →</span></a>
       <a href="#" data-to="claude-vscode"><b>Windows</b>without admin rights<span>VS Code + extension →</span></a>
       <a href="#" data-to="claude-mac"><b>Mac</b><span>The Claude app →</span></a>
@@ -357,7 +375,8 @@ ol.when strong { color: var(--ink); font-weight: 600; }
     <span class="badge setup">Setup · Mac</span>
     <h2 class="tape">Install the Claude app</h2>
     <ol class="steps">
-      <li><span>Download the app from <a class="big-link" href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a>, open the downloaded file and drag <strong>Claude</strong> into <strong>Applications</strong>.</span></li>
+      <li><span>Download the app from <a class="big-link" href="https://claude.com/download" target="_blank" rel="noopener">claude.com/download</a> and double-click the downloaded file.
+        <span class="note">On a Mac this opens a small window with the Claude icon and an Applications folder: drag the icon onto the folder. That's how Mac apps are installed. Then open Claude from Applications.</span></span></li>
       <li><span>Open Claude and <strong>sign in</strong> with your Claude account.</span></li>
     </ol>
     <p class="caveat">None of the organisers has a Mac, so we haven't tried these steps ourselves. If something looks different, post a screenshot in <code>#technical-help</code>, or use VS Code with the Claude Code extension instead (the Linux steps work on a Mac too).</p>
@@ -370,7 +389,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
     <div class="cols" style="grid-template-columns: 1fr 420px">
       <div>
         <p class="sub" style="margin-top: 0">Claude often opens in <strong>Chat</strong>, the ordinary conversation mode. You need <strong>Code</strong>. The switch is two small icons, easy to miss: the speech bubble is Chat, <strong>&lt;/&gt;</strong> is Code. <strong>Click &lt;/&gt;.</strong></p>
-        <ul class="ticks" style="margin-top: 26px">
+        <ul class="ticks bullets" style="margin-top: 26px">
           <li><span>You're in the right place when Claude asks which <strong>folder</strong> to work in, or shows a folder at the bottom of the window.</span></li>
           <li><span>In VS Code, check this too: if the Claude panel shows the same two icons, pick <strong>&lt;/&gt;</strong>.</span></li>
         </ul>
@@ -383,7 +402,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
     <span class="badge setup">Setup</span>
     <h2 class="tape">Your hackathon folder</h2>
     <ol class="steps">
-      <li><span>Make a folder called <strong>MBI-2026</strong>, for example in <strong>Documents</strong>. Everything you make for the hackathon lives here.</span></li>
+      <li><span>Make a folder called <strong>MBI-2026</strong>, for example in <strong>Documents</strong> or on your <strong>Desktop</strong>. Everything you make for the hackathon lives here.</span></li>
       <li><span>Open it in Claude Code:
         <span class="note">Claude app: in Code, choose MBI-2026 as the folder to work in. VS Code: File → Open Folder → MBI-2026, then click "Yes, I trust the authors" (Claude Code doesn't work in VS Code's Restricted Mode).</span></span></li>
     </ol>
@@ -393,7 +412,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
     <span class="badge setup">Setup</span>
     <h2 class="tape">Claude asks before it acts</h2>
     <p class="sub">Claude Code can change files and run programs on your laptop, so it <strong>asks first</strong>. You will see small boxes like "Allow Claude to run this command?" or "Allow this edit?".</p>
-    <ul class="ticks" style="margin-top: 26px">
+    <ul class="ticks bullets" style="margin-top: 26px">
       <li><span><strong>Read what it wants to do.</strong> If it matches what you asked for, allow it.</span></li>
       <li><span>If you don't understand it, choose <strong>no</strong> and ask Claude: "What does that do, and why do you need it?"</span></li>
       <li><span>Nothing happens on your laptop without your OK, so you can't break anything by saying no.</span></li>
@@ -403,9 +422,10 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <section class="slide" data-name="claude-check">
     <span class="badge check">Checkpoint 2</span>
     <h2 class="tape">Claude Code works</h2>
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
     <p class="sub">Copy this into Claude Code and send it:</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre>Which folder are you working in? Then fetch https://manybodyintelligence2026.github.io and tell me the heading of that page.</pre></div>
-    <ul class="ticks" style="margin-top: 26px">
+    <ul class="ticks checks" style="margin-top: 26px">
       <li><span>Claude names your <strong>MBI-2026</strong> folder</span></li>
       <li><span>It answers <strong>MANY-BODY INTELLIGENCE 2026</strong>, so it can reach the internet</span></li>
     </ul>
@@ -448,7 +468,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <section class="slide" data-name="github-keep">
     <span class="badge setup">Setup</span>
     <h2 class="tape">Keep the token safe</h2>
-    <ul class="ticks">
+    <ul class="ticks bullets">
       <li><span>Paste it into a text file, for example <strong>Documents\github-token.txt</strong>.</span></li>
       <li><span>Keep that file <strong>outside the MBI-2026 folder</strong>, so it can never end up in your team's repository.</span></li>
       <li><span>Don't paste the token into a chat, an email or a Discord message.</span></li>
@@ -472,7 +492,8 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <section class="slide" data-name="github-check">
     <span class="badge check">Checkpoint 3</span>
     <h2 class="tape">GitHub works</h2>
-    <ul class="ticks">
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
       <li><span>Your team's repository is now a folder inside <strong>MBI-2026</strong></span></li>
       <li><span>Claude's link opens <strong>your folder on GitHub</strong>, in your team's repository</span></li>
       <li><span>Your teammates' folders show up there too, once they've done the same (next slide)</span></li>
@@ -496,7 +517,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
         +-- <b>anna/</b>  <span class="faded">2-3 PDFs</span>
         +-- <b>ben/</b>
         +-- <b>chen/</b></div>
-      <ul class="ticks" style="margin-top: 0">
+      <ul class="ticks bullets" style="margin-top: 0">
         <li><span>One folder <strong>per person</strong>, named after them</span></li>
         <li><span><strong>our-idea/</strong> is shared: everyone adds to it (Part 4)</span></li>
         <li><span>We may add more files before the day. That's fine: leave them as they are.</span></li>
@@ -513,15 +534,26 @@ ol.when strong { color: var(--ink); font-weight: 600; }
     <a class="skip" href="#" data-to="summary">Your team already has an idea? Skip to the summary →</a>
   </section>
 
+  <section class="slide" data-name="idea-bio">
+    <span class="badge setup">Setup</span>
+    <h2 class="tape">A paragraph about you</h2>
+    <p class="sub">Claude uses this to see what each of you can bring. Fill in the template, or ask Claude to draft it from your papers or web page and check what it writes.</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre><i>[Full name]</i> is a <i>[PhD student / postdoc / researcher / ...]</i> in <i>[group leader]</i>'s group in the Department of Physics and Astronomy at Uppsala University (since <i>[year]</i>). <i>[They are]</i> a <i>[condensed matter theorist / computational materials physicist / ...]</i>. Before Uppsala, <i>[earlier positions, and where you did your PhD, with whom and on what]</i>.
+
+Research: <i>[your main topics, a few words each]</i>.
+Methods: <i>[the methods and codes you use, e.g. DFT, tight-binding models, Monte Carlo, Green's functions, ...]</i>.</pre></div>
+  </section>
+
   <section class="slide" data-name="idea-folder">
     <span class="badge setup">Setup</span>
     <h2 class="tape">Add yourself to the idea folder</h2>
-    <div class="cols" style="grid-template-columns: 1fr 540px">
+    <div class="cols" style="grid-template-columns: 1fr 520px">
       <div>
-        <p class="sub" style="margin-top: 0">Download 2–3 of your papers as <strong>PDFs</strong> (Claude works much better with files than with links). Then, in Claude Code:</p>
+        <p class="sub" style="margin-top: 0">Claude also needs <strong>2–3 of your papers as PDFs</strong>, as files (it works much better with files than with links). Use the prompt with <strong>one</strong> of the two PDF lines:</p>
         <div class="prompt" style="margin-top: 50px"><button class="copy" type="button">Copy</button><pre>In our team repository, add me to the folder our-idea (make it if it isn't there yet):
-- in our-idea/team.md, add a paragraph about me: <i>[a few lines: your group, your background, the methods you know]</i>
-- copy these PDFs into our-idea/papers/<i>[your name]</i>/: <i>[the paths of your PDFs]</i>
+- in our-idea/team.md, add this paragraph about me, under the heading <i>[your first name]</i>: <i>[your paragraph]</i>
+- copy these PDFs into our-idea/papers/<i>[your first name]</i>/: <i>[the paths of your PDFs]</i>
+  OR: find 2-3 of my recent papers on arXiv (author: <i>[your name]</i>) and download the PDFs into our-idea/papers/<i>[your first name]</i>/
 Then commit and push.</pre></div>
       </div>
       <div class="tree"><b>teamN/our-idea/</b>
@@ -536,17 +568,32 @@ Then commit and push.</pre></div>
   <section class="slide" data-name="idea-next">
     <span class="badge check">Checkpoint 4</span>
     <h2 class="tape">Your part of the idea folder is in</h2>
-    <ul class="ticks">
+    <p class="cp-intro">Checkpoint: before you go on, make sure all of these are true. Click each box to tick it.</p>
+    <ul class="ticks checks">
       <li><span>Your paragraph is in <strong>our-idea/team.md</strong> on GitHub, and your PDFs in <strong>our-idea/papers/</strong></span></li>
       <li><span>You've said hello in <strong>your team's Discord channel</strong></span></li>
     </ul>
     <p class="sub">When everyone is in, one of you asks Claude for project ideas that draw on the whole team. We'll show the prompt for that, and how to agree on an idea, at the onboarding meeting on <strong>Tuesday 24 November, 15:15, Å93108</strong>.</p>
   </section>
 
+  <!-- bookkeeping on the day -->
+  <section class="slide" data-name="record">
+    <h2 class="tape">On the day: keeping a record</h2>
+    <ul class="ticks bullets">
+      <li><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
+      <li><span><strong>Your participant ID</strong> (P11, P12, ...): in your team's repository you use it instead of your name.</span></li>
+      <li><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
+      <li><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
+      <li><span><strong>Transcripts are optional:</strong> you'll choose whether your Claude Code sessions are saved to your team's private repository. You can leave single sessions out, or withdraw them afterwards.</span></li>
+      <li><span><strong>Nothing to do yet:</strong> we'll set this up together at the onboarding meeting.</span></li>
+    </ul>
+  </section>
+
   <!-- summary -->
   <section class="slide" data-name="summary">
     <h2 class="tape">Before Tuesday</h2>
-    <ul class="ticks">
+    <p class="cp-intro">Your four checkpoints. Click a box to tick it.</p>
+    <ul class="ticks checks">
       <li><span><strong>Checkpoint 1</strong>: on Discord, intro posted, team chosen</span></li>
       <li><span><strong>Checkpoint 2</strong>: Claude Code works in your MBI-2026 folder</span></li>
       <li><span><strong>Checkpoint 3</strong>: Claude can push to your team's repository</span></li>
@@ -656,12 +703,22 @@ Then commit and push.</pre></div>
   if (diagEl) { diagEl.id = "d0"; main = diagram(diagEl); }
   document.querySelectorAll(".diagram.mini").forEach(function (el, i) { el.id = "m" + i; minis[el.id] = diagram(el); });
 
-  // the teams slide: one entry per team, [name, members]; while the list is empty it shows a note to fill it in
-  var TEAMS = [];
+  // the teams slide: one entry per team, [name, repository, [[participant ID, name], ...]] (from Teams.xlsx);
+  // while the list is empty it shows a note to fill it in
+  var TEAMS = [
+    ["Team 1", "team1", [["P11", "Martin Osmera"], ["P12", "Dominik Florjan"], ["P13", "Wojciech Marciniak"], ["P14", "Zuxian He"], ["P15", "Philipp Rieger"]]],
+    ["Team 2", "team2", [["P21", "Kuldeep Kargeti"], ["P22", "Prathibha Chandrashekhar"], ["P23", "Sushanth Varada"], ["P24", "Subhadip Santra"], ["P25", "Lucas Baldo Mesa Casa"]]],
+    ["Team 3", "team3", [["P31", "Pamela Costa Carvalho"], ["P32", "Robin Hu"], ["P33", "Nastaran Salehi"], ["P34", "Atefe Nayamadi Mahmoodabadi"], ["P35", "Thomas Bernat"]]],
+    ["Team 4", "team4", [["P41", "Zeyneb Bordjiba"], ["P42", "Alejandro Jimeno-Pozo"], ["P43", "Quentin Marshal"], ["P44", "Tara af Forselles"], ["P45", "Luca Mikadze"], ["P46", "Jyotirmoy Sau"]]],
+    ["Team 5", "team5", [["P51", "Markus Weißenhofer"], ["P52", "Biplab Sanyal"], ["P53", "Md Junaid Afsar Jami"], ["P54", "Jannes van Poppelen"], ["P55", "Håvard Falch"], ["P56", "Patrik Thunström"]]]
+  ];
   var teamsEl = document.getElementById("teams");
   if (teamsEl) {
     teamsEl.innerHTML = TEAMS.length
-      ? TEAMS.map(function (t) { return "<div><b>" + t[0] + "</b>" + t[1].join("<br>") + "</div>"; }).join("")
+      ? TEAMS.map(function (t) {
+          return "<div><b>" + t[0] + "</b><code>" + t[1] + "</code>" +
+            t[2].map(function (m) { return "<span class=\"pid\">" + m[0] + "</span> " + m[1]; }).join("<br>") + "</div>";
+        }).join("")
       : '<p class="todo"><b>To fill in before sending</b>The list of teams and their members (team1, team2, ...).</p>';
   }
   var ORDER = ["discord", "claude", "github"];
@@ -746,6 +803,19 @@ Then commit and push.</pre></div>
     else if (k === "f" || k === "F") { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); }
   });
   document.getElementById("next").addEventListener("click", next);
+  // checkpoint boxes: click to tick; remembered in this browser (if it allows storage)
+  document.querySelectorAll(".ticks.checks").forEach(function (ul) {
+    var slide = ul.closest(".slide").getAttribute("data-name");
+    Array.prototype.forEach.call(ul.children, function (li, i) {
+      var key = "mbi-pre:" + slide + ":" + i;
+      try { if (localStorage.getItem(key) === "1") li.classList.add("done"); } catch (e) { /* no storage */ }
+      li.addEventListener("click", function () {
+        var on = li.classList.toggle("done");
+        try { localStorage.setItem(key, on ? "1" : "0"); } catch (e) { /* no storage */ }
+      });
+    });
+  });
+
   // links to another slide by name (the install paths, "skip to the checkpoint")
   document.querySelectorAll("[data-to]").forEach(function (a) {
     a.addEventListener("click", function (e) {
