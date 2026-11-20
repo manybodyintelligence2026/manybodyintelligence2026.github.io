@@ -272,7 +272,7 @@ ol.when strong { color: var(--ink); font-weight: 600; }
   <!-- teams: filled from TEAMS in the script; while that list is empty the slide shows a to-fill-in note -->
   <section class="slide" data-name="teams">
     <h2 class="tape">The teams</h2>
-    <p class="sub">You will work on your team's research idea together before the day, so get to know them on Discord. The <span class="pid">P</span>-number next to your name is your <strong>participant ID</strong>; you'll use it on the day.</p>
+    <p class="sub">You will work on your team's research idea together before the day, so get to know them on Discord. The <span class="pid">P</span>-number next to your name is your <strong>participant ID</strong>, and T1–T5 are the <strong>team codes</strong>; you'll use both on the day.</p>
     <div class="teams" id="teams"></div>
   </section>
 
@@ -582,7 +582,7 @@ Then commit and push.</pre></div>
     <h2 class="tape">On the day: keeping a record</h2>
     <ul class="ticks bullets">
       <li><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
-      <li><span><strong>Your participant ID</strong> (P11, P12, ...): in your team's repository you use it instead of your name.</span></li>
+      <li><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5): in your team's repository you use them instead of names.</span></li>
       <li><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
       <li><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
       <li><span><strong>Transcripts are optional:</strong> you'll choose whether your Claude Code sessions are saved to your team's private repository. You can leave single sessions out, or withdraw them afterwards.</span></li>
@@ -707,11 +707,11 @@ Then commit and push.</pre></div>
   // the teams slide: one entry per team, [name, repository, [[participant ID, name], ...]] (from Teams.xlsx);
   // while the list is empty it shows a note to fill it in
   var TEAMS = [
-    ["Team 1", "team1", [["P11", "Martin Osmera"], ["P12", "Dominik Florjan"], ["P13", "Wojciech Marciniak"], ["P14", "Zuxian He"], ["P15", "Philipp Rieger"]]],
-    ["Team 2", "team2", [["P21", "Kuldeep Kargeti"], ["P22", "Prathibha Chandrashekhar"], ["P23", "Sushanth Varada"], ["P24", "Subhadip Santra"], ["P25", "Lucas Baldo Mesa Casa"]]],
-    ["Team 3", "team3", [["P31", "Pamela Costa Carvalho"], ["P32", "Robin Hu"], ["P33", "Nastaran Salehi"], ["P34", "Atefe Nayamadi Mahmoodabadi"], ["P35", "Thomas Bernat"]]],
-    ["Team 4", "team4", [["P41", "Zeyneb Bordjiba"], ["P42", "Alejandro Jimeno-Pozo"], ["P43", "Quentin Marsal"], ["P44", "Tara af Forselles"], ["P45", "Luca Mikadze"], ["P46", "Jyotirmoy Sau"]]],
-    ["Team 5", "team5", [["P51", "Markus Weißenhofer"], ["P52", "Biplab Sanyal"], ["P53", "Md Junaid Afsar Jami"], ["P54", "Jannes van Poppelen"], ["P55", "Håvard Falch"], ["P56", "Patrik Thunström"]]]
+    ["Team 1 · T1", "team1", [["P11", "Martin Osmera"], ["P12", "Dominik Florjan"], ["P13", "Wojciech Marciniak"], ["P14", "Zuxian He"], ["P15", "Philipp Rieger"]]],
+    ["Team 2 · T2", "team2", [["P21", "Kuldeep Kargeti"], ["P22", "Prathibha Chandrashekhar"], ["P23", "Sushanth Varada"], ["P24", "Subhadip Santra"], ["P25", "Lucas Baldo Mesa Casa"]]],
+    ["Team 3 · T3", "team3", [["P31", "Pamela Costa Carvalho"], ["P32", "Robin Hu"], ["P33", "Nastaran Salehi"], ["P34", "Atefe Nayamadi Mahmoodabadi"], ["P35", "Thomas Bernat"]]],
+    ["Team 4 · T4", "team4", [["P41", "Zeyneb Bordjiba"], ["P42", "Alejandro Jimeno-Pozo"], ["P43", "Quentin Marsal"], ["P44", "Tara af Forselles"], ["P45", "Luca Mikadze"], ["P46", "Jyotirmoy Sau"]]],
+    ["Team 5 · T5", "team5", [["P51", "Markus Weißenhofer"], ["P52", "Biplab Sanyal"], ["P53", "Md Junaid Afsar Jami"], ["P54", "Jannes van Poppelen"], ["P55", "Håvard Falch"], ["P56", "Patrik Thunström"]]]
   ];
   var teamsEl = document.getElementById("teams");
   if (teamsEl) {

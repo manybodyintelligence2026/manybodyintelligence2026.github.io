@@ -210,10 +210,10 @@ footer.org span { color: var(--sepia); }
     <h2 class="tape">A quick check, now</h2>
     <p class="sub">Open Claude Code in your MBI-2026 folder and send this:</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre>Quick check for the hackathon, in three short lines:
-1. Which folder are you working in?
-2. Is my team's repository in this folder, and can you reach it on GitHub? Show me its last three changes.
+1. Are you working in my MBI-2026 folder?
+2. Is my team's repository in this folder, and can you reach it on GitHub?
 3. Is Python 3.8 or newer installed?</pre></div>
-    <div class="check" data-step="1"><b>DONE WHEN</b> you get three yes answers. Any no: stay after the meeting.</div>
+    <div class="check" data-step="1"><b>DONE WHEN</b> Claude answers yes to all three. Any no: stay after the meeting.</div>
   </section>
 
   <!-- 2: the day -->
@@ -291,7 +291,7 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <h2 class="tape">On the day: keeping a record</h2>
     <ul class="ticks bullets">
       <li data-step="1"><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
-      <li data-step="2"><span><strong>Your participant ID</strong> (P11, P12, ...): in your team's repository you use it instead of your name.</span></li>
+      <li data-step="2"><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5), from the setup guide's teams slide: in your team's repository you use them instead of names.</span></li>
       <li data-step="3"><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
       <li data-step="4"><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
     </ul>
