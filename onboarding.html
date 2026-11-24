@@ -184,7 +184,7 @@ footer.org span { color: var(--sepia); }
     </div>
     <p class="rule-line" data-step="1"><span>Onboarding for the hackathon on <strong>Monday 30 November</strong></span></p>
     <div class="agenda">
-      <div data-step="2"><b>01</b>Your setup: <strong>a quick check</strong></div>
+      <div data-step="2"><b>01</b>Your laptop: <strong>setting up, together</strong></div>
       <div data-step="3"><b>02</b><strong>The day</strong> and the code of conduct</div>
       <div data-step="4"><b>03</b>Your team's <strong>research idea</strong></div>
       <div data-step="5"><b>04</b><strong>Keeping a record</strong> on the day</div>
@@ -192,17 +192,30 @@ footer.org span { color: var(--sepia); }
     <footer class="org">Organisers: <span>Konstantinos Sourounis, Pramodh Senarath Yapa, Aksel Kobiałka and Alena Vishina</span></footer>
   </section>
 
-  <!-- 2: is your laptop ready? -->
+  <!-- 2: how far did you get? -->
   <section class="slide" data-name="ready">
-    <h2 class="tape">Is your laptop ready?</h2>
-    <p class="sub">Before today you worked through the <strong>setup guide</strong>. Its four checkpoints:</p>
+    <h2 class="tape">How far did you get?</h2>
+    <p class="sub">The <strong>setup guide</strong> has four checkpoints. Which ones have you ticked?</p>
     <ol class="steps" style="margin-top: 30px">
       <li data-step="1"><span><strong>Discord</strong>: you can see your team's channel</span></li>
       <li data-step="2"><span><strong>Claude Code</strong> works in your MBI-2026 folder, and <strong>Python</strong> 3.8 or newer is installed</span></li>
       <li data-step="3"><span><strong>GitHub</strong>: your folder is in your team's repository</span></li>
       <li data-step="4"><span><strong>Your idea folder</strong>: your paragraph and papers are in <code>our-idea/</code></span></li>
     </ol>
-    <div class="check" data-step="5"><b>NOT THERE YET?</b> Stay after the meeting and we'll help, or ask in #technical-help.</div>
+    <div class="check" data-step="5"><b>NOT ALL FOUR?</b> That's most of us. We'll go through it now.</div>
+  </section>
+
+  <!-- the setup guide, together -->
+  <section class="slide" data-name="setup-together">
+    <h2 class="tape">Setting up, together</h2>
+    <p class="sub">Open the setup guide on your laptop: <strong>manybodyintelligence2026.github.io/setup.html</strong></p>
+    <ol class="steps">
+      <li data-step="1"><span><a href="setup.html#6" target="_blank"><strong>Discord</strong></a>: join the server, say hello, pick your team</span></li>
+      <li data-step="2"><span><a href="setup.html#9" target="_blank"><strong>Claude Code</strong></a>: install it, make your MBI-2026 folder, check Python</span></li>
+      <li data-step="3"><span><a href="setup.html#18" target="_blank"><strong>GitHub</strong></a>: accept both invitations, make a token, connect your team's repository</span></li>
+      <li data-step="4"><span><a href="setup.html#25" target="_blank"><strong>Your idea folder</strong></a>: a paragraph about you and 2–3 of your papers</span></li>
+    </ol>
+    <div class="check" data-step="5"><b>STUCK?</b> Put your hand up, or on Zoom post a screenshot in #technical-help.</div>
   </section>
 
   <!-- 3: a quick check, now -->
@@ -213,7 +226,7 @@ footer.org span { color: var(--sepia); }
 1. Are you working in my MBI-2026 folder?
 2. Is my team's repository in this folder, and can you reach it on GitHub?
 3. Is Python 3.8 or newer installed?</pre></div>
-    <div class="check" data-step="1"><b>DONE WHEN</b> Claude answers yes to all three. Any no: stay after the meeting.</div>
+    <div class="check" data-step="1"><b>DONE WHEN</b> Claude answers yes to all three. Any no: stay after the meeting, or ask in #technical-help.</div>
   </section>
 
   <!-- 2: the day -->
@@ -291,32 +304,10 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <h2 class="tape">On the day: keeping a record</h2>
     <ul class="ticks bullets">
       <li data-step="1"><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
-      <li data-step="2"><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5), from the setup guide's teams slide: in your team's repository you use them instead of names.</span></li>
-      <li data-step="3"><span><strong>After each task, about 2 minutes:</strong> type <code>/log-entry</code> in Claude Code. Claude drafts what you asked and what came back; you answer five quick questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
-      <li data-step="4"><span><strong>Photos:</strong> at the end of each phase, photograph whiteboards and paper into the repository.</span></li>
+      <li data-step="2"><span><strong>After a task,</strong> Claude asks if you want to log it: <code>/log-entry</code>. Claude drafts what you asked and what came back; you give a quick answer to five questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
+      <li data-step="3"><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5) are used in the repository instead of names.</span></li>
+      <li data-step="4"><span><strong>We set it up together</strong> on the morning of the day.</span></li>
     </ul>
-  </section>
-
-  <section class="slide" data-name="transcripts">
-    <h2 class="tape">Your choice: transcripts</h2>
-    <p class="sub">A transcript is the full record of a Claude Code session: your prompts, Claude's replies, the commands it ran. You choose whether yours are saved:</p>
-    <div class="kinds">
-      <div class="kind" data-step="1"><b class="kind-h">Yes</b><p>Every session you start in your team's folder is uploaded to your team's <strong>private repository</strong> when it ends. Your team and we can read it. We use it anonymised for the paper, and ask before quoting anything.</p></div>
-      <div class="kind" data-step="2"><b class="kind-h">No</b><p>Nothing is uploaded. Your <strong>log entries</strong> are then the only record of your AI work, so they matter more.</p></div>
-    </div>
-    <p class="sub" data-step="3">Either way you can keep single sessions out, and withdraw sessions until a week after the event. Confidential material stays out of AI tools, recorded or not.</p>
-  </section>
-
-  <section class="slide" data-name="record-setup">
-    <h2 class="tape">Set up the bookkeeping, now</h2>
-    <ol class="steps">
-      <li data-step="1"><span>From now on, open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026. Accept "trust this folder".
-        <span class="note">Opened anywhere else, the bookkeeping doesn't run.</span></span></li>
-      <li data-step="2"><span>Ask Claude to <strong>pull the latest changes</strong> from GitHub: we've added the bookkeeping files.</span></li>
-      <li data-step="3"><span>Send this, with your ID and your transcript choice: <code>Run sh scripts/setup --pid <i>P23</i> --transcripts <i>yes</i></code></span></li>
-      <li data-step="4"><span>Try it once: ask Claude something small, then type <code>/log-entry</code> and answer the five questions.</span></li>
-    </ol>
-    <div class="check" data-step="5"><b>DONE WHEN</b> Claude runs <code>sh scripts/mbi doctor</code> and it says <strong>Ready.</strong></div>
   </section>
 
   <!-- before the 30th -->
@@ -324,7 +315,7 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <h2 class="tape">To do before 30 November</h2>
     <ul class="ticks">
       <li data-step="1"><span>Agree on your team's <strong>idea</strong>, and put it on the Q0 line of README.md</span></li>
-      <li data-step="2"><span>Bookkeeping set up: <code>sh scripts/mbi doctor</code> says <strong>Ready.</strong></span></li>
+      <li data-step="2"><span>Finish the <strong>setup guide</strong>: all four checkpoints ticked</span></li>
       <li data-step="3"><span>Read the <strong>code of conduct</strong></span></li>
     </ul>
     <div class="day" data-step="4">
