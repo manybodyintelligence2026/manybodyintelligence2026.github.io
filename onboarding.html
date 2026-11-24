@@ -174,6 +174,11 @@ footer.org span { color: var(--sepia); }
 .tree.log { font-size: 20px; white-space: pre-wrap; margin-top: 26px; }
 .draft-key { display: grid; grid-template-columns: 300px 1fr; gap: 10px 26px; margin-top: 26px; font-size: 22px; line-height: 1.4; color: var(--sepia); }
 .draft-key b { color: var(--ink); font-weight: 600; }
+.teams { display: grid; grid-template-columns: repeat(5, 1fr); gap: 22px; margin-top: 30px; }
+.teams code { display: block; width: max-content; font-size: 15px; margin: 2px 0 10px; }
+.pid { color: var(--mark); font-weight: 600; }
+.teams div { border-top: 2px solid var(--ink); padding-top: 10px; font-size: 18px; line-height: 1.55; color: var(--sepia); }
+.teams b { display: block; color: var(--ink); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; font-size: 18px; margin-bottom: 4px; }
 </style>
 </head>
 <body>
@@ -255,6 +260,19 @@ footer.org span { color: var(--sepia); }
     <p class="url" data-step="7">manybodyintelligence2026.github.io/<strong>code-of-conduct.html</strong></p>
   </section>
 
+  <!-- the teams -->
+  <section class="slide" data-name="teams">
+    <h2 class="tape">The teams</h2>
+    <p class="sub">The <span class="pid">P</span>-number next to your name is your <strong>participant ID</strong>, and T1–T5 are the <strong>team codes</strong>. Under each team is the name of its repository.</p>
+    <div class="teams">
+      <div><b>Team 1 · T1</b><code>team1</code><span class="pid">P11</span> Martin Osmera<br><span class="pid">P12</span> Dominik Florjan<br><span class="pid">P13</span> Wojciech Marciniak<br><span class="pid">P14</span> Zuxian He<br><span class="pid">P15</span> Philipp Rieger</div>
+      <div><b>Team 2 · T2</b><code>team2</code><span class="pid">P21</span> Kuldeep Kargeti<br><span class="pid">P22</span> Prathibha Chandrashekhar<br><span class="pid">P23</span> Sushanth Varada<br><span class="pid">P24</span> Subhadip Santra<br><span class="pid">P25</span> Lucas Baldo Mesa Casa</div>
+      <div><b>Team 3 · T3</b><code>team3</code><span class="pid">P31</span> Pamela Costa Carvalho<br><span class="pid">P32</span> Robin Hu<br><span class="pid">P33</span> Nastaran Salehi<br><span class="pid">P34</span> Atefe Nayamadi Mahmoodabadi<br><span class="pid">P35</span> Thomas Bernat</div>
+      <div><b>Team 4 · T4</b><code>team4</code><span class="pid">P41</span> Zeyneb Bordjiba<br><span class="pid">P42</span> Alejandro Jimeno-Pozo<br><span class="pid">P43</span> Quentin Marsal<br><span class="pid">P44</span> Tara af Forselles<br><span class="pid">P45</span> Luca Mikadze<br><span class="pid">P46</span> Jyotirmoy Sau</div>
+      <div><b>Team 5 · T5</b><code>team5</code><span class="pid">P51</span> Markus Weißenhofer<br><span class="pid">P52</span> Biplab Sanyal<br><span class="pid">P53</span> Md Junaid Afsar Jami<br><span class="pid">P54</span> Jannes van Poppelen<br><span class="pid">P55</span> Håvard Falch<br><span class="pid">P56</span> Patrik Thunström</div>
+    </div>
+  </section>
+
   <!-- the research idea -->
   <section class="slide" data-name="idea">
     <h2 class="tape">Finding a research idea</h2>
@@ -319,7 +337,7 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <p class="sub">Open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026, and accept "trust this folder". Fill in your participant ID and send:</p>
     <div class="prompt"><button class="copy" type="button">Copy</button><pre>Run sh scripts/setup --pid <i>P##</i> --transcripts no</pre></div>
     <ul class="ticks bullets" style="margin-top: 30px">
-      <li data-step="1"><span><strong>P##</strong> is your participant ID, next to your name on the teams slide of the setup guide.</span></li>
+      <li data-step="1"><span><strong>P##</strong> is your participant ID, next to your name on the teams slide.</span></li>
       <li data-step="2"><span><strong>"no"</strong> is just for today: you make your real choice about transcripts on the day.</span></li>
     </ul>
     <div class="check" data-step="3"><b>DONE WHEN</b> Claude reports "Saved for this clone: participant P##".</div>
