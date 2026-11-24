@@ -171,11 +171,9 @@ footer.org span { color: var(--sepia); }
 .kind-h { display: block; font-size: 26px; color: var(--ink); margin-bottom: 6px; }
 .kind p { font-size: 22px; line-height: 1.45; color: var(--sepia); margin: 0; }
 .kind strong { color: var(--ink); }
-code i, .tree i { font-style: normal; color: var(--mark); }
-.tree.log { font-size: 20px; line-height: 1.5; white-space: pre-wrap; margin-top: 18px; padding: 16px 24px; }
-.tree.log .faded { color: var(--faded); }
-.answer { margin-top: 18px; font-size: 22px; color: var(--sepia); line-height: 1.5; }
-.answer strong { color: var(--ink); font-weight: 600; }
+.tree.log { font-size: 20px; white-space: pre-wrap; margin-top: 26px; }
+.draft-key { display: grid; grid-template-columns: 300px 1fr; gap: 10px 26px; margin-top: 26px; font-size: 22px; line-height: 1.4; color: var(--sepia); }
+.draft-key b { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -311,51 +309,70 @@ Then recommend one, with the checks we should run and the main risks, and list t
       <li data-step="1"><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
       <li data-step="2"><span><strong>After a task,</strong> Claude asks if you want to log it: <code>/log-entry</code>. Claude drafts what you asked and what came back; you give a quick answer to five questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
       <li data-step="3"><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5) are used in the repository instead of names.</span></li>
-      <li data-step="4"><span><strong>Finished the setup guide?</strong> Try it once now, on the next three slides.</span></li>
+      <li data-step="4"><span><strong>Finished the setup guide?</strong> Try it once now, on the next four slides.</span></li>
     </ul>
   </section>
 
-  <!-- practice: setup -->
+  <!-- practice 1: setup -->
   <section class="slide" data-name="try-setup">
     <h2 class="tape">Try it: 1. Get ready</h2>
-    <ol class="steps">
-      <li data-step="1"><span>Open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026. Accept "trust this folder".
-        <span class="note">Opened anywhere else, the logging doesn't run.</span></span></li>
-      <li data-step="2"><span>Type this <strong>into Claude Code</strong>, with your own participant ID in place of <i class="mark" style="font-style:normal">P##</i>:<br><code>Run sh scripts/setup --pid <i>P##</i> --transcripts no</code>
-        <span class="note">"no" for now: you make your real choice about transcripts on the day.</span></span></li>
-    </ol>
+    <p class="sub">Open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026, and accept "trust this folder". Fill in your participant ID and send:</p>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Run sh scripts/setup --pid <i>P##</i> --transcripts no</pre></div>
+    <ul class="ticks bullets" style="margin-top: 30px">
+      <li data-step="1"><span><strong>P##</strong> is your participant ID, next to your name on the teams slide of the setup guide.</span></li>
+      <li data-step="2"><span><strong>"no"</strong> is just for today: you make your real choice about transcripts on the day.</span></li>
+    </ul>
+    <div class="check" data-step="3"><b>DONE WHEN</b> Claude reports "Saved for this clone: participant P##".</div>
   </section>
 
-  <!-- practice: a small task -->
+  <!-- practice 2: a small task -->
   <section class="slide" data-name="try-task">
     <h2 class="tape">Try it: 2. A small task</h2>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Read README.md and the our-idea folder (team.md and the papers). Then make two slides about our team's project:
+    <p class="sub">In the same Claude Code session, fill in the blank and send:</p>
+    <div class="prompt" style="margin-top: 40px"><button class="copy" type="button">Copy</button><pre>Read README.md and the our-idea folder (team.md and the papers). Then make two slides about our team's project:
 
 Slide 1: the project our team is planning. If we haven't chosen one yet, the ideas we have so far.
 Slide 2: what my part in it could be, based on my paragraph and my papers.
 
 Each slide: a title and at most five short bullet points.
 
-Save them as a PDF in my own folder, <i>[first name]</i>/slides.pdf, with the file you made it from next to it. Use tools already on my laptop, and ask me before installing anything. Don't make an artifact.
+Save them as a PDF in my own folder, <i>[your first name]</i>/slides.pdf, with the file you made it from next to it. Use tools already on my laptop, and ask me before installing anything. Don't make an artifact.
 
 Then commit and push both files, so my team can see them on GitHub.</pre></div>
+    <div class="check" data-step="1"><b>DONE WHEN</b> you can open slides.pdf in your folder on GitHub.</div>
   </section>
 
-  <!-- practice: log it -->
+  <!-- practice 3: the draft -->
   <section class="slide" data-name="try-log">
-    <h2 class="tape">Try it: 3. Log it</h2>
-    <p class="sub">When the PDF is on GitHub, type <code>/log-entry</code> in Claude Code. Claude shows something like this:</p>
+    <h2 class="tape">Try it: 3. Start the log entry</h2>
+    <p class="sub">In the same session, send:</p>
+    <div class="prompt" style="margin-top: 30px"><button class="copy" type="button">Copy</button><pre>/log-entry</pre></div>
+    <p class="sub" data-step="1"><strong>Claude writes a draft itself</strong>, from the session. You don't type any of it:</p>
     <div class="tree log" data-step="1"><b>Draft for T02-P##-E01</b> <span class="faded">(correct anything):</span>
-  slides · Asked: two slides on our project and my part · Got back: slides.pdf, 2 slides · ~10 min
+  slides · Asked: two slides on our project and my part · Got back: slides.pdf, 2 slides · ~10 min</div>
+    <div class="draft-key" data-step="2">
+      <b>T02-P##-E01</b><span>your team, you, and the entry number: E01 is your first entry, E02 the next</span>
+      <b>slides</b><span>the kind of task</span>
+      <b>Asked · Got back</b><span>what you asked for, and what Claude made</span>
+      <b>~10 min</b><span>how long it took</span>
+    </div>
+    <p class="sub" data-step="3">Anything wrong? Tell Claude in your own words, for example "it took 20 minutes".</p>
+  </section>
 
-<b>Five quick answers</b> <span class="faded">(a word each is fine):</span>
+  <!-- practice 4: the five answers -->
+  <section class="slide" data-name="try-answer">
+    <h2 class="tape">Try it: 4. Answer five questions</h2>
+    <p class="sub">Under the draft, Claude asks five questions. <strong>Only you answer these</strong>: Claude won't answer for you.</p>
+    <div class="tree log"><b>Five quick answers</b> <span class="faded">(a word each is fine):</span>
 1. Outcome: used-as-is / used-after-edits / partly-used / discarded / wrong
 2. Checked by: none / person / second-AI / both.  And how: ... / other
 3. Error found: none / wrong-assumption / misread-task / ...   Caught by: person / ...
 4. Next step: not-needed / retried-with-AI / fixed-by-hand / passed-to-teammate / dropped
 5. Worth it: saved-time / about-even / cost-time</div>
-    <p class="answer" data-step="2">You type one line, for example: <code>used as is, checked by me (read it through), no error, not needed, saved time</code></p>
-    <p class="answer" data-step="3">Say what actually happened: if you changed a bullet, it's <strong>used after edits</strong>; if Claude got your part wrong, that's an error it made. Claude saves the entry to <code>log/<i>P##</i>.md</code>. Ask it to <strong>commit and push</strong>.</p>
+    <p class="sub" data-step="1">Reply in one message, numbered. For the two slides, if you read them and changed nothing:</p>
+    <div class="prompt" style="margin-top: 20px" data-step="1"><pre>1 used as is, 2 checked by me (read it through), 3 no error, 4 not needed, 5 saved time</pre></div>
+    <p class="sub" data-step="2">Say what happened: changed a bullet? <strong>1 used after edits</strong>. Claude got your part wrong? <strong>3 misread task, caught by me</strong>.</p>
+    <div class="check" data-step="3"><b>DONE WHEN</b> Claude says "Logged T02-P##-E01". Then ask it to commit and push.</div>
   </section>
 
   <!-- before the 30th -->
