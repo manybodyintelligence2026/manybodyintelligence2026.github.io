@@ -306,8 +306,45 @@ Then recommend one, with the checks we should run and the main risks, and list t
       <li data-step="1"><span><strong>Why:</strong> we're writing a paper about how AI was used at the event: what worked, what went wrong, and how results were checked. A logged failure is as useful to us as a success.</span></li>
       <li data-step="2"><span><strong>After a task,</strong> Claude asks if you want to log it: <code>/log-entry</code>. Claude drafts what you asked and what came back; you give a quick answer to five questions: did you use the result, who checked it, was there an error, what happened next, was it worth it.</span></li>
       <li data-step="3"><span><strong>Your participant ID</strong> (P11, P12, ...) and <strong>team code</strong> (T1–T5) are used in the repository instead of names.</span></li>
-      <li data-step="4"><span><strong>We set it up together</strong> on the morning of the day.</span></li>
+      <li data-step="4"><span><strong>Finished the setup guide?</strong> Try it once now, on the next three slides.</span></li>
     </ul>
+  </section>
+
+  <!-- practice: setup -->
+  <section class="slide" data-name="try-setup">
+    <h2 class="tape">Try it: 1. Get ready</h2>
+    <ol class="steps">
+      <li data-step="1"><span>Open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026. Accept "trust this folder".
+        <span class="note">Opened anywhere else, the logging doesn't run.</span></span></li>
+      <li data-step="2"><span>Send this, with <strong>your own participant ID</strong>: <code>Run sh scripts/setup --pid <i>P23</i> --transcripts no</code>
+        <span class="note">"no" for now: you make your real choice about transcripts on the day.</span></span></li>
+    </ol>
+  </section>
+
+  <!-- practice: a small task -->
+  <section class="slide" data-name="try-task">
+    <h2 class="tape">Try it: 2. A small task</h2>
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Read README.md and the our-idea folder (team.md and the papers). Then make two slides about our team's project, as one Markdown file in my own folder, <i>[first name]</i>/slides.md:
+
+Slide 1: the project our team is planning. If we haven't chosen one yet, the ideas we have so far.
+Slide 2: what my part in it could be, based on my paragraph and my papers.
+
+Each slide: a title and at most five short bullet points. Separate the slides with a line containing only ---.
+
+Don't make an artifact: write the file, then commit and push it, so my team can read it on GitHub.</pre></div>
+  </section>
+
+  <!-- practice: log it -->
+  <section class="slide" data-name="try-log">
+    <h2 class="tape">Try it: 3. Log it</h2>
+    <ol class="steps">
+      <li data-step="1"><span>When the file is on GitHub, type <code>/log-entry</code> (or say yes when Claude offers it).</span></li>
+      <li data-step="2"><span>Claude shows a <strong>draft</strong> of what you asked and what came back. Correct it if it's wrong.</span></li>
+      <li data-step="3"><span>Answer the <strong>five questions</strong>, a word each: did you use it, who checked it, any error, what next, was it worth it.
+        <span class="note">For example: "used after edits, checked by me, no error, not needed, saved time"</span></span></li>
+      <li data-step="4"><span>Claude saves it to <code>log/<i>P23</i>.md</code>. Ask it to <strong>commit and push</strong>.</span></li>
+    </ol>
+    <div class="check" data-step="5"><b>DONE WHEN</b> your slides and your log entry are both on GitHub.</div>
   </section>
 
   <!-- before the 30th -->
@@ -315,7 +352,7 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <h2 class="tape">To do before 30 November</h2>
     <ul class="ticks">
       <li data-step="1"><span>Agree on your team's <strong>idea</strong>, and put it on the Q0 line of README.md</span></li>
-      <li data-step="2"><span>Finish the <strong>setup guide</strong>: all four checkpoints ticked</span></li>
+      <li data-step="2"><span>Finish the <strong>setup guide</strong>, then the <strong>practice task</strong> and its log entry</span></li>
       <li data-step="3"><span>Read the <strong>code of conduct</strong></span></li>
     </ul>
     <div class="day" data-step="4">
