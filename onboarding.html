@@ -171,6 +171,11 @@ footer.org span { color: var(--sepia); }
 .kind-h { display: block; font-size: 26px; color: var(--ink); margin-bottom: 6px; }
 .kind p { font-size: 22px; line-height: 1.45; color: var(--sepia); margin: 0; }
 .kind strong { color: var(--ink); }
+code i, .tree i { font-style: normal; color: var(--mark); }
+.tree.log { font-size: 20px; line-height: 1.5; white-space: pre-wrap; margin-top: 18px; padding: 16px 24px; }
+.tree.log .faded { color: var(--faded); }
+.answer { margin-top: 18px; font-size: 22px; color: var(--sepia); line-height: 1.5; }
+.answer strong { color: var(--ink); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -316,7 +321,7 @@ Then recommend one, with the checks we should run and the main risks, and list t
     <ol class="steps">
       <li data-step="1"><span>Open Claude Code in your <strong>team's folder</strong> (<code>MBI-2026/teamN</code>), not in MBI-2026. Accept "trust this folder".
         <span class="note">Opened anywhere else, the logging doesn't run.</span></span></li>
-      <li data-step="2"><span>Send this, with <strong>your own participant ID</strong>: <code>Run sh scripts/setup --pid <i>P23</i> --transcripts no</code>
+      <li data-step="2"><span>Type this <strong>into Claude Code</strong>, with your own participant ID in place of <i class="mark" style="font-style:normal">P##</i>:<br><code>Run sh scripts/setup --pid <i>P##</i> --transcripts no</code>
         <span class="note">"no" for now: you make your real choice about transcripts on the day.</span></span></li>
     </ol>
   </section>
@@ -324,27 +329,33 @@ Then recommend one, with the checks we should run and the main risks, and list t
   <!-- practice: a small task -->
   <section class="slide" data-name="try-task">
     <h2 class="tape">Try it: 2. A small task</h2>
-    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Read README.md and the our-idea folder (team.md and the papers). Then make two slides about our team's project, as one Markdown file in my own folder, <i>[first name]</i>/slides.md:
+    <div class="prompt"><button class="copy" type="button">Copy</button><pre>Read README.md and the our-idea folder (team.md and the papers). Then make two slides about our team's project:
 
 Slide 1: the project our team is planning. If we haven't chosen one yet, the ideas we have so far.
 Slide 2: what my part in it could be, based on my paragraph and my papers.
 
-Each slide: a title and at most five short bullet points. Separate the slides with a line containing only ---.
+Each slide: a title and at most five short bullet points.
 
-Don't make an artifact: write the file, then commit and push it, so my team can read it on GitHub.</pre></div>
+Save them as a PDF in my own folder, <i>[first name]</i>/slides.pdf, with the file you made it from next to it. Use tools already on my laptop, and ask me before installing anything. Don't make an artifact.
+
+Then commit and push both files, so my team can see them on GitHub.</pre></div>
   </section>
 
   <!-- practice: log it -->
   <section class="slide" data-name="try-log">
     <h2 class="tape">Try it: 3. Log it</h2>
-    <ol class="steps">
-      <li data-step="1"><span>When the file is on GitHub, type <code>/log-entry</code> (or say yes when Claude offers it).</span></li>
-      <li data-step="2"><span>Claude shows a <strong>draft</strong> of what you asked and what came back. Correct it if it's wrong.</span></li>
-      <li data-step="3"><span>Answer the <strong>five questions</strong>, a word each: did you use it, who checked it, any error, what next, was it worth it.
-        <span class="note">For example: "used after edits, checked by me, no error, not needed, saved time"</span></span></li>
-      <li data-step="4"><span>Claude saves it to <code>log/<i>P23</i>.md</code>. Ask it to <strong>commit and push</strong>.</span></li>
-    </ol>
-    <div class="check" data-step="5"><b>DONE WHEN</b> your slides and your log entry are both on GitHub.</div>
+    <p class="sub">When the PDF is on GitHub, type <code>/log-entry</code> in Claude Code. Claude shows something like this:</p>
+    <div class="tree log" data-step="1"><b>Draft for T02-P##-E01</b> <span class="faded">(correct anything):</span>
+  slides · Asked: two slides on our project and my part · Got back: slides.pdf, 2 slides · ~10 min
+
+<b>Five quick answers</b> <span class="faded">(a word each is fine):</span>
+1. Outcome: used-as-is / used-after-edits / partly-used / discarded / wrong
+2. Checked by: none / person / second-AI / both.  And how: ... / other
+3. Error found: none / wrong-assumption / misread-task / ...   Caught by: person / ...
+4. Next step: not-needed / retried-with-AI / fixed-by-hand / passed-to-teammate / dropped
+5. Worth it: saved-time / about-even / cost-time</div>
+    <p class="answer" data-step="2">You type one line, for example: <code>used as is, checked by me (read it through), no error, not needed, saved time</code></p>
+    <p class="answer" data-step="3">Say what actually happened: if you changed a bullet, it's <strong>used after edits</strong>; if Claude got your part wrong, that's an error it made. Claude saves the entry to <code>log/<i>P##</i>.md</code>. Ask it to <strong>commit and push</strong>.</p>
   </section>
 
   <!-- before the 30th -->
