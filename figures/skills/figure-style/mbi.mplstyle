@@ -1,0 +1,56 @@
+# Many-Body Intelligence 2026 — shared matplotlib house style (APS/Nature journal baseline)
+# Copy into your team repo as code/team.mplstyle and load with plt.style.use("code/team.mplstyle").
+# Uses LaTeX-style Computer Modern math (mathtext.fontset: cm) with matching serif text (no TeX install needed).
+# For full-size 16:9 slides (13.3 x 7.5 in), scale font.size up to 16-20 pt and lines.linewidth to 2.0.
+# For compact 160 x 90 mm slide exports, scale font.size up by +3 to +4 pt.
+
+font.family: serif
+font.serif: STIXGeneral, DejaVu Serif
+font.size: 8.0
+axes.labelsize: 8.5
+axes.titlesize: 8.5
+legend.fontsize: 7.5
+xtick.labelsize: 7.5
+ytick.labelsize: 7.5
+mathtext.fontset: cm
+axes.formatter.use_mathtext: True
+
+axes.linewidth: 0.55
+axes.edgecolor: 141210
+axes.labelcolor: 141210
+axes.grid: False
+axes.spines.top: True
+axes.spines.right: True
+
+lines.linewidth: 1.2
+lines.markersize: 3.5
+
+xtick.direction: in
+ytick.direction: in
+xtick.top: True
+ytick.right: True
+xtick.major.width: 0.55
+ytick.major.width: 0.55
+xtick.minor.width: 0.4
+ytick.minor.width: 0.4
+xtick.major.size: 2.8
+ytick.major.size: 2.8
+xtick.minor.size: 1.5
+ytick.minor.size: 1.5
+xtick.color: 141210
+ytick.color: 141210
+
+legend.frameon: False
+legend.handlelength: 1.6
+legend.borderpad: 0.25
+
+# Colourblind-safe qualitative cycle (Crameri batlowS / Paul Tol inspired, very light entries omitted)
+axes.prop_cycle: cycler('color', ['13315C', 'D46A43', '2A8C82', '8C3B6B', 'C79B2E', '4D7EA8'])
+
+figure.facecolor: white
+axes.facecolor: white
+savefig.facecolor: white
+savefig.dpi: 300
+pdf.fonttype: 42
+ps.fonttype: 42
+svg.fonttype: none

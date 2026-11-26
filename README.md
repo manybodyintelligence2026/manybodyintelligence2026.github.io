@@ -7,7 +7,8 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 | `index.html` | Landing page: what it is, date/time/place, a note to sign up via the emailed link  |
 | `faq.html` | Questions and answers |
 | `code-of-conduct.html` | Working together, AI use, logs and data, authorship, ownership |
-| `resources.html` | Placeholder for the resource pack (not linked yet) |
+| `resources.html` | Phase-by-phase resources hub for the day |
+| `figures/` | Phase 4 (14:00–15:00) Figures & presentation subpage, 12-slide deck (`figures/slides/`), downloadable Claude Code skills (`figures/mbi2026-figure-skills.zip`), and live demos |
 | `assets/style.css` | Paper-and-ink styles, light and dark |
 | `assets/wordart.js` | Word-art engine: shapes filled with repeated words, animated at ~10 fps (pauses off screen; static for reduced motion); PNG export |
 | `assets/site.js` | Torn edges on the label tape, and the animated mbi logo on the home page (plays once on load; click to replay; scales to the page width) |

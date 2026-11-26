@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kohn Anomaly</title>
+<link rel="stylesheet" href="../lib/katex/katex.min.css">
+<link rel="stylesheet" href="../lib/deck.css?v=10">
+<style>
+  .st { transition: opacity .5s; }
+  .st.hidden { opacity: 0; pointer-events: none; }
+  #box { left: 79px; top: 262px; }
+  #eqs { left: 79px; top: 470px; transform: scale(0.8); transform-origin: 0 0; }
+  #eqs .head { margin-top: 18px; }
+  #eqs .eqbox { margin-top: 6px; }
+  #eqs .row { display: block; }
+  #wPlot { position: absolute; left: 790px; top: 462px; }
+  #cPlot { position: absolute; left: 790px; top: 796px; }
+  #wPlot canvas, #cPlot canvas { display: block; }
+  .vio { color: #7B4FA0; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg"></canvas>
+  <div class="header">
+    <img src="../assets/uu_seal.png" alt="Uppsala University">
+    <div class="who"><div class="name">Pramodh Senarath Yapa</div><div class="sess"><span class="num">9</span>|&ensp;Division Seminar</div></div>
+  </div>
+  <span class="pill">Part 2 &middot; Peierls</span>
+  <h1>The Kohn anomaly</h1>
+
+  <div class="inked" id="box"><canvas id="sim"></canvas></div>
+
+  <!-- (6 Nov) the same layout as slides 15 and 16: lead left, H at the top right, one equation column -->
+  <div class="lead" style="left:79px; top:186px">
+    <b>Toy model:</b> the same chain, now with an <span class="vio">electron&ndash;phonon coupling</span>.
+  </div>
+  <div class="lead" style="left:1150px; top:176px; font-size:40px">
+    <span data-tex="\mathcal{H} ="></span>
+    <span class="term ion-t" data-tex="\mathcal{H}_{\mathrm{ph}}"></span>
+    <span data-tex="+"></span>
+    <span class="term el-t" data-tex="\mathcal{H}_{\mathrm{el}}"></span>
+    <span data-tex="+"></span>
+    <span class="term" style="background:#E3D6EE" data-tex="\mathcal{H}_{\mathrm{el\text{-}ph}}"></span>
+  </div>
+
+  <div class="eqblock" id="eqs">
+    <div class="eqbox" data-tex="\mathcal{H}_{\mathrm{el\text{-}ph}} = -\colorbox{#E3D6EE}{$g$}\displaystyle\sum_{k,q} u_q\, \hat c^{\dagger}_{k+q}\hat c_k"></div>
+    <div class="cap" style="margin-top:8px">a distortion with momentum <i>q</i> scatters an electron <i>k</i> &rarr; <i>k</i> + <i>q</i></div>
+    <div class="arrow st" data-step="1">&darr;</div>
+    <div class="row st" data-step="1"><div class="eqbox" data-tex="\omega^2(q) = \omega_0^2(q)\left[1-\colorbox{#E3D6EE}{$g^2$}\,{\color{#2E6FC2}\chi_0(q)}\right]"></div></div>
+    <div class="arrow st" data-step="2">&darr;</div>
+    <div class="row st" data-step="2"><div class="eqbox" data-tex="{\color{#2E6FC2}\chi_0(q)} \propto \displaystyle\sum_k \frac{f\big(E(k)\big)-f\big(E(k+q)\big)}{E(k+q)-E(k)}"></div></div>
+  </div>
+
+  <div id="wPlot" class="st" data-step="3"><canvas id="wc"></canvas></div>
+  <div id="cPlot" class="st" data-step="2"><canvas id="cc"></canvas></div>
+  <div id="bPlot" class="st" data-step="0" data-until="3" style="position:absolute; left:860px; top:520px; transform-origin: 0 0; transition: transform .8s, opacity .5s"><canvas id="bc"></canvas></div>
+</div>
+
+<script src="../lib/deckslide.js?v=10"></script>
+<script src="../lib/katex/katex.min.js"></script>
+<script src="../lib/stipple.js?v=10"></script>
+<script src="../lib/stage.js?v=10"></script>
+<script src="../lib/plot.js?v=10"></script>
+<script src="../lib/chain.js?v=10"></script>
+<script src="../lib/peierls.js?v=10"></script>
+<script src="../lib/ui.js?v=10"></script>
+<script>
+(function () {
+  'use strict';
+  Stage.tex();
+  const PI = Math.PI, TWO_PI = 2 * PI, T = 0.005;   // (6 Nov) colder: chi_0's log singularity at 2k_F sharper (T = 0 diverges)
+  const PH = '#3F7330', ELC = '#2E6FC2', VIO = '#7B4FA0';
+  const N = 20;
+  const stage = document.getElementById('stage');
+
+  const chain = new Chain(document.getElementById('sim'), { N, width: 1762, height: 170, ionD: 50, yIon: 0.5 });
+  chain.showRef = true;                                // equilibrium positions (dashed), as slide 15
+  const qTicks = [[0, '0'], [PI / 4, 'π/4'], [PI / 2, 'π/2'], [3 * PI / 4, '3π/4'], [PI, 'π']];
+  const wAx = new Axes(document.getElementById('wc'), {
+    width: 640, height: 350, pad: [96, 20, 20, 20], xlim: [0, PI], ylim: [-1.6, 4.6],
+    xticks: qTicks.map(([v]) => [v, '']), yticks: [[0, '0']], ylabel: 'ω^2(q)'
+  });
+  const cAx = new Axes(document.getElementById('cc'), {
+    width: 640, height: 250, pad: [96, 36, 10, 84], xlim: [0, PI], ylim: [0, 7],
+    xticks: qTicks, yticks: [[1, '1']], xlabel: 'q', ylabel: 'χ_0(q)'
+  });
+  // (6 Nov, as the pptx) the electron band: chi_0 counts scatterings from filled states (k) to empty ones (k + q);
+  // at q = 2k_F a filled state at -k_F reaches the empty state at +k_F at no energy cost
+  const bAx = new Axes(document.getElementById('bc'), {
+    width: 700, height: 420, pad: [96, 52, 30, 84], xlim: [-PI, PI], ylim: [-4.4, 4.4],   // as slide 16's band
+    xticks: [[-PI, '−π'], [-PI / 2, '−π/2'], [0, '0'], [PI / 2, 'π/2'], [PI, 'π']], yticks: [[-4, '−4'], [-2, '−2'], [0, '0'], [2, '2'], [4, '4']],
+    xlabel: 'k', ylabel: 'E(k)'
+  });
+  Stage.init(k => { chain.layout(k); wAx.layout(k); cAx.layout(k); bAx.layout(k); });
+  const legend = UI.chainLegend(stage, chain, { top: 104 });   // in the title row, as slide 16
+  { const fq = new URLSearchParams(location.search).get('fade'); if (fq) legend.toggle(fq); }   // debug: ?fade=ions|el
+
+  // ---- controls: coupling lambda and filling n ---------------------------------------------
+  // Coupling g on the slider; omega^2 depends on g^2 (written lam below).
+  const G_MAX = 1.0, N_LO = 0, N_HI = 2;            // the same Filling slider as slide 16
+  const FILL0 = 0.675;                                // start above half filling (3/4 up the slider)
+  let lam = 0, n = 1;
+  const nOf = v => { const x = N_LO + v * (N_HI - N_LO); return Math.abs(x - 1) < 0.03 ? 1 : Math.round(x * 100) / 100; };
+  const lamS = UI.vslider({ parent: stage, x: 1452, y: 540, scale: 0.74, label: 'Coupling', labelColor: VIO, value: 0,
+    onInput: v => { lam = (v * G_MAX) ** 2; } });
+  const fillS = UI.vslider({ parent: stage, x: 1630, y: 540, scale: 0.74,   // where slide 16 has it
+    label: 'Filling', labelColor: ELC,
+    value: FILL0, onInput: v => { n = nOf(v); remark(); } });
+  n = nOf(FILL0);
+  fillS.relabel([{ v: (1 - N_LO) / (N_HI - N_LO), sym: 'half', plain: true }]);
+  function remark() { lamS.relabel([{ v: Math.min(1, Math.sqrt(Peierls.lambdaC(n, T)) / G_MAX), sym: 'g', sub: 'c' }]); }
+  remark();
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp') lamS.set(lamS.get() + 0.025);
+    else if (e.key === 'ArrowDown') lamS.set(lamS.get() - 0.025);
+    else if (e.key === ']') fillS.set(fillS.get() + 0.02);
+    else if (e.key === '[') fillS.set(fillS.get() - 0.02);
+    else if (e.key === 'r' || e.key === 'R') { glide = null; lamS.set(0); fillS.set(FILL0); }
+  });
+
+  // ---- plots ---------------------------------------------------------------------------------
+  const kF = () => Peierls.kF(n);
+  // the band exactly as slide 16 draws it (k-state dots, +-k_F), plus the scattering
+  const kStates = Array.from({ length: N }, (_, j) => -PI + 2 * PI * (j + 0.5) / N);
+  function occupations() {
+    const Ne = Math.round(n * N), order = kStates.map((k, j) => j).sort((a, b) => Peierls.eps(kStates[a]) - Peierls.eps(kStates[b]));
+    const occ = new Array(N).fill(0); let left = Ne;
+    for (const j of order) { const o = Math.min(2, left); occ[j] = o; left -= o; if (left <= 0) break; }
+    return occ;
+  }
+  function drawBand() {
+    const kf = kF(), mu = Peierls.mu(n), E = k => Peierls.eps(k) - mu, c = bAx.ctx;
+    bAx.clear(); bAx.clip(true);
+    bAx.fillRect(-PI, -4.4, PI, 0, 'rgba(22,20,20,0.06)');
+    bAx.hline(0, { color: '#161414', width: 1.5, dash: [] });
+    if (n > 0.02 && n < 1.98) for (const s of [-1, 1]) bAx.vline(s * kf, { color: ELC, width: 2 });
+    bAx.line(E, { color: ELC, width: 2.5 });
+    if (n > 0.001) bAx.line(E, { color: ELC, width: 7, range: [-Math.min(kf, PI), Math.min(kf, PI)] });
+    const occ = occupations();
+    for (let j = 0; j < N; j++) {
+      const [px, py] = bAx.toPix(kStates[j], E(kStates[j]));
+      c.beginPath(); c.arc(px, py, 5, 0, 2 * PI); c.fillStyle = '#FBFAF7'; c.fill();
+      if (occ[j] === 2) { c.fillStyle = ELC; c.fill(); }
+      else if (occ[j] === 1) { c.beginPath(); c.arc(px, py, 5, PI / 2, 3 * PI / 2); c.closePath(); c.fillStyle = ELC; c.fill(); }
+      c.beginPath(); c.arc(px, py, 5, 0, 2 * PI); c.lineWidth = 1.6; c.strokeStyle = '#161414'; c.stroke();
+    }
+    bAx.clip(false); bAx.frame();
+    if (n > 0.05 && n < 1.95) {
+      const y = bAx.box().y0 - 20; c.fillStyle = ELC; c.textBaseline = 'middle';
+      for (const s of [-1, 1]) Axes.rich(c, (s < 0 ? '−' : '') + 'k_F', bAx.toPix(s * kf, 0)[0], y, 28, 'center', true);
+    }
+    if (kf < PI - 0.05) {
+      // the 2k_F scattering, filled -> empty, at E = 0 (static, 6 Nov)
+      const [x0, y0] = bAx.toPix(-kf, 0), [x1] = bAx.toPix(kf, 0), yA = y0 - 34;
+      c.strokeStyle = '#7B4FA0'; c.fillStyle = '#7B4FA0'; c.lineWidth = 3; c.setLineDash([]);
+      c.beginPath(); c.moveTo(x0, y0 - 6); c.quadraticCurveTo((x0 + x1) / 2, yA - 40, x1 - 6, y0 - 10); c.stroke();
+      c.beginPath(); c.moveTo(x1, y0 - 4); c.lineTo(x1 - 16, y0 - 12); c.lineTo(x1 - 8, y0 - 22); c.fill();
+      bAx.dot(-kf, 0, 7, ELC, '#161414'); bAx.dot(kf, 0, 7, '#FBFAF7', ELC);
+      c.fillStyle = '#7B4FA0'; c.textBaseline = 'bottom'; Axes.rich(c, 'q = 2k_F', (x0 + x1) / 2, y0 - 6, 24, 'center', true);
+      c.fillStyle = ELC; c.textBaseline = 'middle';
+      Axes.rich(c, 'filled', x0 - 12, y0 + 22, 20, 'right', false); Axes.rich(c, 'empty', x1 + 6, y0 + 22, 20, 'left', false);
+    }
+  }
+  function nestingLines(ax, color, label) {
+    for (const x of [Math.min(2 * kF(), TWO_PI - 2 * kF())]) {   // the 2k_F anomaly folded into [0, pi]
+      if (x <= 0 || x > PI) continue;
+      ax.vline(x, { color, width: 2.2 });
+    }
+  }
+  function drawPlots(cur) {
+    const { q, c } = cur;
+    // omega^2
+    wAx.clear();
+    wAx.clip(true);
+    wAx.fillRect(0, -1.6, TWO_PI, 0, 'rgba(22,20,20,0.07)');
+    wAx.hline(0, { color: '#161414', width: 1.5, dash: [] });
+    nestingLines(wAx, ELC);
+    wAx.line(Peierls.w0sq, { color: PH, width: 3, dash: [9, 8] });
+    const w2 = Array.from(q, (x, i) => Peierls.w0sq(x) * (1 - lam * cur.s[i]));   // singular part only (6 Nov)
+    wAx.line([Array.from(q), w2], { color: PH, width: 4.5 });
+    wAx.clip(false);
+    wAx.frame();
+    // labels, as the pptx: the Kohn anomaly (arrow to the dip) once it shows, the softened phonon near g_c
+    const lc = Peierls.lambdaC(n, T), xa0 = Math.min(2 * kF(), TWO_PI - 2 * kF());
+    if (lam > 0.25 * lc) {
+      const i0 = Math.round(xa0 / TWO_PI * (q.length - 1)), [px, py] = wAx.toPix(xa0, w2[i0]), [, pt] = wAx.toPix(xa0, 4.3);
+      const c = wAx.ctx; c.strokeStyle = PH; c.fillStyle = PH; c.lineWidth = 2.2; c.setLineDash([]);
+      const [, pb] = wAx.toPix(xa0, Peierls.w0sq(xa0)), tip = pb - 8;   // tip at the bare curve: the mouth of the dip
+      c.beginPath(); c.moveTo(px, pt + 22); c.lineTo(px, tip - 12); c.stroke();
+      c.beginPath(); c.moveTo(px, tip); c.lineTo(px - 7, tip - 14); c.lineTo(px + 7, tip - 14); c.fill();
+      c.textBaseline = 'middle'; Axes.rich(c, 'Kohn anomaly', px - 8, pt + 8, 26, 'right', false);
+      if (lam > 0.9 * lc) { const [, pb] = wAx.toPix(xa0, -1.1); Axes.rich(c, 'Softened phonon', px - 14, pb, 26, 'right', false); }
+    }
+    // chi0
+    let pk = 1; for (let i = 0; i < c.length; i++) if (q[i] <= PI + 1e-9 && c[i] > pk) pk = c[i];
+    cAx.o.ylim = [0.8, 0.62 * pk];                       // (6 Nov) the peak runs off the top: a (log) singularity
+    cAx.clear();
+    cAx.clip(true);
+    nestingLines(cAx, ELC);
+    cAx.line([Array.from(q), Array.from(c)], { color: ELC, width: 4 });
+    cAx.clip(false);
+    cAx.frame();
+    const xa = Math.min(2 * kF(), TWO_PI - 2 * kF()), [px] = cAx.toPix(xa, 0), right = xa > 0.8 * PI;
+    cAx.ctx.fillStyle = ELC; cAx.ctx.textBaseline = 'middle';
+    Axes.rich(cAx.ctx, '2k_F', px, cAx.box().y0 - 18, 26, 'center', true);   // above the frame, clear of the peak
+    return w2;
+  }
+
+  // ---- the softest phonon on the chain: slows down, then freezes in -------------------------
+  let phase = 0, frozen = 0;
+  function animateChain(dt, cur, w2) {
+    let iMin = 0;                                   // softest q (on the chain's own q grid)
+    for (let i = 1; i < w2.length && cur.q[i] <= PI + 1e-9; i++) if (w2[i] / Math.max(Peierls.w0sq(cur.q[i]), 1e-9) < w2[iMin] / Math.max(Peierls.w0sq(cur.q[iMin]), 1e-9)) iMin = i;
+    const m = Math.max(1, Math.min(N / 2, Math.round(cur.q[iMin] / (TWO_PI / N))));
+    const qm = TWO_PI * m / N, ci = Math.round(qm / TWO_PI * (cur.q.length - 1));
+    const om2 = Peierls.w0sq(qm) * (1 - lam * cur.s[ci]);
+    // unstable once the continuous dispersion reaches zero (g >= g_c); the chain's discrete q grid can miss 2k_F
+    // by a little, which left the mode bouncing past g_c (6 Nov)
+    const unstable = om2 <= 0 || lam >= 0.99 * Peierls.lambdaC(n, T);
+    frozen += ((unstable ? 1 : 0) - frozen) * (1 - Math.exp(-dt / 0.35));
+    if (!unstable) phase += Math.sqrt(Math.max(om2, 0)) * 2.2 * dt;
+    const amp = 0.16 + 0.1 * frozen;
+    for (let i = 0; i < N; i++) {
+      const moving = Math.cos(qm * i - phase), still = Math.cos(qm * i);
+      chain.u[i] = amp * ((1 - frozen) * moving + frozen * still);
+    }
+    chain.mode = null;
+    // Electrons follow the ion density, -du/dx ~ sin(q x - phase): a weak screening ripple that rides
+    // on the phonon, growing into the static CDW once it freezes in (on the short bonds at half filling).
+    chain.cloud.n = n;
+    chain.cloud.q = qm;
+    chain.cloud.phase = (1 - frozen) * phase;
+    chain.cloud.mod = 0.12 + 0.78 * frozen;
+  }
+
+  const qs = new URLSearchParams(location.search);
+  if (qs.has('lam')) lamS.set(Math.sqrt(+qs.get('lam')) / G_MAX);   // ?lam = g^2
+  if (qs.has('g')) lamS.set(+qs.get('g') / G_MAX);
+  if (qs.has('n')) fillS.set((+qs.get('n') - N_LO) / (N_HI - N_LO));
+
+  // the clicks drive the Coupling slider (a glide; grabbing the slider cancels it):
+  // 0 no coupling (bare phonons); 1 g = 0.7 g_c: the Kohn dip appears at 2k_F; 2 g = g_c: the 2k_F phonon goes soft;
+  // 3 g = 1.08 g_c: past g_c, the mode is unstable and the chain freezes into the distortion
+  let glide = null, curStep = 0, sweepT0 = 0;
+  lamS.svg.addEventListener('pointerdown', () => { glide = null; });
+  const gcV = () => Math.min(1, Math.sqrt(Peierls.lambdaC(n, T)) / G_MAX);
+  // (6 Nov) builds: 0 the phonon equation and the bare dispersion; 1 chi_0 (equation + plot); 2-4 the coupling glides
+  // builds: 0 the coupling term; 1 the bare phonons (equation + dispersion); 2 with the coupling (omega^2, chi_0 + its
+  // plot); 3-5 the Coupling slider glides: Kohn dip, soft at g_c, past g_c
+  // (6 Nov) build 0 keeps slide 16's band (with the filled -> empty scattering); click 1 swaps it for the phonons; the
+  // Coupling slider arrives with them
+  lamS.svg.classList.add('st'); lamS.svg.dataset.step = 3; lamS.label.classList.add('st'); lamS.label.dataset.step = 3;
+  const STEP_G = [0, 0, 0, 0, 0.7, 1, 1.08], st = [...document.querySelectorAll('.st')];
+  // (6 Nov) the electrons fade when the phonon frequencies start to change (click 3: the omega^2 plot and the
+  // Coupling glides), so the eye stays on the ions; back on stepping back. Only at that crossing, so the legend
+  // button / E key can still turn them on or off at any time.
+  let prevS = 0;
+  const elAuto = s => { const want = s >= 3; if ((s >= 3) !== (prevS >= 3) && legend.state.el !== want) legend.toggle('el'); prevS = s; };
+  Deck.slide({ steps: 6, onStep: s => { elAuto(s); curStep = s; sweepT0 = performance.now();
+    document.getElementById('bPlot').style.transform = s >= 2 ? 'translate(-70px, -58px) scale(0.86)' : '';
+    st.forEach(e => e.classList.toggle('hidden', s < +e.dataset.step || s >= +(e.dataset.until || 99))); glide = Math.min(1, STEP_G[s] * gcV()); } });
+  if (qs.has('deckstep')) { lamS.set(Math.min(1, STEP_G[+qs.get('deckstep')] * gcV())); glide = null; }
+
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (glide !== null) {
+      const v = lamS.get(), nv = v + (glide - v) * 0.04;
+      if (Math.abs(glide - nv) < 0.002) { lamS.set(glide); glide = null; } else lamS.set(nv);
+    }
+    const cur = Peierls.chiCurve(n, T);
+    const w2 = drawPlots(cur);
+    drawBand();
+    animateChain(dt, cur, w2);
+    chain.draw();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

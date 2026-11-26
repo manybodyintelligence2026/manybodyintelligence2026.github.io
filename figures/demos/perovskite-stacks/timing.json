@@ -1,0 +1,16 @@
+{
+  "blender_version": "5.3.0",
+  "still_s": 2.42,
+  "still_kb": 992.3,
+  "anim_frames": 36,
+  "anim_s": 5.69,
+  "gif_kb": 1115.0,
+  "html_kb": 10.0,
+  "ratio": 111.0,
+  "cycles_s": 31.0,
+  "cycles_kb": 1187.8,
+  "cycles_anim_unique_frames": 13,
+  "cycles_anim_loop_frames": 24,
+  "cycles_anim_s": 119.3,
+  "cycles_anim_webp_kb": 1037.2
+}

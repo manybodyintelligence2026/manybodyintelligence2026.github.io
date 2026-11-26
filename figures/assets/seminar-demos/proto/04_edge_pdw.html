@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Superconducting Edge</title>
+<link rel="stylesheet" href="../lib/fonts/fira.css?v=10">
+<style>
+  :root { --ink: #F4EFE3; --black: #161414; --white: #F5F2EC; }
+  html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
+  #stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+    font-family: 'Fira Sans', Arial, sans-serif; color: var(--black); background: #FBFAF7; overflow: hidden;
+  }
+  #bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  .header {
+    position: absolute; right: 0; top: 0; height: 79px; color: var(--white); background: var(--black);
+    display: flex; align-items: center; gap: 14px; padding: 0 22px 0 14px; box-sizing: border-box;
+  }
+  .header img { width: 76px; height: 75px; }
+  .header .who { line-height: 1.25; white-space: nowrap; }
+  .header .name { font-weight: bold; font-size: 21px; }
+  .header .sess { font-size: 18px; }
+  .header .num { display: inline-block; min-width: 1.6em; }
+
+  .pill {
+    position: absolute; left: 79px; top: 52px; background: var(--black); color: var(--white); font-weight: bold;
+    font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 20px; border-radius: 999px;
+  }
+  h1 { position: absolute; left: 79px; top: 92px; margin: 0; font-size: 60px; }
+
+  #box { position: absolute; left: 79px; top: 262px; border: 4px solid var(--black); box-shadow: 10px 10px 0 var(--black); }
+  #sim { display: block; }
+  #slider { position: absolute; top: 262px; cursor: ns-resize; touch-action: none; }
+  #btn3d {
+    position: absolute; width: 300px; font: bold 34px 'Fira Sans', Arial, sans-serif; color: #161414;
+    background: #F5F2EC; border: 4px solid #161414; border-radius: 999px; padding: 14px 0;
+    box-shadow: 6px 6px 0 #161414; cursor: pointer;
+  }
+  #btn3d.on { background: #C7DDAE; }
+  #btn3d:active { transform: translate(3px, 3px); box-shadow: 3px 3px 0 #161414; }
+  .slider-label { position: absolute; font-weight: bold; font-size: 34px; text-align: center; width: 300px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg"></canvas>
+
+  <div class="header">
+    <img src="../assets/uu_seal.png" alt="Uppsala University">
+    <div class="who"><div class="name">Pramodh Senarath Yapa</div><div class="sess"><span class="num">4</span>|&ensp;Division Seminar</div></div>
+  </div>
+
+  <span class="pill">Part 1 &middot; Order</span>
+  <h1>An edge PDW without a flat band</h1>
+  <div class="lead" style="position:absolute; left:79px; top:186px; font-size:34px"><b>Superconducting Peierls mechanism:</b> also zero-energy Bogoliubov quasiparticles, but only two of them</div>
+
+  <div id="box"><canvas id="sim"></canvas></div>
+
+  <svg id="slider" width="290" height="640" viewBox="0 0 290 640" aria-label="Interaction">
+    <defs><clipPath id="groove"><rect x="76" y="20" width="38" height="600" rx="19"/></clipPath></defs>
+    <rect x="76" y="20" width="38" height="600" rx="19" fill="#F5F2EC"/>
+    <g clip-path="url(#groove)"><rect id="sliderFill" x="76" y="320" width="38" height="320" fill="#161414"/></g>
+    <rect x="76" y="20" width="38" height="600" rx="19" fill="none" stroke="#161414" stroke-width="6"/>
+    <g id="sliderTicks" stroke="#161414" stroke-width="5" stroke-linecap="round"></g>
+    <circle id="knob" cx="95" cy="320" r="34" fill="#161414" stroke="#F5F2EC" stroke-width="5"/>
+  </svg>
+  <div class="slider-label" id="sliderLabel">Interaction</div>
+</div>
+
+<script src="../lib/deckslide.js?v=10"></script>
+<script src="../lib/stipple.js?v=10"></script>
+<script src="../lib/swarm.js?v=10"></script>
+<script src="../lib/ui.js?v=10"></script>
+<script src="../lib/quasi.js?v=10"></script>
+<script src="../lib/surface3d.js?v=10"></script>
+<script>
+(function () {
+  'use strict';
+  const W = 1920, H = 1080;
+  const stage = document.getElementById('stage');
+  const bg = document.getElementById('bg'), bgCtx = bg.getContext('2d');
+  const cv = document.getElementById('sim'), ctx = cv.getContext('2d');
+
+  // ---- geometry (simulation units = stage px) -------------------------------------------------
+  // Superconductor on top (periodic in x), a single edge at y = SC_H, vacuum below it.
+  const BOX_X = 79, BOX_Y = 262, BOX_W = 1300, SC_H = 520, VAC_H = 150, BOX_H = SC_H + VAC_H;
+  cv.style.width = BOX_W + 'px'; cv.style.height = BOX_H + 'px';
+
+  // ---- interaction (mediated by the Andreev bound states) -------------------------------------
+  // The superfluid and the edge states are always there. The slider g in [0, 1] only switches the
+  // edge PDW on: it grows in over PDW_ON, gapping out (releasing) the edge states as it does.
+  const PDW_ON = [0.4, 0.8];
+  const pdwOf = g => UI.onset(g, PDW_ON);
+  const sf = 1;
+  let sliderG = 0, pdw = 0;
+
+  // ---- superfluid density near the edge ----------------------------------------------------
+  // d = SC_H - y is the distance from the edge. M(x) is a zero-mean row of Gaussian-like maxima.
+  // rho_sf = 1 - D e^{-d/XI_S} + pdw A_SF e^{-d/XI_P} M(x), D relaxing as the PDW forms.
+  const XI_S = 45, XI_P = 45, A_SF = 2.6, KAP = 0.9, NPEAK = 8, Q = 2 * Math.PI * NPEAK / BOX_W;
+  const M_MEAN = (function () { let m = 0; for (let i = 0; i < 1000; i++) m += Math.exp(KAP * (Math.cos(2 * Math.PI * i / 1000) - 1)); return m / 1000; })();
+  const Mx = x => Math.exp(KAP * (Math.cos(Q * x) - 1)) / M_MEAN - 1;
+  const dMx = x => -KAP * Q * Math.sin(Q * x) * Math.exp(KAP * (Math.cos(Q * x) - 1)) / M_MEAN;
+  const depletion = () => 0.85 * (1 - 0.6 * pdw);
+  const rhoSf = (x, y) => {
+    const d = SC_H - y;
+    return Math.max(0, sf * (1 - depletion() * Math.exp(-d / XI_S) + pdw * A_SF * Math.exp(-d / XI_P) * Mx(x)));
+  };
+
+  // ---- particles -----------------------------------------------------------------------------
+  // Bulk: a liquid; with the PDW they feel V = -PULL T pdw e^{-d/XI_P} M(x) and bunch strongly at
+  // the edge maxima (the minima near the edge empty out, so the bunching reads under the overlay).
+  // Edge states: the N_EDGE particles nearest the edge are bound to a band just inside it, drawn blue
+  // and twice the size, and stream along it, half each way; the PDW gaps them out (released, grey, normal size).
+  const PULL = 4, N_EDGE = 46, BAND = SC_H - 20, K_BAND = 0.02, V_EDGE = 1.3, G_EDGE = 0.25;
+  const sw = new Swarm({ N: 1200, Lx: BOX_W, Ly: SC_H, d: 12, T: 1, gamma: 0.05, dt: 0.12, wallsY: true, maxScale: 2 });
+  const edgeDir = new Float32Array(sw.N);              // +1 / -1 for bound particles, 0 otherwise
+  const blue = new Float32Array(sw.N);                 // drawn blueness, eased toward the bound state
+  let edgeOn = 0, bound = false;
+  sw.external = (x, y, i) => {
+    let fx = 0, fy = 0;
+    if (pdw > 1e-3) {
+      const e = PULL * sw.T * pdw * Math.exp(-(SC_H - y) / XI_P);
+      fx += e * dMx(x);
+      fy += e * Mx(x) / XI_P;
+    }
+    if (edgeDir[i] !== 0 && edgeOn > 1e-3) {
+      fy -= K_BAND * edgeOn * (y - BAND);
+      fx += G_EDGE * edgeOn * (edgeDir[i] * V_EDGE - sw.vx[i]);
+    }
+    return [fx, fy];
+  };
+  function updateBinding() {
+    if (!bound && edgeOn > 0.02) {                   // the particles nearest the edge become edge states
+      const idx = Array.from({ length: sw.N }, (_, i) => i).sort((a, b) => sw.y[b] - sw.y[a]).slice(0, N_EDGE);
+      idx.sort((a, b) => sw.x[a] - sw.x[b]).forEach((i, r) => { edgeDir[i] = r % 2 ? 1 : -1; });
+      bound = true;
+    } else if (bound && edgeOn < 0.01) {
+      edgeDir.fill(0);
+      bound = false;
+    }
+  }
+  const STEPS_PER_SEC = 330, BALL_PX = 12;
+
+  // ---- interaction slider (as on the quantum-fluid slide) ---------------------------------------
+  const KNOB_BOT = 590, KNOB_TOP = 50;
+  const SL_X = BOX_X + BOX_W + 4 + (W - BOX_X - BOX_W - 4 - 190) / 2;
+  const slider = document.getElementById('slider'), knob = document.getElementById('knob');
+  const sliderFill = document.getElementById('sliderFill'), lab = document.getElementById('sliderLabel');
+  slider.style.left = SL_X + 'px';
+  lab.style.left = (SL_X + 95 - 150) + 'px'; lab.style.top = (BOX_Y + 650) + 'px';
+  // ---- 3D view: tilt about the edge and lift the condensate into a height surface ------------
+  // (6 Nov) always 3D: the button is gone
+  let on3d = true, t3 = 1;
+  function set3d(v) { on3d = v; }
+  (function ticks() {
+    const g = document.getElementById('sliderTicks');
+    for (let i = 0; i <= 8; i++) {
+      const y = KNOB_BOT - i * (KNOB_BOT - KNOB_TOP) / 8, len = i % 4 === 0 ? 30 : 16;
+      g.insertAdjacentHTML('beforeend', `<line x1="132" x2="${132 + len}" y1="${y}" y2="${y}"/>`);
+    }
+    const yc = KNOB_BOT - PDW_ON[0] * (KNOB_BOT - KNOB_TOP);
+    UI.clearNear(g, [yc]);
+    UI.mark(slider, yc, 'V', 'c');
+  })();
+  function setG(g) {
+    sliderG = Math.min(1, Math.max(0, g));
+    const y = KNOB_BOT - sliderG * (KNOB_BOT - KNOB_TOP);
+    knob.setAttribute('cy', y.toFixed(1));
+    sliderFill.setAttribute('y', y.toFixed(1));
+    sliderFill.setAttribute('height', (640 - y).toFixed(1));
+  }
+  let dragging = false;
+  function setFromPointer(e) {
+    const r = slider.getBoundingClientRect(), yv = (e.clientY - r.top) * 640 / r.height;
+    setG((KNOB_BOT - yv) / (KNOB_BOT - KNOB_TOP));
+  }
+  slider.addEventListener('pointerdown', e => { dragging = true; slider.setPointerCapture(e.pointerId); setFromPointer(e); });
+  slider.addEventListener('pointermove', e => { if (dragging) setFromPointer(e); });
+  slider.addEventListener('pointerup', () => { dragging = false; });
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp' || e.key === ']') setG(sliderG + 0.05);
+    else if (e.key === 'ArrowDown' || e.key === '[') setG(sliderG - 0.05);
+    else if (e.key === 'r' || e.key === 'R') { setG(0); pdw = 0; edgeDir.fill(0); bound = false; sw.reset(); }
+  });
+  setG(0);
+
+
+  // ---- legend: click (or key) to fade a layer -------------------------------------------------
+  const fades = Quasi.fades(['qp', 'abs', 'sf']);
+  // (6 Nov) two entries: the edge states (zero-energy quasiparticles) and the superconductor's pair density
+  const legend = UI.legend({ parent: stage, right: 1385, top: 962, size: 28, gap: 26,
+    items: [
+      { key: 'abs', label: 'zero-energy quasiparticles (ABS)', color: '#2E6FC2', swatch: Quasi.swatch.bound },
+      { key: 'sf', label: 'pair density', color: '#3F7330', swatch: Quasi.swatch.condensate }],
+    onToggle: (key, faded) => fades.set(key, faded) });
+  { const fq = new URLSearchParams(location.search).get('fade'); if (fq) legend.toggle(fq); }   // debug: ?fade=key
+  addEventListener('keydown', e => {
+    if (e.key === 'a' || e.key === 'A') legend.toggle('abs');
+    else if (e.key === 'c' || e.key === 'C') legend.toggle('sf');
+  });
+
+  // ---- rendering resources -------------------------------------------------------------------
+  // Condensed electrons are not drawn; ~15 % remain as faint quasiparticles (quasi.js). The ABS are
+  // bigger, full-strength quasiparticles bound to the edge.
+  let k = 0, paperCv = null, absSprite = null;
+  const isQP = new Uint8Array(1200);                 // (6 Nov) no bulk quasiparticles: only the edge states
+  let ov = null, ovCtx = null, ovImg = null, ovU = null, ovKey = '';
+  function layout() {
+    const s = Math.min(innerWidth / W, innerHeight / H);
+    stage.style.transform = `translate(${(innerWidth - W * s) / 2}px, ${(innerHeight - H * s) / 2}px) scale(${s})`;
+    const nk = Math.max(0.5, Math.min(3, s * (window.devicePixelRatio || 1)));
+    if (Math.abs(nk - k) < 1e-3) return;
+    k = nk;
+    bg.width = Math.round(W * k); bg.height = Math.round(H * k);
+    bgCtx.drawImage(Stipple.paper(bg.width, bg.height,
+      { s: k, seed: 21, base: [251, 250, 247], blank: [251, 250, 247], wear: 0 }), 0, 0);
+    cv.width = Math.round(BOX_W * k); cv.height = Math.round(BOX_H * k);
+    paperCv = Stipple.paper(cv.width, cv.height, { s: k, seed: 7 });
+    // vacuum: solid black below the edge
+    const pc = paperCv.getContext('2d');
+    pc.fillStyle = '#161414'; pc.fillRect(0, SC_H * k, cv.width, cv.height - SC_H * k);
+    absSprite = Quasi.sprite(Quasi.ABS_D, k);            // drawn scaled down for bulk quasiparticles
+    const ow = Math.round(cv.width * 0.5), oh = Math.round(SC_H * k * 0.5);
+    ov = Stipple.canvas(ow, oh); ovCtx = ov.getContext('2d'); ovImg = ovCtx.createImageData(ow, oh);
+    ovU = new Float32Array(ow * oh);
+    const rand = Stipple.rng(77);
+    for (let i = 0; i < ovU.length; i++) ovU[i] = rand();
+    ovKey = '';
+  }
+  addEventListener('resize', layout);
+  layout();
+
+  // light-blue translucent superfluid, as on the quantum-fluid slide
+  const SHEET = [142, 179, 107], ALPHA0 = 0.26, ALPHA_MAX = 0.8;    // s-wave green on eggshell
+  function buildOverlay() {
+    const ow = ov.width, oh = ov.height, d = ovImg.data;
+    const mx = new Float32Array(ow);
+    for (let i = 0; i < ow; i++) mx[i] = (i + 0.5) / ow * BOX_W;
+    for (let j = 0; j < oh; j++) {
+      const y = (j + 0.5) / oh * SC_H;
+      for (let i = 0, p = 4 * j * ow; i < ow; i++, p += 4) {
+        const a = Math.min(ALPHA_MAX, ALPHA0 * rhoSf(mx[i], y)) * (0.75 + 0.5 * ovU[j * ow + i]);
+        d[p] = SHEET[0]; d[p + 1] = SHEET[1]; d[p + 2] = SHEET[2]; d[p + 3] = 255 * a;
+      }
+    }
+    ovCtx.putImageData(ovImg, 0, 0);
+  }
+
+  function draw() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.imageSmoothingEnabled = true;
+    ctx.drawImage(paperCv, 0, 0);
+    fades.step();
+    t3 += ((on3d ? 1 : 0) - t3) * 0.06;
+    const flat = 1 - t3;                                   // the flat picture fades as the surface rises
+    ctx.globalAlpha = fades.get('sf') * flat;
+    if (condMode === 'stipple') drawStipple();
+    else {
+      const key = pdw.toFixed(3);
+      if (key !== ovKey) { buildOverlay(); ovKey = key; }
+      ctx.drawImage(ov, 0, 0, cv.width, SC_H * k);
+    }
+    ctx.globalAlpha = 1;
+    // quasiparticles: bulk ones faint and small; edge states grow to ABS size and full strength with b
+    const LxP = cv.width, Rm = Quasi.ABS_D * k / 2;
+    for (let i = 0; i < sw.N; i++) {
+      const b = blue[i];
+      if (b <= 0.01 && !isQP[i]) continue;
+      const d = (Quasi.QP_D + (Quasi.ABS_D - Quasi.QP_D) * b) * k;
+      const fq = fades.get('qp'), fa = fades.get('abs');
+      ctx.globalAlpha = flat * (b > 0.01 ? Quasi.QP_ALPHA * (isQP[i] ? 1 : 0) * (1 - b) * fq + b * fa : Quasi.QP_ALPHA * fq);
+      const X = sw.x[i] * k, Y = sw.y[i] * k, xs = [X];
+      if (X < Rm) xs.push(X + LxP); else if (X > LxP - Rm) xs.push(X - LxP);
+      for (const x of xs) ctx.drawImage(absSprite, x - d / 2, Y - d / 2, d, d);
+    }
+    ctx.globalAlpha = 1;
+    if (t3 > 0.005) drawSurface();
+  }
+
+  // |Delta(x, y)| as a shaded surface over the print (after arXiv:1905.03774). The 3D height is an
+  // explicit smooth field, never clamped, so the edge modulation is a full sinusoid:
+  //   z = B - (1 - pdw) D e^{-d/xi_s} + pdw A e^{-d/xi_p} cos(Q x),   B >= A keeps z >= 0.
+  // The orange print and the black vacuum stay underneath as a textured ground plane at z = 0.
+  // The camera swings from the flat top view (t3 = 0) to a 3/4 view along the edge (t3 = 1).
+  const S_NX = 151, S_NY = 50, LIFT = 230, DEPTH = 230, SPAN = 5 * BOX_W / NPEAK, VAC3 = 120;
+  const B3 = 0.32, D3 = 0.26, A3 = 0.3;
+  const YAW = -32 * Math.PI / 180, ELEV = 30 * Math.PI / 180;
+  const surfRamp = Surface3D.ramp(['#EEF1E8', '#E2EBD6', '#C9DCB3', '#8EB36B', '#3F7330']);
+  const z3 = (x, y) => {
+    const d = SC_H - y;
+    return B3 - (1 - pdw) * D3 * Math.exp(-d / XI_S) + pdw * A3 * Math.exp(-d / XI_P) * Math.cos(Q * x);
+  };
+  // quasiparticles and ABS on the ground plane (z = 0), inside the 3D window; drawn far to near
+  function drawParticles3d(proj, e) {
+    const y0 = SC_H - DEPTH, fq = fades.get('qp'), fa = fades.get('abs'), list = [];
+    for (let i = 0; i < sw.N; i++) {
+      const b = blue[i];
+      if (b <= 0.01 && !isQP[i]) continue;
+      const x = ((sw.x[i] % BOX_W) + BOX_W) % BOX_W, y = sw.y[i];
+      if (x > SPAN || y < y0) continue;
+      list.push([i, x, y]);
+    }
+    list.sort((p, q) => p[2] - q[2]);
+    for (const [i, x, y] of list) {
+      const b = blue[i], [X, Y, sc] = proj(x * k, (y - y0) * k, 3 * k);
+      const d = (Quasi.QP_D + (Quasi.ABS_D - Quasi.QP_D) * b) * sc;
+      ctx.globalAlpha = e * (b > 0.01 ? Quasi.QP_ALPHA * (isQP[i] ? 1 : 0) * (1 - b) * fq + b * fa : Quasi.QP_ALPHA * fq);
+      ctx.drawImage(absSprite, X - d / 2, Y - d / 2, d, d);
+    }
+    ctx.globalAlpha = 1;
+  }
+  function drawSurface() {
+    const e = t3 * t3 * (3 - 2 * t3), hz = LIFT * k * e;
+    ctx.globalAlpha = e; ctx.fillStyle = '#FBFAF7'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.globalAlpha = 1;
+    Surface3D.draw(ctx, {
+      nx: S_NX, ny: S_NY, w: SPAN * k, h: DEPTH * k,
+      z: (i, j) => z3(i / (S_NX - 1) * SPAN, SC_H - DEPTH + j / (S_NY - 1) * DEPTH) * hz,
+      zTop: (B3 + A3) * LIFT * k, zBot: 0,
+      yaw: YAW * e, elev: Math.PI / 2 - (Math.PI / 2 - ELEV) * e, persp: 1.1 * e,
+      fit: { x: 30 * k, y: 30 * k, w: cv.width - 60 * k, h: cv.height - 60 * k },
+      flatFit: { x: 0, y: (SC_H - DEPTH) * k, w: SPAN * k, h: DEPTH * k }, blend: e,
+      ground: { img: paperCv, sx: 0, sy: (SC_H - DEPTH) * k, sw: SPAN * k, sh: (DEPTH + VAC3) * k, extra: VAC3 * k },
+      onGround: proj => drawParticles3d(proj, e),
+      ramp: surfRamp, alpha: Math.min(1, 1.8 * t3) * fades.get('sf') * 0.82,
+      frontLine: '#2F5A22', frontWidth: 3 * k, skirt: 'rgba(214,232,196,0.6)'
+    });
+  }
+
+
+
+  // ---- condensate treatment B: green stipple, dot density following rho_sf ------------------
+  // A fixed field of random points, each with its own threshold: a point is inked where
+  // rho_sf(x, y) exceeds threshold * RHO_TOP, so the dots appear and disappear as rho changes.
+  let condMode = 'wash';
+  const SDOTS = 28000, RHO_TOP = 2.3, sRand = Stipple.rng(23);
+  const sx = new Float32Array(SDOTS), sy = new Float32Array(SDOTS), sth = new Float32Array(SDOTS);
+  for (let i = 0; i < SDOTS; i++) { sx[i] = sRand() * BOX_W; sy[i] = sRand() * SC_H; sth[i] = sRand(); }
+  function drawStipple() {
+    const d = 2.8 * k;
+    ctx.fillStyle = 'rgba(28,78,22,0.92)';
+    for (let i = 0; i < SDOTS; i++) {
+      if (rhoSf(sx[i], sy[i]) < sth[i] * RHO_TOP) continue;
+      ctx.fillRect(sx[i] * k - d / 2, sy[i] * k - d / 2, d, d);
+    }
+  }
+
+  // URL hook: ?g=0.9 starts with the slider there, state already formed; ?cond=stipple|wash
+  // picks the condensate treatment (key C toggles; comparison only).
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('cond') === 'stipple') condMode = 'stipple';
+
+  if (qs.has('g')) setG(+qs.get('g'));
+  if (qs.get('view') === '3d') { set3d(true); t3 = 1; }
+  pdw = pdwOf(sliderG);
+
+  // ---- main loop -----------------------------------------------------------------------------
+  function update(dt) {
+    pdw += (pdwOf(sliderG) - pdw) * (1 - Math.exp(-dt / 0.5));
+    edgeOn = 1 - pdw;
+    updateBinding();
+    const be = 1 - Math.exp(-dt / 0.35);
+    for (let i = 0; i < sw.N; i++) {
+      blue[i] += ((edgeDir[i] ? edgeOn : 0) - blue[i]) * be;
+      sw.size[i] = 1 + 0.8 * blue[i];                  // edge states repel at (about) their drawn size
+    }
+    sw.step(Math.max(1, Math.round(STEPS_PER_SEC * dt)));
+  }
+  // settle for 4 s before the first frame (edge states bind and grow in); debug: ?advance=6 adds 6 s more
+  for (let t = 0; t < 4 + (+qs.get('advance') || 0); t += 1 / 60) update(1 / 60);
+  let glide = null;
+  slider.addEventListener('pointerdown', () => { glide = null; });
+  // click 1: the Interaction slider glides up past V_c and the edge PDW forms; stepping back glides it down
+  Deck.slide({ steps: 1, onStep: s => { glide = s >= 1 ? 0.85 : 0; } });
+  let last = performance.now();
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (glide !== null) {                                   // click-driven slider (6 Nov)
+      const g = sliderG + (glide - sliderG) * (1 - Math.exp(-dt / 0.6));
+      if (Math.abs(glide - g) < 0.002) { setG(glide); glide = null; } else setG(g);
+    }
+    update(dt);
+    draw();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  window.__sw = sw;
+})();
+</script>
+</body>
+</html>

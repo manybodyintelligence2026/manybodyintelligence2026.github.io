@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Twisted Bilayer Moiré &amp; Flat Band Explorer · MBI 2026</title>
+<style>
+  :root {
+    --surface: #ffffff;
+    --paper: #f6f4ef;
+    --ink: #1e1d1b;
+    --muted: #6e6a63;
+    --rule: #dcd7ce;
+    --teal: #1d5e57;
+    --navy: #163c66;
+    --crimson: #8e1b22;
+    --sans: "Helvetica Neue", Helvetica, "Inter", Arial, sans-serif;
+    --math: "STIX Two Text", "Cambria Math", "Computer Modern", Georgia, "Times New Roman", serif;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; height: 100%; overflow: hidden;
+    background: var(--surface); color: var(--ink);
+    font-family: var(--sans);
+  }
+  .wrap { display: flex; flex-direction: column; height: 100%; width: 100%; }
+  .main {
+    flex: 1 1 auto; min-height: 0; display: grid;
+    grid-template-columns: 1.36fr 0.64fr;
+  }
+  .pane { position: relative; min-width: 0; min-height: 0; }
+  .pane.right { border-left: 1px solid var(--rule); }
+  canvas { display: block; width: 100%; height: 100%; }
+  .tag {
+    position: absolute; left: 20px; top: 16px; pointer-events: none;
+    font: 500 14.5px var(--sans); color: var(--muted);
+    background: rgba(255,255,255,0.9); padding: 3px 8px;
+  }
+  .stat {
+    position: absolute; right: 20px; top: 16px; pointer-events: none;
+    font: 500 15px var(--math); color: var(--navy);
+    background: rgba(255,255,255,0.94); padding: 4px 10px;
+    border: 1px solid var(--rule); border-radius: 3px;
+  }
+  .stat.magic { color: #fff; background: var(--crimson); border-color: var(--crimson); }
+  .controls {
+    flex: none; display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    padding: 12px 22px; background: var(--paper); border-top: 1px solid var(--rule);
+    flex-wrap: wrap;
+  }
+  .slider-group { display: flex; align-items: center; gap: 14px; flex: 1 1 320px; }
+  .slider-group label { font: 500 15px var(--sans); color: var(--ink); white-space: nowrap; }
+  .slider-group input[type=range] {
+    flex: 1 1 auto; accent-color: var(--teal); height: 5px; cursor: pointer;
+  }
+  .val {
+    font: 600 16px var(--math); color: var(--navy); min-width: 60px; text-align: right;
+  }
+  .val.magic { color: var(--crimson); }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    font: 500 13.5px var(--sans); background: var(--surface); color: var(--ink);
+    border: 1px solid #c5bfb4; border-radius: 3px;
+    padding: 6px 13px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    transition: all .14s;
+  }
+  .btn:hover { border-color: var(--ink); background: #faf8f4; }
+  .btn.on { background: var(--teal); color: #fff; border-color: var(--teal); box-shadow: none; }
+  .btn.magic.on { background: var(--crimson); border-color: var(--crimson); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="main">
+    <div class="pane">
+      <canvas id="realCv"></canvas>
+      <div class="tag">Real space &middot; twisted bilayer honeycomb</div>
+      <div class="stat" id="lmStat"><i>L</i><sub>M</sub> = 16.4 <i>a</i></div>
+    </div>
+    <div class="pane right">
+      <canvas id="kCv"></canvas>
+      <div class="tag">Reciprocal space &middot; Bistritzer&ndash;MacDonald</div>
+    </div>
+  </div>
+  <div class="controls">
+    <div class="slider-group">
+      <label for="theta">Twist angle <i style="font-family:var(--math);">&theta;</i></label>
+      <input id="theta" type="range" min="0.85" max="14.0" step="0.05" value="3.50">
+      <div class="val" id="thetaVal">3.50&deg;</div>
+    </div>
+    <div class="btns">
+      <button class="btn" data-th="12.0">12&deg; Decoupled</button>
+      <button class="btn on" data-th="3.50">3.5&deg; Moir&eacute;</button>
+      <button class="btn magic" data-th="1.05">1.05&deg; Magic angle</button>
+      <button class="btn" id="sweepBtn">Auto-sweep</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  // Linked real-space + k-space Bistritzer-MacDonald moire explorer (offline HTML).
+  // Symmetry-protected gapless Dirac cones at K and K' (E = 0 exactly) with renormalised velocity v*(theta).
+  const realCv = document.getElementById("realCv");
+  const rctx = realCv.getContext("2d");
+  const kCv = document.getElementById("kCv");
+  const kctx = kCv.getContext("2d");
+  const slider = document.getElementById("theta");
+  const valEl = document.getElementById("thetaVal");
+  const lmStat = document.getElementById("lmStat");
+  const sweepBtn = document.getElementById("sweepBtn");
+
+  const MATH_FONT = '"STIX Two Text", "Cambria Math", "Computer Modern", Georgia, "Times New Roman", serif';
+  const SANS_FONT = '"Helvetica Neue", Helvetica, "Inter", Arial, sans-serif';
+
+  const THETA_M = 1.05;
+  let thetaDeg = 3.50;
+  let targetTheta = 3.50;
+  let sweeping = false;
+  let sweepPhase = 0;
+
+  const SQ3 = Math.sqrt(3);
+  const a1 = [1, 0], a2 = [0.5, SQ3 / 2];
+  const bondOffsets = [
+    [0, 1 / SQ3],
+    [0.5, -1 / (2 * SQ3)],
+    [-0.5, -1 / (2 * SQ3)],
+  ];
+  const R_PATCH = 21;
+  const BONDS = [];
+  for (let m = -24; m <= 24; m++) {
+    for (let n = -24; n <= 24; n++) {
+      const ax = m * a1[0] + n * a2[0];
+      const ay = m * a1[1] + n * a2[1];
+      if (ax * ax + ay * ay > R_PATCH * R_PATCH) continue;
+      for (const [bx, by] of bondOffsets) {
+        BONDS.push([ax, ay, ax + bx, ay + by]);
+      }
+    }
+  }
+
+  function resize(cv) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(200, cv.clientWidth);
+    const h = Math.max(200, cv.clientHeight);
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    return { w, h, dpr };
+  }
+
+  // Draw crisp LaTeX-style symbol with real subscript (e.g. L_M)
+  function drawMathSub(ctx, base, sub, x, y, size, color) {
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
+    ctx.font = `italic ${size}px ${MATH_FONT}`;
+    ctx.fillText(base, x, y);
+    const bw = ctx.measureText(base).width;
+    ctx.font = `400 ${Math.round(size * 0.68)}px ${MATH_FONT}`;
+    ctx.fillText(sub, x + bw + 0.5, y + Math.round(size * 0.24));
+    ctx.restore();
+  }
+
+  function drawLattice(ctx, angleRad, scale, cx, cy, strokeStyle, lw) {
+    const c = Math.cos(angleRad), s = Math.sin(angleRad);
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = lw;
+    ctx.beginPath();
+    for (let i = 0; i < BONDS.length; i++) {
+      const b = BONDS[i];
+      const x1 = cx + (b[0] * c - b[1] * s) * scale;
+      const y1 = cy + (b[0] * s + b[1] * c) * scale;
+      const x2 = cx + (b[2] * c - b[3] * s) * scale;
+      const y2 = cy + (b[2] * s + b[3] * c) * scale;
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+    }
+    ctx.stroke();
+  }
+
+  function drawRealSpace(thDeg) {
+    const { w, h, dpr } = resize(realCv);
+    rctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    rctx.fillStyle = "#ffffff";
+    rctx.fillRect(0, 0, w, h);
+
+    const cx = w * 0.5, cy = h * 0.52;
+    const rad = Math.min(w, h) * 0.44;
+    const scale = rad / (R_PATCH * 0.86);
+    const thRad = (thDeg * Math.PI) / 180;
+    const lm = 1 / (2 * Math.sin(Math.max(0.004, thRad * 0.5)));
+    const isMagic = Math.abs(thDeg - THETA_M) < 0.16;
+
+    rctx.save();
+    rctx.beginPath();
+    rctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    rctx.clip();
+
+    const glowStrength = Math.min(1, Math.max(0, (10 - thDeg) / 7.5));
+    if (glowStrength > 0.05) {
+      const m1 = [0, lm], m2 = [-lm * SQ3 / 2, lm * 0.5];
+      const haloR = Math.min(rad * 0.45, lm * scale * 0.36);
+      const maxIdx = Math.min(6, Math.ceil((rad / (lm * scale)) + 1));
+      for (let i = -maxIdx; i <= maxIdx; i++) {
+        for (let j = -maxIdx; j <= maxIdx; j++) {
+          const mx = cx + (i * m1[0] + j * m2[0]) * scale;
+          const my = cy + (i * m1[1] + j * m2[1]) * scale;
+          if (Math.hypot(mx - cx, my - cy) > rad + haloR) continue;
+          const g = rctx.createRadialGradient(mx, my, 0, mx, my, haloR);
+          const alpha = (isMagic ? 0.32 : 0.20) * glowStrength;
+          g.addColorStop(0, `rgba(142, 27, 34, ${alpha})`);
+          g.addColorStop(0.6, `rgba(142, 27, 34, ${alpha * 0.24})`);
+          g.addColorStop(1, "rgba(142, 27, 34, 0)");
+          rctx.fillStyle = g;
+          rctx.beginPath();
+          rctx.arc(mx, my, haloR, 0, Math.PI * 2);
+          rctx.fill();
+        }
+      }
+    }
+
+    const lw = Math.max(1.0, scale * 0.11);
+    drawLattice(rctx, -thRad * 0.5, scale, cx, cy, "rgba(138, 151, 166, 0.72)", lw);
+    drawLattice(rctx,  thRad * 0.5, scale, cx, cy, "rgba(22, 60, 102, 0.84)", lw);
+
+    // Moire superlattice vector L_M with true subscript
+    if (lm * scale < rad * 0.92 && lm * scale > 28) {
+      const xA = cx, yA = cy;
+      const xB = cx, yB = cy - lm * scale;
+      const col = isMagic ? "#8e1b22" : "#1e1d1b";
+      rctx.strokeStyle = col;
+      rctx.lineWidth = 2.2;
+      rctx.beginPath(); rctx.moveTo(xA, yA); rctx.lineTo(xB, yB); rctx.stroke();
+      for (const [px, py] of [[xA, yA], [xB, yB]]) {
+        rctx.fillStyle = col;
+        rctx.beginPath(); rctx.arc(px, py, 4.2, 0, Math.PI * 2); rctx.fill();
+      }
+      rctx.fillStyle = "rgba(255,255,255,0.94)";
+      rctx.fillRect(xA + 10, (yA + yB) * 0.5 - 14, 34, 26);
+      drawMathSub(rctx, "L", "M", xA + 15, (yA + yB) * 0.5 + 4, 17, col);
+    }
+    rctx.restore();
+
+    rctx.strokeStyle = "#dcd7ce";
+    rctx.lineWidth = 1.4;
+    rctx.beginPath();
+    rctx.arc(cx, cy, rad, 0, Math.PI * 2);
+    rctx.stroke();
+
+    lmStat.innerHTML = isMagic
+      ? `Magic angle &middot; <i>L</i><sub>M</sub> = ${lm.toFixed(1)} <i>a</i>`
+      : `<i>L</i><sub>M</sub> = ${lm.toFixed(1)} <i>a</i>`;
+    lmStat.classList.toggle("magic", isMagic);
+  }
+
+  // Exact Bistritzer-MacDonald renormalised Dirac velocity v*(theta)/v_F = (1 - 3 alpha^2)/(1 + 6 alpha^2)
+  function drawReciprocalSpace(thDeg) {
+    const { w, h, dpr } = resize(kCv);
+    kctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    kctx.fillStyle = "#ffffff";
+    kctx.fillRect(0, 0, w, h);
+
+    const alpha = (THETA_M / Math.sqrt(3)) / Math.max(0.5, thDeg);
+    const vRatio = Math.abs((1 - 3 * alpha * alpha) / (1 + 6 * alpha * alpha));
+    const isMagic = Math.abs(thDeg - THETA_M) < 0.16;
+
+    const padL = 62, padR = 24, padT = 76, padB = 64;
+    const availW = w - padL - padR;
+    const bw = availW * 0.68;
+    const dx0 = padL + bw + 20;
+    const dw = availW - bw - 20;
+    const bh = h - padT - padB;
+    const midY = padT + bh * 0.5;
+
+    // Fermi level E = 0 guide
+    kctx.strokeStyle = "#d4cec5";
+    kctx.lineWidth = 1.1;
+    kctx.setLineDash([5, 4]);
+    kctx.beginPath();
+    kctx.moveTo(padL, midY); kctx.lineTo(padL + bw, midY);
+    kctx.moveTo(dx0, midY); kctx.lineTo(dx0 + dw, midY);
+    kctx.stroke();
+    kctx.setLineDash([]);
+
+    const ticks = [[0.15, "K"], [0.50, "Γ"], [0.85, "K′"]];
+    kctx.strokeStyle = "#ede9e2";
+    kctx.lineWidth = 1;
+    for (const [u] of ticks) {
+      const tx = padL + u * bw;
+      kctx.beginPath(); kctx.moveTo(tx, padT); kctx.lineTo(tx, padT + bh); kctx.stroke();
+    }
+
+    // Remote moire bands above/below the moire gap
+    const remoteGap = 0.28 + 0.18 * Math.min(1, thDeg / 8);
+    for (const sign of [-1, 1]) {
+      kctx.beginPath();
+      kctx.strokeStyle = "#c8cfd8";
+      kctx.lineWidth = 1.5;
+      for (let i = 0; i <= 120; i++) {
+        const u = i / 120;
+        const e = sign * (remoteGap + 0.24 * Math.cos((u - 0.5) * Math.PI * 2) * 0.5 + 0.24);
+        const x = padL + u * bw;
+        const y = midY - e * (bh * 0.48);
+        if (i === 0) kctx.moveTo(x, y); else kctx.lineTo(x, y);
+      }
+      kctx.stroke();
+    }
+
+    // Sample u-grid including EXACT Dirac points u = 0.15 (K) and u = 0.85 (K') so cones touch cleanly at E = 0!
+    const uGrid = [];
+    for (let i = 0; i <= 200; i++) uGrid.push(i / 200); // 0.15 = 30/200 and 0.85 = 170/200 are exact!
+
+    // Active moire mini-bands: symmetry-protected gapless Dirac crossings at K and K' (E = 0 identically)
+    const bwScale = 0.02 + 0.44 * vRatio;
+    const activeCol = isMagic ? "#8e1b22" : "#163c66";
+    for (const sign of [-1, 1]) {
+      kctx.beginPath();
+      kctx.strokeStyle = activeCol;
+      kctx.lineWidth = isMagic ? 3.2 : 2.4;
+      kctx.lineJoin = "miter";
+      for (let i = 0; i < uGrid.length; i++) {
+        const u = uGrid[i];
+        const kDist = Math.min(Math.abs(u - 0.15), Math.abs(u - 0.85));
+        const env = Math.sin(Math.min(1, kDist / 0.35) * Math.PI * 0.5);
+        const e = sign * bwScale * env; // exactly 0 at K (u=0.15) and K' (u=0.85)
+        const x = padL + u * bw;
+        const y = midY - e * (bh * 0.48);
+        if (i === 0) kctx.moveTo(x, y); else kctx.lineTo(x, y);
+      }
+      kctx.stroke();
+    }
+
+    // Linked DOS(E): sharp flat-band peak at E = 0 as v* -> 0
+    const peakWidth = 0.035 + 0.26 * vRatio;
+    const peakAmp = Math.min(0.94, 0.22 + 0.72 / (1 + vRatio * 4.5));
+    kctx.beginPath();
+    kctx.moveTo(dx0, padT + bh);
+    for (let i = 0; i <= 140; i++) {
+      const f = i / 140;
+      const e = (f * 2 - 1);
+      const dos = peakAmp * Math.exp(-(e * e) / (2 * peakWidth * peakWidth)) + 0.10 * Math.abs(e);
+      const x = dx0 + Math.min(0.96, dos) * dw;
+      const y = padT + (1 - f) * bh;
+      kctx.lineTo(x, y);
+    }
+    kctx.lineTo(dx0, padT);
+    kctx.closePath();
+    kctx.fillStyle = isMagic ? "rgba(142, 27, 34, 0.20)" : "rgba(22, 60, 102, 0.14)";
+    kctx.fill();
+    kctx.strokeStyle = activeCol;
+    kctx.lineWidth = 1.9;
+    kctx.stroke();
+
+    // Box frames
+    kctx.strokeStyle = "#1e1d1b";
+    kctx.lineWidth = 1.3;
+    kctx.strokeRect(padL, padT, bw, bh);
+    kctx.strokeRect(dx0, padT, dw, bh);
+
+    // LaTeX-style math typography for axis labels
+    kctx.fillStyle = "#1e1d1b";
+    kctx.font = `400 17px ${MATH_FONT}`;
+    kctx.textAlign = "center";
+    for (const [u, lbl] of ticks) {
+      kctx.fillText(lbl, padL + u * bw, padT + bh + 24);
+    }
+    kctx.font = `400 15.5px ${MATH_FONT}`;
+    kctx.fillText("DOS", dx0 + dw * 0.5, padT + bh + 24);
+    kctx.fillStyle = "#6e6a63";
+    kctx.font = `400 14px ${SANS_FONT}`;
+    kctx.fillText("Moiré BZ path", padL + bw * 0.5, padT + bh + 48);
+
+    // Y-axis Energy E label
+    kctx.save();
+    kctx.fillStyle = "#1e1d1b";
+    kctx.translate(22, midY);
+    kctx.rotate(-Math.PI / 2);
+    kctx.textAlign = "center";
+    kctx.font = `400 16px ${MATH_FONT}`;
+    kctx.fillText("Energy  ", -12, 0);
+    kctx.font = `italic 17px ${MATH_FONT}`;
+    kctx.fillText("E", 24, 0);
+    kctx.restore();
+
+    kctx.textAlign = "right";
+    kctx.font = `400 14.5px ${MATH_FONT}`;
+    kctx.fillStyle = "#6e6a63";
+    kctx.fillText("0", padL - 8, midY + 5);
+
+    // Live velocity ratio annotation with true superscript/subscript (v* / v_F)
+    kctx.save();
+    kctx.fillStyle = activeCol;
+    kctx.textAlign = "left";
+    let ax = padL + 12, ay = padT + 26;
+    kctx.font = `italic 17px ${MATH_FONT}`;
+    kctx.fillText("v", ax, ay);
+    ax += kctx.measureText("v").width;
+    kctx.font = `400 13px ${MATH_FONT}`;
+    kctx.fillText("*", ax, ay - 6);
+    ax += kctx.measureText("*").width + 2;
+    kctx.font = `400 16px ${MATH_FONT}`;
+    kctx.fillText("/ ", ax, ay);
+    ax += kctx.measureText("/ ").width;
+    kctx.font = `italic 17px ${MATH_FONT}`;
+    kctx.fillText("v", ax, ay);
+    ax += kctx.measureText("v").width;
+    kctx.font = `400 12px ${MATH_FONT}`;
+    kctx.fillText("F", ax, ay + 4);
+    ax += kctx.measureText("F").width + 5;
+    kctx.font = `400 16px ${MATH_FONT}`;
+    kctx.fillText(isMagic ? "≈ 0  (flat band)" : `= ${vRatio.toFixed(2)}`, ax, ay);
+    kctx.restore();
+  }
+
+  function render() {
+    valEl.innerHTML = thetaDeg.toFixed(2) + "&deg;";
+    const isMagic = Math.abs(thetaDeg - THETA_M) < 0.16;
+    valEl.classList.toggle("magic", isMagic);
+    drawRealSpace(thetaDeg);
+    drawReciprocalSpace(thetaDeg);
+  }
+
+  const presetBtns = Array.from(document.querySelectorAll(".btn[data-th]"));
+  function setActivePreset(val) {
+    presetBtns.forEach(b => b.classList.toggle("on", Math.abs(parseFloat(b.getAttribute("data-th")) - val) < 0.12));
+  }
+  slider.oninput = e => {
+    sweeping = false; sweepBtn.classList.remove("on");
+    thetaDeg = targetTheta = parseFloat(e.target.value);
+    setActivePreset(thetaDeg);
+    render();
+  };
+  presetBtns.forEach(b => {
+    b.onclick = () => {
+      sweeping = false; sweepBtn.classList.remove("on");
+      targetTheta = parseFloat(b.getAttribute("data-th"));
+      setActivePreset(targetTheta);
+    };
+  });
+  sweepBtn.onclick = () => {
+    sweeping = !sweeping;
+    sweepBtn.classList.toggle("on", sweeping);
+    if (sweeping) presetBtns.forEach(b => b.classList.remove("on"));
+  };
+
+  window.addEventListener("resize", render);
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (sweeping) {
+      sweepPhase += dt * 0.42;
+      const u = 0.5 - 0.5 * Math.cos(sweepPhase);
+      thetaDeg = targetTheta = 1.05 + 8.5 * Math.pow(u, 1.55);
+      slider.value = thetaDeg.toFixed(2);
+      render();
+    } else if (Math.abs(thetaDeg - targetTheta) > 0.005) {
+      thetaDeg += (targetTheta - thetaDeg) * Math.min(1, dt * 8.5);
+      slider.value = thetaDeg.toFixed(2);
+      render();
+    }
+    requestAnimationFrame(loop);
+  }
+  render();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

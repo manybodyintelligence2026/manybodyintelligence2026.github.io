@@ -1,0 +1,50 @@
+/* deck.css: shared slide furniture (stage, header, pill, title, inked boxes, toy-model text). */
+@import url('fonts/fira.css');
+:root {
+  --ink: #F4EFE3; --black: #161414; --white: #F5F2EC; --page: #FBFAF7;
+  --sf: #C7DDAE; --hook: #FFD375; --muted: #5E5858;
+  /* role colours: phonons / condensate / Delta_0 green (dark sage lines, pastel tints), electrons blue (text/curves + pale tints for equation terms) */
+  --ph: #3F7330; --ph-tint: #DCE8CF; --elc: #2E6FC2; --el-tint: #CFE4FB;
+}
+html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
+#stage {
+  position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+  font-family: 'Fira Sans', Arial, sans-serif; color: var(--black); background: var(--page); overflow: hidden;
+}
+#bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+.header {
+  position: absolute; right: 0; top: 0; height: 79px; color: var(--white); background: var(--black);
+  display: flex; align-items: center; gap: 14px; padding: 0 22px 0 14px; box-sizing: border-box;
+}
+.header img { width: 76px; height: 75px; }
+.header .who { line-height: 1.25; white-space: nowrap; }
+.header .name { font-weight: bold; font-size: 21px; }
+.header .sess { font-size: 18px; }
+.header .num { display: inline-block; min-width: 1.6em; }
+.pill {
+  position: absolute; left: 79px; top: 52px; background: var(--black); color: var(--white); font-weight: bold;
+  font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 20px; border-radius: 999px;
+}
+h1 { position: absolute; left: 79px; top: 92px; margin: 0; font-size: 60px; text-transform: uppercase; }
+.inked { position: absolute; border: 4px solid var(--black); box-shadow: 10px 10px 0 var(--black); }
+.inked canvas { display: block; }
+
+/* toy-model text, in the talk's voice: bold lead-in, colour-coded nouns, tinted Hamiltonian terms */
+.lead { position: absolute; font-size: 34px; }
+.lead b { font-weight: bold; }
+.ion { color: var(--ph); }
+.el { color: var(--elc); }
+.term { display: inline-block; border-radius: 10px; padding: 4px 12px; }
+.term.ion-t { background: var(--ph-tint); }
+.term.el-t { background: var(--el-tint); }
+.eqblock { position: absolute; }
+.eqblock .cap { font-size: 26px; font-style: italic; color: var(--muted); margin: 0 0 4px 6px; }
+.eqblock .head { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+.eqblock .arrow { font-size: 40px; line-height: 1; color: var(--black); margin: 10px 0 10px 24px; }
+.eqbox { display: inline-block; border: 3px solid var(--black); background: #fff; padding: 10px 18px; font-size: 40px; }
+.hook {
+  position: absolute; background: var(--hook); border: 3px solid var(--black); box-shadow: 6px 6px 0 var(--black);
+  padding: 18px 26px; font-size: 32px; transition: opacity 0.5s, transform 0.5s;
+}
+.hook.hidden { opacity: 0; transform: translateY(12px); }
+.katex { font-size: 1em; }

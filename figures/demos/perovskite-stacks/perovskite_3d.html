@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ABO3 Perovskite Soft Phonon · Three.js WebGL (MBI 2026)</title>
+<style>
+  :root {
+    --paper: #e6e0d8;
+    --card: #f6f4ef;
+    --ink: #1e1d1b;
+    --muted: #6e6a63;
+    --hairline: #d6cfc5;
+    --teal: #1d5e57;
+    --crimson: #8e1b22;
+    --sans: "Helvetica Neue", Helvetica, "Inter", Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: var(--paper); color: var(--ink); font: 13px/1.4 var(--sans); }
+  body.hero { background: #f6f4ef; }
+  .wrap { display: flex; flex-direction: column; height: 100%; width: 100%; }
+  .vp { position: relative; flex: 1 1 auto; min-height: 0; }
+  canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  .controls {
+    flex: none; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 8px 12px; background: var(--card); border-top: 1px solid var(--hairline);
+    font-size: 12.5px;
+  }
+  button {
+    font: 500 12px var(--sans);
+    background: #ffffff; color: var(--ink); border: 1px solid #c5bfb4; border-radius: 3px;
+    padding: 4px 10px; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  button:hover { border-color: var(--ink); }
+  button.active { background: var(--teal); color: #fff; border-color: var(--teal); box-shadow: none; }
+  label { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); margin-left: 4px; }
+  label span { color: var(--ink); min-width: 28px; display: inline-block; }
+  input[type=range] { accent-color: var(--teal); width: 72px; cursor: pointer; }
+  body.nochrome .controls, body.hero .controls { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="vp" id="vp"></div>
+  <div class="controls">
+    <button id="playBtn">Pause</button>
+    <button id="mTilt" class="active">AFD tilt</button>
+    <button id="mBreath">Breathing</button>
+    <button id="octBtn" class="active">Octahedra</button>
+    <label><i>&phi;</i> <input id="amp" type="range" min="0" max="18" step="0.5" value="12"><span id="ampVal">12&deg;</span></label>
+  </div>
+</div>
+<script src="../../assets/lib/three.min.js"></script>
+<script>
+(() => {
+  // 2x2x2 cubic perovskite ABO3 (e.g. SrTiO3) undergoing Glazer a0a0c- antiferrodistortive octahedral tilting
+  // or Jahn-Teller / breathing optical phonon mode. 100% offline Three.js WebGL.
+  const params = new URLSearchParams(location.search);
+  const fixedT = params.has("t") ? parseFloat(params.get("t")) : null;
+  const isHero = params.get("hero") === "1";
+  if (params.get("chrome") === "0") document.body.classList.add("nochrome");
+  if (isHero) document.body.classList.add("hero");
+  const reduceMotion = matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const vp = document.getElementById("vp");
+  const state = {
+    t: fixedT !== null ? fixedT : 0.20,
+    playing: fixedT === null && !reduceMotion,
+    mode: "tilt",
+    showOct: true,
+    ampDeg: isHero ? 11.0 : 12.0,
+    az: 0.62,
+    el: 0.42,
+    dist: 18,
+  };
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.toneMapping = THREE.NoToneMapping;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  vp.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(isHero ? 0xf6f4ef : 0xe6e0d8);
+
+  const frustum = isHero ? 3.85 : 4.65;
+  const camera = new THREE.OrthographicCamera(-frustum, frustum, frustum, -frustum, 0.1, 100);
+
+  function updateCamera() {
+    const w = Math.max(200, vp.clientWidth);
+    const h = Math.max(150, vp.clientHeight);
+    const asp = w / h;
+    const fh = frustum / Math.min(1, asp);
+    camera.left = -fh * asp; camera.right = fh * asp;
+    camera.top = fh; camera.bottom = -fh;
+    camera.updateProjectionMatrix();
+    camera.position.set(
+      state.dist * Math.cos(state.el) * Math.sin(state.az),
+      state.dist * Math.sin(state.el),
+      state.dist * Math.cos(state.el) * Math.cos(state.az)
+    );
+    camera.lookAt(0, 0, 0);
+    renderer.setSize(w, h, false);
+  }
+
+  scene.add(new THREE.HemisphereLight(0xfffdf9, 0xbab3a8, 1.05));
+  const key = new THREE.DirectionalLight(0xfffaf2, 1.15);
+  key.position.set(9, 13, 10);
+  scene.add(key);
+  const rim = new THREE.DirectionalLight(0xdbe8f8, 0.55);
+  rim.position.set(-10, 6, -9);
+  scene.add(rim);
+
+  const matB = new THREE.MeshStandardMaterial({ color: 0x163c66, roughness: 0.22, metalness: 0.25 });
+  const matO = new THREE.MeshStandardMaterial({ color: 0xd46a43, roughness: 0.26, metalness: 0.10 });
+  const matA = new THREE.MeshStandardMaterial({ color: 0x9b9388, roughness: 0.30, metalness: 0.22 });
+  const matOct = new THREE.MeshStandardMaterial({
+    color: 0x2a5c8a, roughness: 0.18, metalness: 0.05,
+    transparent: true, opacity: 0.42, side: THREE.DoubleSide, depthWrite: false,
+  });
+  const matEdge = new THREE.LineBasicMaterial({ color: 0x14365d, transparent: true, opacity: 0.72 });
+
+  const sphereB = new THREE.SphereGeometry(0.28, 22, 18);
+  const sphereO = new THREE.SphereGeometry(0.185, 18, 14);
+  const sphereA = new THREE.SphereGeometry(0.32, 24, 18);
+
+  function makeOctGroup() {
+    const grp = new THREE.Group();
+    grp.add(new THREE.Mesh(sphereB, matB));
+    const oGeo = new THREE.OctahedronGeometry(1.0, 0);
+    const octMesh = new THREE.Mesh(oGeo, matOct);
+    const octWire = new THREE.LineSegments(new THREE.EdgesGeometry(oGeo), matEdge);
+    grp.add(octMesh, octWire);
+
+    const oDirs = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+    const oxygens = oDirs.map(([dx, dy, dz]) => {
+      const m = new THREE.Mesh(sphereO, matO);
+      m.position.set(dx, dy, dz);
+      grp.add(m);
+      return m;
+    });
+    return { grp, octMesh, octWire, oxygens };
+  }
+
+  const A_LAT = 2.0;
+  const octs = [];
+  for (let ix = 0; ix < 2; ix++) {
+    for (let iy = 0; iy < 2; iy++) {
+      for (let iz = 0; iz < 2; iz++) {
+        const o = makeOctGroup();
+        o.ix = ix; o.iy = iy; o.iz = iz;
+        o.basePos = new THREE.Vector3((ix - 0.5) * A_LAT, (iy - 0.5) * A_LAT, (iz - 0.5) * A_LAT);
+        o.grp.position.copy(o.basePos);
+        scene.add(o.grp);
+        octs.push(o);
+      }
+    }
+  }
+
+  scene.add(new THREE.Mesh(sphereA, matA));
+  scene.add(new THREE.LineSegments(
+    new THREE.EdgesGeometry(new THREE.BoxGeometry(A_LAT * 2, A_LAT * 2, A_LAT * 2)),
+    new THREE.LineBasicMaterial({ color: 0xb0a79b, transparent: true, opacity: 0.45 })
+  ));
+
+  function seek(t) {
+    const s = Math.sin(2 * Math.PI * t);
+    const phiRad = (state.ampDeg * Math.PI / 180) * s;
+
+    for (const o of octs) {
+      o.octMesh.visible = state.showOct;
+      o.octWire.visible = state.showOct;
+      const parity = ((o.ix + o.iz) % 2 === 0 ? 1 : -1) * (o.iy % 2 === 0 ? 1 : -1);
+      if (state.mode === "tilt") {
+        const c = Math.cos(phiRad);
+        o.grp.position.set(o.basePos.x * c, o.basePos.y, o.basePos.z * c);
+        o.grp.rotation.set(0, parity * phiRad, 0);
+        o.grp.scale.set(1, 1, 1);
+      } else {
+        const br = 1 + (state.ampDeg / 18) * 0.16 * parity * s;
+        o.grp.position.copy(o.basePos);
+        o.grp.rotation.set(0, 0, 0);
+        o.grp.scale.set(br, 1 / Math.sqrt(br), br);
+      }
+    }
+    renderer.render(scene, camera);
+  }
+  window.MBIScene = { seek, state };
+
+  const playBtn = document.getElementById("playBtn");
+  const mTilt = document.getElementById("mTilt");
+  const mBreath = document.getElementById("mBreath");
+  const octBtn = document.getElementById("octBtn");
+  playBtn.onclick = () => { state.playing = !state.playing; playBtn.textContent = state.playing ? "Pause" : "Play"; };
+  mTilt.onclick = () => { state.mode = "tilt"; mTilt.classList.add("active"); mBreath.classList.remove("active"); seek(state.t); };
+  mBreath.onclick = () => { state.mode = "breath"; mBreath.classList.add("active"); mTilt.classList.remove("active"); seek(state.t); };
+  octBtn.onclick = () => { state.showOct = !state.showOct; octBtn.classList.toggle("active", state.showOct); seek(state.t); };
+  document.getElementById("amp").oninput = e => {
+    state.ampDeg = parseFloat(e.target.value);
+    document.getElementById("ampVal").innerHTML = state.ampDeg.toFixed(0) + "&deg;";
+    seek(state.t);
+  };
+
+  let drag = null;
+  renderer.domElement.addEventListener("pointerdown", e => {
+    drag = { x: e.clientX, y: e.clientY, az: state.az, el: state.el };
+    renderer.domElement.setPointerCapture(e.pointerId);
+  });
+  renderer.domElement.addEventListener("pointermove", e => {
+    if (!drag) return;
+    state.az = drag.az - (e.clientX - drag.x) * 0.008;
+    state.el = Math.max(-1.1, Math.min(1.2, drag.el + (e.clientY - drag.y) * 0.006));
+    updateCamera(); seek(state.t);
+  });
+  renderer.domElement.addEventListener("pointerup", () => { drag = null; });
+  window.addEventListener("resize", () => { updateCamera(); seek(state.t); });
+
+  updateCamera();
+  playBtn.textContent = state.playing ? "Pause" : "Play";
+  seek(state.t);
+
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    if (state.playing) {
+      state.t = (state.t + dt * (isHero ? 0.24 : 0.34)) % 1;
+      if (isHero && !drag) {
+        state.az += dt * 0.12;
+        updateCamera();
+      }
+      seek(state.t);
+    }
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

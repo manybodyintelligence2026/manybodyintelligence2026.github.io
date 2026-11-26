@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Peierls Distortion</title>
+<link rel="stylesheet" href="../lib/katex/katex.min.css">
+<link rel="stylesheet" href="../lib/deck.css?v=10">
+<style>
+  #box { left: 79px; top: 262px; }
+  /* 5 Nov: the Delta E plots are gone; the band carries the energy argument (occupied states sink as the gap opens),
+     the equation states it, and u* is marked on the Distortion slider. Clicks drive the sliders. */
+  #eqs { left: 820px; top: 560px; transform: scale(0.82); transform-origin: 0 0; transition: opacity .6s; }
+  #bandWrap { position: absolute; left: 79px; top: 500px; }
+  #bandWrap canvas { display: block; }
+  #hook { left: 820px; top: 830px; width: 600px; white-space: normal; line-height: 1.3; padding: 14px 24px; font-size: 30px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="bg"></canvas>
+  <div class="header">
+    <img src="../assets/uu_seal.png" alt="Uppsala University">
+    <div class="who"><div class="name">Pramodh Senarath Yapa</div><div class="sess"><span class="num">10</span>|&ensp;Division Seminar</div></div>
+  </div>
+  <span class="pill">Part 2 &middot; Peierls</span>
+  <h1>The Peierls instability</h1>
+  <div class="lead" style="left:79px; top:186px"><b>Peierls distortion:</b> the ions shift with a new period set by 2<i>k</i><sub>F</sub>.</div>
+
+  <div class="inked" id="box"><canvas id="sim"></canvas></div>
+
+  <div class="eqblock" id="eqs" style="opacity:0">
+    <div class="eqbox" id="eqE1" data-tex="\Delta E_{\mathrm{tot}}(u) \approx {\color{#3F7330}\colorbox{#DCE8CF}{$K$}u^2} \;-\; {\color{#2E6FC2}\frac{g^2}{\pi v_F}\,u^2\ln\frac{\Lambda}{gu}}"></div>
+    <div class="unf">
+      <div class="arrow">&darr;</div>
+      <div class="eqbox" data-tex="u_* \propto \exp\!\left(-\frac{\pi v_F K}{g^2}\right)"></div>
+    </div>
+  </div>
+
+  <div id="bandWrap"><canvas id="band"></canvas></div>
+
+  <div class="hook hidden" id="cdw" style="left:1090px; top:430px; background:#CFE4FB; padding:10px 22px; font-size:30px; border-color:#2E6FC2; box-shadow:6px 6px 0 #2E6FC2">The <span class="el"><b>electrons</b></span> bunch: a <b>charge-density wave</b> (CDW)</div>
+  <div class="hook hidden" id="hook">The <span class="ion">lattice distortion</span> <b>lowers the total energy</b> and <b>gaps out the <span class="el">electrons</span></b>!</div>
+</div>
+
+<script src="../lib/deckslide.js?v=10"></script>
+<script src="../lib/katex/katex.min.js"></script>
+<script src="../lib/stipple.js?v=10"></script>
+<script src="../lib/stage.js?v=10"></script>
+<script src="../lib/plot.js?v=10"></script>
+<script src="../lib/chain.js?v=10"></script>
+<script src="../lib/ui.js?v=10"></script>
+<script>
+(function () {
+  'use strict';
+  Stage.tex();
+  const PI = Math.PI, PH = '#3F7330', ELC = '#2E6FC2';
+  const stage = document.getElementById('stage');
+  const N = 24;                                      // divisible by the periods 2, 3, 4, 6, 8, 12
+
+  // ---- model (t = g = 1), generic filling n: the distortion u_i = u cos(Q x_i), Q = 2k_F,
+  // mixes k with k -+ Q and opens a gap 2*Delta at +-k_F, Delta = g u (two-band model):
+  //   E(k) = (xi_k + xi_{k-Q})/2 + sgn(xi_k - xi_{k-Q}) sqrt(((xi_k - xi_{k-Q})/2)^2 + Delta^2),
+  // xi_k = -2t cos k - mu. Electronic energy = occupied states (|k| < k_F) on the lower branch.
+  // Elastic cost K u^2 (K = stiffness of the 2k_F mode). Calibrated: u* ~ 0.26 at n = 2/3.
+  const K = 0.5, U_MAX = 0.5;
+  const xi = (k, n) => -2 * Math.cos(k) + 2 * Math.cos(n * PI / 2);
+  function Ek(k, n, D) {
+    const Q = n * PI, a = xi(k, n), b = xi(k - Math.sign(k || 1) * Q, n), m = (a + b) / 2, h = (a - b) / 2;
+    return m + Math.sign(h || 1) * Math.sqrt(h * h + D * D);
+  }
+  function dEel(n, D) {
+    const kF = n * PI / 2, M = 500; let s = 0;
+    for (let i = 0; i < M; i++) { const k = -kF + 2 * kF * (i + 0.5) / M; s += Ek(k, n, D) - xi(k, n); }
+    return 2 * s * (2 * kF / M) / (2 * PI);
+  }
+  const NU = 145, us = Array.from({ length: NU }, (_, i) => U_MAX * i / (NU - 1)), dEs = us.map(u => K * u * u);
+  const cache = new Map();
+  function energies(nIn) {
+    const n = Math.min(nIn, 2 - nIn);                  // particle-hole symmetry: n and 2 - n give the same energies
+    const key = n.toFixed(4);
+    if (cache.has(key)) return cache.get(key);
+    const dEl = us.map(u => dEel(n, u)), dTot = us.map((u, i) => dEs[i] + dEl[i]);
+    const iStar = dTot.indexOf(Math.min(...dTot));
+    const out = { dEl, dTot, uStar: us[iStar], tMin: Math.min(...dTot) };
+    cache.set(key, out);
+    return out;
+  }
+
+  // ---- state ---------------------------------------------------------------------------------
+  // filling snaps so that Q = 2k_F = n*pi fits the chain: n = 2m/N
+  const N_LO = 1 / 3, N_HI = 5 / 3;                  // symmetric about half filling
+  const snapN = v => Math.max(N_LO, Math.min(N_HI, Math.round((N_LO + v * (N_HI - N_LO)) * N / 2) * 2 / N));
+  const FILL0 = 0.75;                                // start above half filling (3/4 up the slider)
+  let u = 0, n = snapN(FILL0);
+
+  // ---- views ---------------------------------------------------------------------------------
+  const chain = new Chain(document.getElementById('sim'), { N, width: 1762, height: 200, ionD: 46, yIon: 0.52 });
+  chain.showRef = true;
+  chain.uLabel = 0;
+  const band = new Axes(document.getElementById('band'), {
+    width: 720, height: 520, pad: [100, 52, 24, 84], xlim: [-PI, PI], ylim: [-3.4, 1.8],   // zoomed so the gap shows
+    xticks: [[-PI, ''], [0, '0'], [PI, '']], yticks: [[0, '0']], xlabel: 'k', ylabel: 'E(k)'
+  });
+  Stage.init(k => { chain.layout(k); band.layout(k); });
+  const legend = UI.chainLegend(stage, chain, { top: 190 });
+  { const fq = new URLSearchParams(location.search).get('fade'); if (fq) legend.toggle(fq); }   // debug: ?fade=ions|el
+
+  const dist = UI.vslider({ parent: stage, x: 1548, y: 520, scale: 0.62, label: 'Distortion', value: 0,
+    onInput: v => { u = v * U_MAX; } });
+  const fill = UI.vslider({ parent: stage, x: 1728, y: 520, scale: 0.62, label: 'Filling', labelColor: ELC,
+    value: FILL0, onInput: v => { n = snapN(v); remark(); } });
+  // builds: 0 = chain + band (u = 0); 1 = the Distortion slider glides to u* (gap opens, states sink);
+  // 2 = the equation, the u* mark and the answer box
+  let step = 0, el = 1;
+  fill.relabel([{ v: (1 - N_LO) / (N_HI - N_LO), sym: 'half', plain: true }]);
+  function remark() { dist.relabel(step >= 2 ? [{ v: energies(n).uStar / U_MAX, sym: 'u', sub: '*' }] : []); }
+  remark();
+
+  // ---- band with the Peierls gaps at +-k_F; occupied states on the lower branch ---------------
+  const kStates = Array.from({ length: N }, (_, j) => -PI + 2 * PI * (j + 0.5) / N);
+  function drawBand() {
+    const c = band.ctx, kF = n * PI / 2, D = u * el;
+    band.clear(); band.clip(true);
+    band.fillRect(-PI, -3.4, PI, 0, 'rgba(22,20,20,0.06)');
+    band.hline(0, { color: '#161414', width: 1.5, dash: [] });
+    for (const s of [-1, 1]) band.vline(s * kF, { color: ELC, width: 2 });
+    band.line(k => Ek(k, n, D), { color: ELC, width: 7, range: [-kF + 1e-4, kF - 1e-4] });
+    band.line(k => Ek(k, n, D), { color: ELC, width: 2.5, range: [-PI, -kF - 1e-4] });
+    band.line(k => Ek(k, n, D), { color: ELC, width: 2.5, range: [kF + 1e-4, PI] });
+    // the energy the electrons gain: the occupied states sink below where they were (tinted, with arrows)
+    if (D > 0.005) {
+      const xs = [], top = [], bot = [];
+      for (let q = 0; q <= 160; q++) { const kk = -kF + 2 * kF * q / 160; xs.push(kk); top.push(xi(kk, n)); bot.push(Ek(kk, n, D)); }
+      c.beginPath();
+      xs.forEach((kk, q) => { const [px, py] = band.toPix(kk, top[q]); q ? c.lineTo(px, py) : c.moveTo(px, py); });
+      for (let q = xs.length - 1; q >= 0; q--) { const [px, py] = band.toPix(xs[q], bot[q]); c.lineTo(px, py); }
+      c.closePath(); c.fillStyle = 'rgba(46,111,194,0.28)'; c.fill();
+      for (const k of kStates) {
+        if (Math.abs(k) >= kF) continue;
+        const e0 = xi(k, n), e1 = Ek(k, n, D), [px, p0] = band.toPix(k, e0), [, p1] = band.toPix(k, e1);
+        if (p1 - p0 < 6) continue;
+        c.beginPath(); c.arc(px, p0, 5, 0, 2 * PI); c.strokeStyle = 'rgba(46,111,194,0.7)'; c.lineWidth = 1.6; c.stroke();
+        c.strokeStyle = '#161414'; c.fillStyle = '#161414'; c.lineWidth = 2;
+        c.beginPath(); c.moveTo(px, p0 + 7); c.lineTo(px, p1 - 9); c.stroke();
+        c.beginPath(); c.moveTo(px, p1 - 6); c.lineTo(px - 5, p1 - 14); c.lineTo(px + 5, p1 - 14); c.fill();
+      }
+    }
+    for (const k of kStates) {
+      const occ = Math.abs(k) < kF, [px, py] = band.toPix(k, Ek(k, n, D));
+      c.beginPath(); c.arc(px, py, 5, 0, 2 * PI);
+      c.fillStyle = occ ? ELC : '#FBFAF7'; c.fill();
+      c.lineWidth = 1.6; c.strokeStyle = '#161414'; c.stroke();
+    }
+    band.clip(false); band.frame();
+    const y = band.box().y0 - 20;
+    c.fillStyle = ELC; c.textBaseline = 'middle';
+    for (const s of [-1, 1]) Axes.rich(c, (s < 0 ? '−' : '') + 'k_F', band.toPix(s * kF, 0)[0], y, 28, 'center', true);
+  }
+
+  // ---- build and keys ----------------------------------------------------------------------
+  const hook = document.getElementById('hook');
+  let glide = null;                                  // the Distortion slider's target while a click drives it
+  Deck.slide({ steps: 3, onStep: k => setStep(k) });
+  addEventListener('keydown', e => {
+    if (e.key === 'ArrowUp') dist.set(dist.get() + 0.025);
+    else if (e.key === 'ArrowDown') dist.set(dist.get() - 0.025);
+    else if (e.key === 'r' || e.key === 'R') { dist.set(0); setStep(0); }
+  });
+  // the clicks move the Distortion slider (a glide); grabbing the slider cancels the glide
+  dist.svg.addEventListener('pointerdown', () => { glide = null; });
+  function setStep(sn) {
+    const prev = step;
+    step = Math.max(0, Math.min(3, sn)); hook.classList.toggle('hidden', step < 2); remark();
+    document.getElementById('cdw').classList.toggle('hidden', step < 3);      // 3: the electrons form a CDW
+    document.getElementById('eqs').style.opacity = step >= 2 ? 1 : 0;
+    if (step === 0) glide = 0;                                         // back to the undistorted chain
+    else if (prev === 0 || step === 1) glide = energies(n).uStar / U_MAX;   // into the minimum
+  }
+  const qs = new URLSearchParams(location.search);
+  if (qs.has('n')) fill.set((+qs.get('n') - N_LO) / (N_HI - N_LO));
+  if (qs.has('u')) dist.set(+qs.get('u') / U_MAX);
+  if (qs.has('step')) { setStep(+qs.get('step')); if (glide !== null) { dist.set(glide); glide = null; } }
+
+  // chain: every ion shifts, u_i = u cos(Q i) (drawn x0.6); the electrons gather where the ions
+  // bunch (density ~ -du/dx ~ sin(Q i)), a CDW with the same period pi/k_F
+  function tick(now) {
+    const t = now / 1000, A = 0.6 * u, Q = n * PI;
+    for (let i = 0; i < N; i++)
+      chain.u[i] = A * Math.cos(Q * i) + 0.008 * Math.sin(2.1 * t + 1.7 * i) * Math.cos(1.3 * t + 0.9 * i);
+    if (glide !== null) {
+      const v = dist.get(), nv = v + (glide - v) * 0.045;
+      if (Math.abs(glide - nv) < 0.002) { dist.set(glide); glide = null; } else dist.set(nv);
+    }
+    // the cloud is continuous, so it must use the folded wavevector (equal to Q on the lattice sites)
+    Object.assign(chain.cloud, { n, q: Math.min(Q, 2 * PI - Q), phase: 0, mod: el * Math.min(0.85, 2.4 * u), frozen: false });
+    // bracket ends sit mid-way across the widest gap, so it frames one repeating group of ions
+    // (above half filling 2k_F folds back to 2pi - 2k_F, so the period is 2/(2 - n) sites)
+    const per = 2 / Math.min(n, 2 - n);
+    let iGap = 0, best = -Infinity;
+    for (let i = 0; i < Math.ceil(per); i++) { const g = Math.cos(Q * (i + 1)) - Math.cos(Q * i); if (g > best) { best = g; iGap = i; } }
+    chain.period = u > 0.01 ? { i0: iGap + 0.5 + (iGap < 1 ? Math.round(per) : 0), len: per } : null;
+    chain.draw(); drawBand();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

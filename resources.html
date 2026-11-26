@@ -4,11 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Resources · Many-Body Intelligence</title>
-<meta name="description" content="Guides, prompts and Claude skills for the Many-Body Intelligence hackathon.">
+<meta name="description" content="Phase-by-phase guides, example prompts, slides, and Claude Code skills for the Many-Body Intelligence 2026 hackathon.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<style>
+  code {
+    font-family: var(--mono); background: var(--paper-deep);
+    border: 1px solid var(--rule); padding: 0.04em 0.32em; font-size: 0.9em; border-radius: 2px;
+  }
+  .phase-list { display: flex; flex-direction: column; gap: 0.9rem; margin: 1.2rem 0 1.8rem; }
+  .phase-card {
+    background: var(--paper-deep); border: 1px solid var(--rule);
+    padding: 1rem 1.2rem;
+  }
+  .phase-card.live { border-left: 4px solid #1d5e57; }
+  @media (prefers-color-scheme: dark) {
+    .phase-card.live { border-left-color: #3da598; }
+  }
+  .phase-top {
+    display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between;
+    gap: 0.3rem 1rem; margin-bottom: 0.4rem;
+  }
+  .phase-title { font-weight: 600; font-size: 1rem; }
+  .phase-time {
+    font-size: 0.76rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--faded);
+  }
+  .badge-status {
+    display: inline-block; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0.16em 0.55em; margin-left: 0.45rem; vertical-align: 0.08em;
+  }
+  .badge-status.ready { background: #1d5e57; color: #fff; }
+  .badge-status.soon { border: 1px solid var(--rule); color: var(--faded); }
+  .phase-card p { margin: 0.35rem 0 0; font-size: 0.9rem; line-height: 1.55; }
+  .phase-card code { background: var(--paper); }
+  .action-row { display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center; margin-top: 0.85rem; }
+  .btn-link {
+    display: inline-block; font: 600 0.8rem var(--mono); text-decoration: none;
+    background: #1d5e57; color: #fff !important; padding: 0.48em 0.95em; border: 1px solid #1d5e57;
+  }
+  .btn-link:hover { background: var(--ink); border-color: var(--ink); color: var(--paper) !important; }
+  .btn-link.sec { background: transparent; color: var(--ink) !important; border: 1px solid var(--ink); }
+  .btn-link.sec:hover { background: var(--ink); color: var(--paper) !important; }
+</style>
 </head>
 <body>
 <div class="bar">
@@ -16,13 +55,83 @@
   <nav>
     <a href="faq.html">FAQ</a>
     <a href="code-of-conduct.html">Code of conduct</a>
+    <a href="resources.html" aria-current="page">Resources</a>
   </nav>
 </div>
 
 <main>
   <h1 class="tape">Resources</h1>
-  <p style="margin-top:1.6rem">Guides, example prompts and Claude skills for the day. Coming before
-  the online session the week before the event.</p>
+  <p class="lede">Guides, Claude Code skills, starter templates, and slides for <strong>Monday 30 November</strong>, organised by phase of the day.</p>
+
+  <h2>Before the day</h2>
+  <div class="phase-list">
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title"><a href="setup.html">Setup guide</a> &amp; <a href="onboarding.html">Onboarding slides</a></span>
+        <span class="phase-time">Before 30 Nov</span>
+      </div>
+      <p>Get Discord, Claude Code, Python, and your team's GitHub repository working, agree on a research idea in <code>our-idea/</code>, and try one practice log entry (<code>/log-entry</code>).</p>
+    </div>
+  </div>
+
+  <h2>On the day (by phase)</h2>
+  <div class="phase-list">
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title">1 &middot; Scope <span class="badge-status soon">Coming soon</span></span>
+        <span class="phase-time">09:15&ndash;10:15</span>
+      </div>
+      <p>Sharpen the research question, run a focused literature check, decide what &ldquo;done&rdquo; means by 17:00, and split tasks. Your team repository already includes the <code>/scope-to-one-day</code> skill.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title">2 &middot; First attempt &amp; First result <span class="badge-status soon">Coming soon</span></span>
+        <span class="phase-time">10:15&ndash;12:15</span>
+      </div>
+      <p>Get a first derivation or calculation running, coordinate parallel Claude Code sessions across your team's repository, and record tasks and milestones with <code>/log-entry</code> and <code>/stage</code>.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title">3 &middot; Check <span class="badge-status soon">Coming soon</span></span>
+        <span class="phase-time">13:00&ndash;14:00</span>
+      </div>
+      <p>Run independent cross-checks (limiting cases, symmetries, units, convergence, analytic vs. numerical, or a second Claude session trying to break the result) and record them in <code>checks/checks.md</code>.</p>
+    </div>
+
+    <div class="phase-card live">
+      <div class="phase-top">
+        <span class="phase-title"><a href="figures/">4 &middot; Figures &amp; presentation</a> <span class="badge-status ready">Available</span></span>
+        <span class="phase-time">14:00&ndash;15:00</span>
+      </div>
+      <p>Five Claude Code skills (<code>/figure-style</code>, <code>/schematic</code>, <code>/render-and-look</code>, <code>/html-animation</code>, <code>/blender-scene</code>), starter templates, interactive examples, and copy-and-paste prompts for your 2-page note and 15:45 lightning talk.</p>
+      <div class="action-row">
+        <a class="btn-link" href="figures/">Open Figures &amp; presentation guide &rarr;</a>
+        <a class="btn-link sec" href="figures/slides/">Talk slides (12 slides)</a>
+        <a class="btn-link sec" href="figures/mbi2026-figure-skills.zip" download>Skills pack (.zip)</a>
+      </div>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title">5 &middot; Write <span class="badge-status soon">Coming soon</span></span>
+        <span class="phase-time">15:00&ndash;15:45</span>
+      </div>
+      <p>Write the 2-page note in <code>note/note.md</code> (question, method, checked results, AI-use record, open issues), run <code>/log-check</code>, and fill in <code>CONTRIBUTIONS.md</code>.</p>
+    </div>
+
+    <div class="phase-card">
+      <div class="phase-top">
+        <span class="phase-title">6 &middot; Lightning talks &amp; Peer review <span class="badge-status soon">Coming soon</span></span>
+        <span class="phase-time">15:45&ndash;17:00</span>
+      </div>
+      <p>Five-minute talk per team (slides in <code>talk/</code>), followed by swapping notes with another team and completing the referee form in <code>review/</code>.</p>
+    </div>
+  </div>
+
+  <h2>Where skills live</h2>
+  <p>Bookkeeping and scoping skills (<code>/scope-to-one-day</code>, <code>/log-entry</code>, <code>/log-check</code>, <code>/stage</code>) are already installed in your team repository's <code>.claude/skills/</code> folder &mdash; leave that folder as it is. Optional personal skills (such as the five figure skills above) go in your personal <code>~/.claude/skills/</code> folder.</p>
 </main>
 
 <footer>

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Figures &amp; Presentation · Resources · Many-Body Intelligence</title>
+  <meta name="description"
+    content="Five Claude Code skills, starter templates, visual examples, and copy-and-paste prompts for Many-Body Intelligence 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .prompt-card {
+      position: relative;
+      margin: 1rem 0 1.8rem;
+      background: var(--tape);
+      color: var(--tape-text);
+      padding: 1rem 5.4rem 1rem 1.2rem;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .prompt-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 0.7rem;
+      top: 0.65rem;
+      font: 600 0.72rem var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--mark);
+      color: #fff;
+      border: 0;
+      padding: 0.35em 0.75em;
+      cursor: pointer;
+    }
+
+    .callout {
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 1rem 1.2rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .callout.principles {
+      border-left: 4px solid #1d5e57;
+    }
+
+    .callout.action {
+      border-left: 4px solid #a85513;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .callout.principles {
+        border-left-color: #3da598;
+      }
+
+      .callout.action {
+        border-left-color: #d98a3c;
+      }
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.95rem;
+    }
+
+    .dl-btn {
+      display: inline-block;
+      font: 600 0.82rem var(--mono);
+      text-decoration: none;
+      background: #1d5e57;
+      color: #fff !important;
+      padding: 0.55em 1.05em;
+      border: 1px solid #1d5e57;
+    }
+
+    .dl-btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    .dl-btn.sec {
+      background: transparent;
+      color: var(--ink) !important;
+      border: 1px solid var(--ink);
+    }
+
+    .dl-btn.sec:hover {
+      background: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    .stack-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--tape);
+      color: var(--tape-text);
+      padding: 0.2em 0.55em;
+      margin-right: 0.5rem;
+      vertical-align: 0.08em;
+    }
+
+    .wl-quote {
+      margin: 0.8rem 0 1rem;
+      padding: 0.25rem 0 0.25rem 0.95rem;
+      border-left: 3px solid #1d5e57;
+      font-style: italic;
+      color: var(--ink);
+    }
+
+    .fig-preview {
+      margin: 1rem 0 1.2rem;
+      border: 1px solid var(--rule);
+      background: #fff;
+      padding: 0.6rem;
+    }
+
+    .fig-preview img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .fig-cap {
+      font-size: 0.78rem;
+      color: #524c45;
+      margin-top: 0.45rem;
+      line-height: 1.45;
+    }
+
+    .fig-cap a {
+      color: #1d5e57;
+    }
+
+    .fig-cap code {
+      background: #efece6;
+      color: #141210;
+      border-color: #d6cfc5;
+    }
+
+    .fig-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+      margin: 1rem 0 1.2rem;
+    }
+
+    @media (max-width: 36rem) {
+      .fig-pair {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    code {
+      font-family: var(--mono);
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.04em 0.32em;
+      font-size: 0.9em;
+      border-radius: 2px;
+    }
+
+    .callout code {
+      background: var(--paper);
+    }
+
+    table td:first-child {
+      white-space: nowrap;
+    }
+
+    .steps-mini {
+      margin: 0.6rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .steps-mini li {
+      margin: 0.45rem 0;
+    }
+    .crumb { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faded); margin: 0 0 0.85rem; }
+    .crumb a { color: inherit; }
+
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <a href="../index.html">Many-Body Intelligence</a>
+    <nav>
+      <a href="../faq.html">FAQ</a>
+      <a href="../code-of-conduct.html">Code of conduct</a>
+      <a href="../resources.html" aria-current="page">Resources</a>
+    </nav>
+  </div>
+
+  <main>
+    <p class="crumb"><a href="../resources.html">&larr; Resources</a> &middot; Phase 4 (14:00&ndash;15:00)</p>
+    <h1 class="tape">Figures &amp; Presentation</h1>
+    <p class="lede">Five Claude Code skills, tested starter templates, live examples, and copy-and-paste prompts for the
+      <strong>14:00&ndash;15:00</strong> phase &mdash; turning your team's results into clear figures for the 2-page
+      note and the <strong>15:45 lightning talk</strong>.
+    </p>
+
+    <div class="callout principles">
+      <strong>Core idea &mdash; Hand Claude the principles. Keep the aesthetics.</strong><br>
+      Good scientific figures separate objective <em>design principles</em> (readable font sizes for a paper or
+      projector, colour-blind friendly colour maps matched to your data's symmetry, zero overlapping labels, honest
+      axes, visual self-review) from subjective <em>aesthetics</em> (which palette in the right class, which font
+      family, your visual voice). Hand the principles to Claude as skills so you can focus on the physics and
+      aesthetics.
+    </div>
+
+    <div class="callout action">
+      <strong>Getting started at 14:00 (3 steps):</strong>
+      <ol class="steps-mini">
+        <li><strong>Download &amp; let Claude install (30 seconds):</strong> click <strong>Download all 5 skills
+            (.zip)</strong> below, then paste the 1-line install prompt right under it into Claude Code &mdash; Claude
+          unzips and installs them into your personal <code>~/.claude/skills/</code> folder for you. <strong>Never edit
+            your team repo's <code>.claude/</code> folder</strong> (that holds the hackathon's <code>/log-entry</code>
+          and <code>/log-check</code> tools).</li>
+        <li><strong>Pick only the 1 or 2 skills you need:</strong> you do <em>not</em> need all five. Most teams start
+          with <strong>Skill 1 (<code>/figure-style</code>) + Skill 3 (<code>/render-and-look</code>)</strong>, and copy
+          <code>mbi.mplstyle</code> into their team repo as <code>code/team.mplstyle</code> so teammates' plots match.
+        </li>
+        <li><strong>Check the physics &amp; ship by 15:45:</strong> save reproducible scripts and vector PDFs
+          (<code>code/fig_&lt;name&gt;.py &rarr; figures/&lt;name&gt;.pdf</code>) for your 2-page note, plus clean
+          visuals or HTML demos for your lightning talk.</li>
+      </ol>
+      <div class="action-row">
+        <a class="dl-btn" href="mbi2026-figure-skills.zip" download>Download all 5 skills (.zip)</a>
+        <a class="dl-btn sec" href="slides/">Open talk slides (12 slides) &rarr;</a>
+      </div>
+    </div>
+    <div class="prompt-card" style="margin-top:-0.4rem;">
+      <button class="copy-btn">Copy</button>
+      <pre>Unzip ~/Downloads/mbi2026-figure-skills.zip (or wherever I saved it) and install all five skills into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.</pre>
+    </div>
+
+    <h2>Roadmap: the five Claude Code skills</h2>
+    <p>The talk walks through these five skills in order. Once installed in <code>~/.claude/skills/</code>, Claude loads
+      a skill automatically when relevant, or whenever you name it in a prompt (for example,
+      <code>Use /figure-style and /render-and-look</code>).
+    </p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Skill</th>
+            <th>What it does</th>
+            <th>Bundled starter</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Skill 1</td>
+            <td><a href="#s1"><code>/figure-style</code></a></td>
+            <td>Data plots: colour-blind friendly Crameri maps, LaTeX-style math, exact paper/slide sizes,
+              anti-collision polish.</td>
+            <td><code>mbi.mplstyle</code></td>
+          </tr>
+          <tr>
+            <td>Skill 2</td>
+            <td><a href="#s2"><code>/schematic</code></a></td>
+            <td>Editable vector schematics from code (SVG / PDF / TikZ): asks before guessing physics, two drafts,
+              referee critique.</td>
+            <td>&mdash;</td>
+          </tr>
+          <tr>
+            <td>Skill 3</td>
+            <td><a href="#s3"><code>/render-and-look</code></a></td>
+            <td>Visual self-review: Claude opens its rendered PNG, checks every label and inset, fixes the script (&le;
+              3 rounds).</td>
+            <td>run after any visual</td>
+          </tr>
+          <tr>
+            <td>Skill 4</td>
+            <td><a href="#s4"><code>/html-animation</code></a></td>
+            <td>Interactive figures and talk animations as one offline HTML page with arrow-key beats and live sliders.
+            </td>
+            <td><a href="skills/html-animation/template.html"><code>template.html</code></a></td>
+          </tr>
+          <tr>
+            <td>Skill 5</td>
+            <td><a href="#s5"><code>/blender-scene</code></a></td>
+            <td>Scripted 3D Blender renders (Cycles ray-tracing or EEVEE) when a browser page isn't enough.</td>
+            <td><a href="skills/blender-scene/scene_template.py"><code>scene_template.py</code></a></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="s1">Skill 1 &middot; Data plots (<code>/figure-style</code>)</h2>
+    <p><span class="stack-tag">Matplotlib + Crameri + LaTeX math</span>
+      Keep one reproducible Python script per figure (<code>code/fig_gap.py</code> &rarr; <code>figures/gap.pdf</code> +
+      <code>.png</code>), sharing
+      one <code>code/team.mplstyle</code> (copied from <code>skills/figure-style/mbi.mplstyle</code>) across your team.
+      The bundled style uses Computer Modern LaTeX math (no TeX installation needed) and enforces anti-collision rules
+      (no dashed lines striking through labels, insets only in empty corners, no clipped peaks).
+      Why avoid rainbow or <code>jet</code> colour maps? Our eyes do not perceive rainbow hues evenly &mdash; bright
+      yellow and cyan create sharp fake edges even across smooth shading, and rainbow maps fail for colour-blind readers
+      and greyscale print.
+      Useful links:
+      <a href="https://www.fabiocrameri.ch/colourmaps/">Crameri Scientific Colour Maps</a>
+      (<code>pip install cmcrameri</code>),
+      <a href="https://doi.org/10.1038/s41467-020-19160-7">Crameri et al. (2020)</a>,
+      <a href="https://personal.sron.nl/~pault/">Paul Tol's palettes</a>,
+      <a href="https://github.com/garrettj403/SciencePlots">SciencePlots</a>.
+    </p>
+    <div class="fig-preview">
+      <img src="assets/crameri/crameri2020_fig1_curie.png"
+        alt="Crameri et al. 2020 Fig. 1: Marie Curie in jet vs batlow">
+      <div class="fig-cap">Crameri, Shephard &amp; Heron, <em>Nat. Commun.</em> 11, 5444 (2020), Fig. 1 (CC BY 4.0):
+        <code>jet</code> invents sharp false boundaries across smooth shading, while <code>batlow</code> preserves the
+        real data.
+      </div>
+    </div>
+    <div class="fig-pair">
+      <div class="fig-preview" style="margin:0;">
+        <img src="demos/bands-dos/after.png" alt="Orbital-inverted fat bands, BZ inset, and mirrored PDOS">
+        <div class="fig-cap">Talk example 1: spin&ndash;orbit fat-band inversion, lower-left BZ inset, and mirrored PDOS
+          (<a href="demos/bands-dos/after.py"><code>after.py</code></a>).</div>
+      </div>
+      <div class="fig-preview" style="margin:0;">
+        <img src="demos/spectral-fs/after.png"
+          alt="Correlated spectral function A(k, w), k_F EDC, and 2D Fermi surface">
+        <div class="fig-cap">Talk example 2: correlated spectral function <em>A</em>(<strong>k</strong>, &omega;),
+          aligned <em>k</em><sub>F</sub> cut, and equal-aspect Fermi surface (<a
+            href="demos/spectral-fs/after.py"><code>after.py</code></a>).</div>
+      </div>
+    </div>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /figure-style and /render-and-look.
+Read our checked data from code/results.json and write code/fig_main.py to produce
+figures/main.pdf and figures/main.png (APS double-column, 178 mm wide).
+5-second message: [one sentence]. Panels: (a) [...], (b) [...].
+Use code/team.mplstyle and Crameri batlow (or vik centred on 0 for signed data).
+Label every axis and colorbar with quantities and units, then render the PNG,
+open it to inspect every label and inset, and fix any issues (max 3 rounds).</pre>
+    </div>
+
+    <h2 id="s2">Skill 2 &middot; Editable vector schematics (<code>/schematic</code>)</h2>
+    <p><span class="stack-tag">SVG / PDF / TikZ from code</span>
+      From Zhao &amp; Wright (<a href="https://lgwrightlab.github.io/schematic-figure/"><em>Automating schematic figure
+          making</em></a>, Yale LGW Lab, 2026):</p>
+    <blockquote class="wl-quote">&ldquo;Doing science is fun, but drawing the schematic figure that explains it has been
+      challenging for us: we were never trained to do it, yet that figure is often the first thing a reader looks
+      at.&rdquo;</blockquote>
+    <p>An image generator gives you flat pixels you cannot edit. Equipping Claude with a skill gives you
+      <strong>editable vector graphics</strong> (SVG and PDF) together with the code that draws them, using a structured
+      plan &rarr; two contrasting drafts &rarr; referee critique loop.
+    </p>
+    <div class="fig-preview">
+      <img src="assets/wright-lab/skill_vs_noskill.svg" alt="Figure 1: The same request without and with the skill">
+      <div class="fig-cap"><strong>Figure 1</strong> (Zhao &amp; Wright, 2026, CC BY 4.0): The same request, &ldquo;Draw
+        Fig. 1 for this paper&rdquo;, without and with the skill &mdash; drawn by the skill itself.</div>
+    </div>
+    <div class="fig-pair">
+      <div class="fig-preview" style="margin:0;">
+        <img src="assets/wright-lab/phys-04-noskill.jpg" alt="Trion Hall effect without skill">
+        <div class="fig-cap">Without skill: six cluttered panels crowded with paragraphs (Chaturvedi et al., <em>Nat.
+            Phys.</em> 2026 reproduction, Zhao &amp; Wright).</div>
+      </div>
+      <div class="fig-preview" style="margin:0;">
+        <img src="assets/wright-lab/phys-04-ours.jpg" alt="Trion Hall effect with skill">
+        <div class="fig-cap">With schematic skill: exploded 3D WSe<sub>2</sub>/MoSe<sub>2</sub> heterostructure, clean
+          Lorentz panels, and readable phase diagrams.</div>
+      </div>
+    </div>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /schematic and /render-and-look.
+Create an editable vector schematic showing [physical mechanism or crystal geometry] via
+code/fig_schematic.py -> figures/schematic.svg and .png.
+Ask me first if any physical detail is ambiguous. Then write a 5-line plan, build two
+contrasting layout drafts, render both to PNG, inspect them like a PRB referee (check
+physics accuracy and ~2x readable text), and refine the better draft.</pre>
+    </div>
+
+    <h2 id="s3">Skill 3 &middot; Visual self-review &amp; repair (<code>/render-and-look</code>)</h2>
+    <p><span class="stack-tag">Run after every visual</span>
+      An AI writing plotting code without opening the output is flying blind &mdash; that is why overlapping labels,
+      dashed lines striking through equations, insets covering curves, and missing minus signs sneak through. In a 2024
+      study testing AI on real scientific plots (<em>MatPlotAgent</em>), simply making the AI inspect its own rendered
+      PNG and fix what it sees raised accuracy from 49% to 61% &mdash; the largest gain of any technique.
+      Pair <code>/render-and-look</code> with any other skill, or run it standalone on an existing plot. It scans every
+      label and inset one by one for at most 3 rounds and flags anything it could not verify physically, because
+      <strong>your eyes are always the final physics check</strong>.
+    </p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /render-and-look on figures/my_plot.png (generated by code/fig_my_plot.py).
+Open the PNG, inspect every text label, inset, curve, and minus sign like a PRB referee
+(check collisions, lines crossing text, font size at final column width, units, and physics),
+fix concrete issues in the script for at most 3 rounds, and tell me what you changed
+plus anything physical I should double-check myself.</pre>
+    </div>
+
+    <h2 id="s4">Skill 4 &middot; Interactive talk figures &amp; animations (<code>/html-animation</code>)</h2>
+    <p><span class="stack-tag">Single offline HTML file</span>
+      For almost any talk animation, a single self-contained HTML page (opening straight in Chrome, Edge, or Firefox
+      with no internet needed) beats a pre-rendered video: it is ~10&ndash;25 kB instead of 50 MB, needs zero render
+      time, runs smoothly at 60 fps, and lets you pause, step through beats with arrow keys, or drag a physical
+      parameter live during Q&amp;A.
+      Start from the bundled <a href="skills/html-animation/template.html"><code>template.html</code></a> (a working
+      1D phonon chain), or explore the live demos from the talk:
+      <a href="demos/moire-explorer/moire_flatband.html">Twisted Bilayer Moir&eacute; &amp; Flat-Band Explorer (9
+        kB)</a> and
+      <a href="demos/perovskite-stacks/perovskite_3d.html">3D ABO<sub>3</sub> Perovskite Soft Phonon (10 kB)</a>.
+      Other useful tools: <a href="https://threejs.org/">Three.js</a>,
+      <a href="https://smoothstep.io/">smoothstep.io</a> (real-time wave/field shaders),
+      <a href="https://github.com/janosh/matterviz">MatterViz</a> (3D Brillouin zones &amp; Fermi surfaces),
+      <a href="https://www.manim.community/">Manim</a>,
+      <a href="https://jp-minerals.org/vesta/en/">VESTA</a>, and
+      <a href="https://www.ovito.org/">OVITO</a>.
+    </p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /html-animation and /render-and-look.
+Starting from template.html, build a single offline HTML animation at talk/anim.html
+showing [phenomenon] using exact numbers from [data file].
+Include Space to play/pause, Left/Right arrow keys to step through 3 beats, a live
+slider for [parameter], and ?t=2.5 URL support so any moment can be frozen for checking.
+Capture start, middle, and end screenshots and inspect them.</pre>
+    </div>
+
+    <h2 id="s5">Skill 5 &middot; Scripted 3D renders with Blender (<code>/blender-scene</code>)</h2>
+    <p><span class="stack-tag">Blender Cycles / EEVEE from Python</span>
+      You don't need to know Blender's menus: Claude writes a Python script that builds your crystal or 3D structure
+      from data and runs Blender automatically in the background
+      (<code>blender -b --factory-startup -P scene.py</code>).
+      Start with HTML (Skill 4) for live interactive talks, and reach for Blender <strong>Cycles ray-tracing</strong>
+      when you want photoreal refractive glass, brushed metallic ions, soft studio shadows, or a high-resolution journal
+      cover figure.
+      Includes the tested starter <a href="skills/blender-scene/scene_template.py"><code>scene_template.py</code></a>
+      and our perovskite script <a
+        href="demos/perovskite-stacks/perovskite_blender.py"><code>perovskite_blender.py</code></a>.
+      Links: <a href="https://www.blender.org/">Blender</a>, <a
+        href="https://github.com/ahujasid/blender-mcp">BlenderMCP</a>.</p>
+    <div class="fig-preview">
+      <img src="demos/perovskite-stacks/blender_cycles_anim.webp"
+        alt="Blender 5.3 Cycles ray-traced animation of ABO3 perovskite">
+      <div class="fig-cap">Same 2&times;2&times;2 ABO<sub>3</sub> perovskite rendered headlessly in Blender 5.3 Cycles
+        (refractive glass octahedra, brushed metal/ceramic ions, moving ray-traced shadows; 1.0 MB animated WebP, 2 min
+        render vs. 10 kB / 0 s live Three.js).</div>
+    </div>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /blender-scene and /render-and-look.
+Starting from scene_template.py, write code/fig_scene_blender.py to render [3D system]
+from [data file] automatically via Blender in the background. Keep Standard view transform
+(true colours) and clean studio lighting; use EEVEE for fast previews or Cycles for
+photoreal glass and shadows. Render ONE still frame first, inspect the PNG, and only
+render animation frames once the still looks right.</pre>
+    </div>
+
+    <h2>Further reading &amp; credits</h2>
+    <ul>
+      <li>Rougier, Droettboom &amp; Bourne (2014), <a href="https://doi.org/10.1371/journal.pcbi.1003833">Ten Simple
+          Rules for Better Figures</a>, <em>PLoS Comput. Biol.</em> 10, e1003833.</li>
+      <li>Nicolas P. Rougier, <a href="https://github.com/rougier/scientific-visualization-book"><em>Scientific
+            Visualization: Python + Matplotlib</em></a> (free open-access book).</li>
+      <li>Crameri, Shephard &amp; Heron (2020), <a href="https://doi.org/10.1038/s41467-020-19160-7">The misuse of
+          colour in science communication</a>, <em>Nat. Commun.</em> 11, 5444.</li>
+      <li>Claus O. Wilke, <a href="https://clauswilke.com/dataviz/"><em>Fundamentals of Data Visualization</em></a>
+        (free online book).</li>
+      <li>Zhao &amp; Wright (2026), <a href="https://lgwrightlab.github.io/schematic-figure/">Automating schematic
+          figure making</a> (Yale LGW Lab, CC BY 4.0).</li>
+      <li>Yang et al. (2024), <a href="https://arxiv.org/abs/2402.11453">MatPlotAgent</a> &mdash; visual self-review
+        raises AI plot accuracy from 49% to 61%.</li>
+    </ul>
+    <p class="quiet">Skills and starter templates (<code>mbi.mplstyle</code>, <code>template.html</code>,
+      <code>scene_template.py</code>) written for MBI 2026, inspired by Pramodh's <code>journal-figure-style</code>,
+      <a href="https://github.com/K-Dense-AI/scientific-agent-skills/tree/main/skills/scientific-visualization">K-Dense
+        scientific-visualization</a>,
+      MatPlotAgent, <a href="https://github.com/Pirat83/claude-code-skills/tree/main/matplotlib-render-review">Pirat83
+        matplotlib-render-review</a>,
+      <a href="https://github.com/lgwrightlab/schematic-figure">Wright Lab schematic-figure</a>,
+      and <a href="https://github.com/anthropics/skills">Anthropic's example skills</a>.
+    </p>
+  </main>
+
+  <footer>
+    <p>Organisers: <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-1226">Konstantinos Sourounis</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-2276">Pramodh Senarath Yapa</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N23-2515">Aksel Kobiałka</a> and <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N18-2312">Alena Vishina</a></p>
+    <p>Materials Theory · Department of Physics and Astronomy · Uppsala University</p>
+  </footer>
+  <script src="../assets/site.js"></script>
+  <script>
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const txt = btn.parentNode.querySelector("pre").innerText;
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => {
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+        }, () => {
+          btn.textContent = "Ctrl+C";
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

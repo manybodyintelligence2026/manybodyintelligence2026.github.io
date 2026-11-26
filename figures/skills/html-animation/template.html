@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phonon on a chain</title>
+<style>
+  :root { --bg: #fbfaf7; --ink: #1d1b19; --faded: #8a8178; --accent: #c24a6a; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif; overflow: hidden; }
+  /* a fixed 1600x900 stage, scaled to fit the window and centred */
+  #stage { position: absolute; left: 50%; top: 50%; width: 1600px; height: 900px;
+    transform-origin: 0 0; }
+  canvas { position: absolute; inset: 0; }
+  #caption { position: absolute; left: 80px; bottom: 60px; font-size: 30px; }
+  #controls { position: absolute; right: 80px; bottom: 60px; font-size: 22px; color: var(--faded); }
+  #controls input { vertical-align: middle; width: 220px; accent-color: var(--accent); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1600" height="900"></canvas>
+  <div id="caption"></div>
+  <label id="controls">wavevector k <input id="k" type="range" min="0.1" max="3.14" step="0.01" value="0.6"></label>
+</div>
+<script>
+// One animation = one pure function of time: draw(t) gives the same picture for the same t.
+// That makes any moment reproducible (?t=2.5 freezes there), lets you step through beats,
+// and lets a headless browser take a screenshot of any frame for checking.
+
+var BEATS = [            // [start time in s, caption]; arrow keys / Space jump between them
+  [0, "A chain of atoms at rest."],
+  [2, "A phonon: each atom moves a little, in step with its neighbours."],
+  [7, "Change k with the slider: shorter waves, faster neighbours out of phase."]
+];
+var N = 24, A = 18, OMEGA = 2.2;       // number of atoms, amplitude (px), angular frequency (1/s)
+
+var cv = document.getElementById("c"), g = cv.getContext("2d");
+var cap = document.getElementById("caption"), kIn = document.getElementById("k");
+
+function clamp01(x) { return Math.max(0, Math.min(1, x)); }
+function smooth(x) { x = clamp01(x); return x * x * (3 - 2 * x); }   // smoothstep easing
+
+function draw(t) {
+  var k = parseFloat(kIn.value);
+  var on = smooth((t - BEATS[1][0]) / 1.5);        // the wave fades in at beat 2
+  g.clearRect(0, 0, 1600, 900);
+  var x0 = 180, dx = (1600 - 2 * x0) / (N - 1), y = 420;
+  // springs
+  g.strokeStyle = "#cfc8bf"; g.lineWidth = 3; g.beginPath();
+  for (var n = 0; n < N; n++) {
+    var u = on * A * Math.cos(k * n - OMEGA * t);
+    n ? g.lineTo(x0 + n * dx + u, y) : g.moveTo(x0 + u, y);
+  }
+  g.stroke();
+  // atoms
+  for (n = 0; n < N; n++) {
+    u = on * A * Math.cos(k * n - OMEGA * t);
+    g.fillStyle = n === 8 ? getComputedStyle(document.body).getPropertyValue("--accent") : "#1d1b19";
+    g.beginPath(); g.arc(x0 + n * dx + u, y, 14, 0, 2 * Math.PI); g.fill();
+  }
+  // caption for the current beat
+  var b = 0; while (b + 1 < BEATS.length && t >= BEATS[b + 1][0]) b++;
+  cap.textContent = BEATS[b][1];
+}
+
+// --- clock: play/pause, beats, ?t= freeze --------------------------------------------
+var t = 0, playing = true, last = null;
+var q = new URLSearchParams(location.search);
+if (q.has("t")) { t = parseFloat(q.get("t")); playing = false; }
+
+function frame(now) {
+  if (playing && last !== null) t += (now - last) / 1000;
+  last = now; draw(t); requestAnimationFrame(frame);
+}
+function jump(dir) {
+  var i = 0; while (i + 1 < BEATS.length && t >= BEATS[i + 1][0] - 1e-6) i++;
+  i = Math.max(0, Math.min(BEATS.length - 1, i + dir));
+  t = BEATS[i][0]; draw(t);
+}
+addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight" || e.key === "PageDown") jump(1);
+  else if (e.key === "ArrowLeft" || e.key === "PageUp") jump(-1);
+  else if (e.key === " ") { playing = !playing; e.preventDefault(); }
+});
+kIn.addEventListener("input", function () { draw(t); });
+
+function fit() {   // scale the 1600x900 stage to the window
+  var s = Math.min(innerWidth / 1600, innerHeight / 900);
+  document.getElementById("stage").style.transform = "scale(" + s + ") translate(-50%, -50%)";
+}
+addEventListener("resize", fit); fit();
+draw(t); requestAnimationFrame(frame);
+</script>
+</body>
+</html>

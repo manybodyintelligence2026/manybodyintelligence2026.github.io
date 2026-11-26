@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Liquid to Solid</title>
+<link rel="stylesheet" href="../lib/fonts/fira.css?v=10">
+<style>
+  :root {
+    --ink: #F4EFE3;        /* print colour, sampled from the grain reference */
+    --black: #161414; --white: #F5F2EC;
+  }
+  html, body { margin: 0; height: 100%; background: #111; overflow: hidden; }
+  #stage {
+    position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0;
+    font-family: 'Fira Sans', Arial, sans-serif; color: var(--black); background: #FBFAF7; overflow: hidden;
+  }
+  #bg { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; }
+
+  .header {
+    position: absolute; right: 0; top: 0; height: 79px; color: var(--white); background: var(--black);
+    display: flex; align-items: center; gap: 14px; padding: 0 22px 0 14px; box-sizing: border-box;
+  }
+  .header img { width: 76px; height: 75px; }
+  .header .who { line-height: 1.25; white-space: nowrap; }
+  .header .name { font-weight: bold; font-size: 21px; }
+  .header .sess { font-size: 18px; }
+  .header .num { display: inline-block; min-width: 1.6em; }
+
+  .pill {
+    position: absolute; left: 79px; top: 52px; background: var(--black); color: var(--white); font-weight: bold;
+    font-size: 22px; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 20px; border-radius: 999px;
+  }
+  h1 { position: absolute; left: 79px; top: 92px; margin: 0; font-size: 60px; }
+
+  /* the simulation box: an inked frame with a hard print shadow */
+  .tlab { position: absolute; font-weight: bold; font-size: 30px; text-align: center; width: 240px; }
+  .lead2 { position: absolute; left: 79px; top: 186px; font-size: 34px; }
+  .lead2 b { font-weight: bold; }
+  #box { position: absolute; left: 79px; top: 250px; border: 4px solid var(--black); box-shadow: 10px 10px 0 var(--black); }
+  #sim { display: block; }
+
+  #thermo { position: absolute; left: 1250px; top: 290px; cursor: ns-resize; touch-action: none; }
+
+  .diff {
+    position: absolute; padding: 16px 18px; background: var(--white); border: 4px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black); display: none;
+  }
+  .diff.show { display: block; }
+  .diff .wrap { display: flex; gap: 10px; align-items: stretch; }
+  .diff canvas { display: block; }
+  .cbar { display: flex; gap: 6px; font-size: 18px; }
+  .cbar .ticks { display: flex; flex-direction: column; justify-content: space-between; }
+  .cbar .lab { writing-mode: vertical-rl; transform: rotate(180deg); text-align: center; }
+
+  /* the line for build 1 */
+  .corr {
+    position: absolute; padding: 12px 18px; background: var(--white); border: 4px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black); transition: opacity 0.5s;
+  }
+  .corr.hidden { opacity: 0; pointer-events: none; }
+  .corr h2 { margin: 0; font-size: 28px; }
+</style>
+</head>
+<body data-auto-animate>
+<div id="stage">
+  <canvas id="bg"></canvas>
+
+  <div class="header">
+    <img src="../assets/uu_seal.png" alt="Uppsala University">
+    <div class="who"><div class="name">Pramodh Senarath Yapa</div><div class="sess"><span class="num">1</span>|&ensp;Division Seminar</div></div>
+  </div>
+
+  <span class="pill">Part 1 &middot; Order</span>
+  <h1>Cooling a liquid</h1>
+  <div class="lead2">A <b>classical liquid</b> freezes into a <b>crystal</b> below <i>T</i><sub>c</sub></div>
+  <div class="tlab" data-id="tlab" style="left:1206px; top:940px">Temperature</div>
+
+  <div id="box" data-id="simbox"><canvas id="sim"></canvas></div>
+
+  <svg id="thermo" data-id="thermo" width="232" height="640" viewBox="0 0 290 800" aria-label="Temperature">
+    <defs>
+      <clipPath id="bore"><rect x="76" y="26" width="38" height="680" rx="19"/><circle cx="95" cy="712" r="56"/></clipPath>
+    </defs>
+    <!-- glass -->
+    <rect x="66" y="16" width="58" height="690" rx="29" fill="#F5F2EC" stroke="#161414" stroke-width="6"/>
+    <circle cx="95" cy="712" r="70" fill="#F5F2EC" stroke="#161414" stroke-width="6"/>
+    <rect x="69" y="640" width="52" height="40" fill="#F5F2EC"/>
+    <!-- column -->
+    <g clip-path="url(#bore)">
+      <circle id="bulb" cx="95" cy="712" r="56" fill="#D62828"/>
+      <rect id="column" x="76" y="400" width="38" height="320" fill="#D62828"/>
+    </g>
+    <!-- glint -->
+    <rect x="84" y="40" width="6" height="560" rx="3" fill="#ffffff" opacity="0.7"/>
+    <g id="ticks" stroke="#161414" stroke-width="5" stroke-linecap="round"></g>
+  </svg>
+
+  <div class="diff" id="diffCard">
+    <div class="wrap">
+      <canvas id="sq" width="300" height="300" style="width:300px;height:300px"></canvas>
+      <div class="cbar">
+        <canvas id="cbar" width="18" height="300" style="width:18px;height:300px"></canvas>
+        <div class="ticks"><span>2</span><span>1</span><span>0</span><span>&minus;1</span></div>
+        <div class="lab">log<sub>10</sub> S(q)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="corr hidden" id="corrCard">
+    <h2>Spontaneous translation symmetry breaking</h2>
+  </div>
+</div>
+
+<script src="../lib/deckslide.js?v=10"></script>
+<script src="../lib/stipple.js?v=10"></script>
+<script src="../lib/md2d.js?v=10"></script>
+<script src="../lib/ui.js?v=10"></script>
+<script>
+(function () {
+  'use strict';
+  const W = 1920, H = 1080;
+  const stage = document.getElementById('stage');
+  const bg = document.getElementById('bg'), bgCtx = bg.getContext('2d');
+  const cv = document.getElementById('sim'), ctx = cv.getContext('2d');
+
+  // ---- physics -------------------------------------------------------------
+  // The thermometer is a fraction f (0 bottom, 1 top) with T_c at F_C = 1/4. Above T_c the sample is a Langevin MD
+  // liquid at md.T = mdT(f): 0.55 at T_c (just above where this 14 x 10 crystal melts, ~0.45) up to 2.0. Freezing
+  // is drawn as first order and abrupt (5 Nov): crossing T_c downward, the particles glide in GLIDE s onto the
+  // nearest perfect lattice and the MD stops; below T_c the crystal is its sites plus a few smooth acoustic
+  // phonons, rms amplitude AMP_C a at T_c going linearly to 0 at the bottom (slow coherent breathing instead of
+  // Langevin jitter). Crossing upward restarts the MD from the drawn positions at 0.55: it melts at once.
+  // Q (quench) keeps the MD running through T_c, down to md.T ~ 0.001: a glass.
+  const F_C = 0.25, F_HOT = 0.95, F_COLD = 0.03;
+  const T_L = 0.55, T_HOT = 2.0, T_GLASS = 0.001;
+  const mdT = f => f >= F_C ? T_L * Math.pow(T_HOT / T_L, (f - F_C) / (F_HOT - F_C))
+                            : T_GLASS * Math.pow(T_L / T_GLASS, Math.max(0, f) / F_C);
+  const GLIDE = 0.4, AMP_C = 0.06;
+  const md = new MD2D({ nx: 14, ny: 10, sigma: 0.85, gamma: 0.6, dt: 0.005, T: T_HOT });
+  let f = F_HOT, solid = null;            // solid: { sx, sy, x0, y0, t } while frozen (sites, glide start, clock)
+  const STEPS_PER_SEC = 1200;
+  // slow the clock as 1/sqrt(T) so a hot fluid doesn't turn into a blur
+  const stepsPerSec = T => STEPS_PER_SEC * Math.min(1, Math.sqrt(0.45 / T));
+  const RATE = { cool: 0.1, heat: 0.15, quench: 0.6 };   // thermometer fraction per s
+  let ramp = 0;                           // -1 cooling, +1 heating, 0 hold
+  let mode = 'cool';                      // 'cool' | 'quench' | 'heat'
+
+  // The lattice the liquid freezes onto: the reset() lattice shifted by (ox, oy), the offset chosen from a 10 x 10
+  // grid in the unit cell to minimise the particles' travel; then the optimal assignment of particles to sites.
+  const hR = Math.sqrt(3) / 2;
+  function freeze() {
+    const N = md.N, Lx = md.Lx, Ly = md.Ly, bx = [], by = [];
+    for (let j = 0; j < md.ny; j++) for (let k = 0; k < md.nx; k++) { bx.push(k + 0.5 * (j % 2) + 0.25); by.push((j + 0.5) * hR); }
+    const d2 = (i, X, Y) => {
+      let dx = md.x[i] - X, dy = md.y[i] - Y;
+      dx -= Lx * Math.round(dx / Lx); dy -= Ly * Math.round(dy / Ly);
+      return dx * dx + dy * dy;
+    };
+    let best = Infinity, ox = 0, oy = 0;
+    for (let a = 0; a < 10; a++) for (let b = 0; b < 10; b++) {
+      const OX = a / 10, OY = b / 10 * 2 * hR;
+      let c = 0;
+      for (let i = 0; i < N; i++) {
+        // nearest site among the three rows around the particle (rows hR apart, alternate rows shifted by 1/2)
+        const row = Math.round((md.y[i] - OY) / hR - 0.5);
+        let m = Infinity;
+        for (let r = row - 1; r <= row + 1; r++) {
+          const Y = (r + 0.5) * hR + OY, sh = 0.5 * (((r % 2) + 2) % 2) + 0.25 + OX;
+          m = Math.min(m, d2(i, sh + Math.round(md.x[i] - sh), Y));
+        }
+        c += m;
+      }
+      if (c < best) { best = c; ox = OX; oy = OY; }
+    }
+    const SX = bx.map(v => (v + ox) % Lx), SY = by.map(v => (v + oy) % Ly);
+    // optimal assignment (Hungarian algorithm, O(N^3), a few ms for 140) minimising the summed squared travel
+    const INF = 1e18, u = new Float64Array(N + 1), v = new Float64Array(N + 1), p = new Int32Array(N + 1), way = new Int32Array(N + 1);
+    const cost = (i, s) => d2(i, SX[s], SY[s]);
+    for (let i = 1; i <= N; i++) {
+      p[0] = i; let j0 = 0;
+      const minv = new Float64Array(N + 1).fill(INF), used = new Uint8Array(N + 1);
+      do {
+        used[j0] = 1; const i0 = p[j0]; let delta = INF, j1 = 0;
+        for (let j = 1; j <= N; j++) if (!used[j]) {
+          const cur = cost(i0 - 1, j - 1) - u[i0] - v[j];
+          if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
+          if (minv[j] < delta) { delta = minv[j]; j1 = j; }
+        }
+        for (let j = 0; j <= N; j++) if (used[j]) { u[p[j]] += delta; v[j] -= delta; } else minv[j] -= delta;
+        j0 = j1;
+      } while (p[j0] !== 0);
+      do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
+    }
+    const sx = new Float64Array(N), sy = new Float64Array(N);
+    for (let j = 1; j <= N; j++) { sx[p[j] - 1] = SX[j - 1]; sy[p[j] - 1] = SY[j - 1]; }
+    solid = { sx, sy, x0: Float64Array.from(md.x), y0: Float64Array.from(md.y), t: 0 };
+  }
+  function melt() {
+    solid = null;
+    md.T = T_L;
+    const v = Math.sqrt(T_L);
+    for (let i = 0; i < md.N; i++) { md.vx[i] = v * md.gauss(); md.vy[i] = v * md.gauss(); }
+    md.forces();
+  }
+  // Smooth phonons on the box's reciprocal grid: u_i = sum_m A_m e_m cos(q_m . R_i - w_m t + p_m), w = c|q|,
+  // A ~ 1/|q| (equipartition), normalised to unit rms displacement. Periods 0.7-3 s.
+  const PH = (function () {
+    const rnd = Stipple.rng(17), modes = [];
+    for (let m = -3; m <= 3; m++) for (let n = -2; n <= 2; n++) {
+      if (!m && !n) continue;
+      const qx = 2 * Math.PI * m / md.Lx, qy = 2 * Math.PI * n / md.Ly, q = Math.hypot(qx, qy);
+      const th = rnd() * 2 * Math.PI;
+      modes.push({ qx, qy, w: 4.7 * q, a: 1 / q, ex: Math.cos(th), ey: Math.sin(th), p: rnd() * 2 * Math.PI });
+    }
+    const norm = Math.sqrt(modes.reduce((s, o) => s + o.a * o.a / 2, 0));
+    modes.forEach(o => { o.a /= norm; });
+    return modes;
+  })();
+  function placeSolid(dt) {
+    solid.t += dt;
+    const N = md.N, Lx = md.Lx, Ly = md.Ly, A = AMP_C * Math.max(0, f) / F_C, t = solid.t;
+    const g = Math.min(1, t / GLIDE), e = 1 - Math.pow(1 - g, 3);              // ease-out glide
+    for (let i = 0; i < N; i++) {
+      let ux = 0, uy = 0;
+      for (const o of PH) { const c = o.a * Math.cos(o.qx * solid.sx[i] + o.qy * solid.sy[i] - o.w * t + o.p); ux += c * o.ex; uy += c * o.ey; }
+      let X = solid.sx[i] + A * ux, Y = solid.sy[i] + A * uy;
+      if (e < 1) {
+        let dx = X - solid.x0[i], dy = Y - solid.y0[i];
+        dx -= Lx * Math.round(dx / Lx); dy -= Ly * Math.round(dy / Ly);
+        X = solid.x0[i] + e * dx; Y = solid.y0[i] + e * dy;
+      }
+      md.x[i] = ((X % Lx) + Lx) % Lx; md.y[i] = ((Y % Ly) + Ly) % Ly;
+    }
+  }
+
+  // ---- box geometry: 1300 px wide, height set by the commensurate lattice --------
+  // (6 Nov) same box and thermometer as slide 02 so the two slides morph into each other
+  const BOX_X = 79, BOX_Y = 250, BOX_W = 1080;
+  const scale = BOX_W / md.Lx;                           // stage px per lattice constant
+  const BOX_H = Math.round(md.Ly * scale);
+  // Drawn diameter in lattice constants: 0.37 a (~34 px), 1.5 x smaller than the 0.55 a of 28 Oct, so the
+  // crystal reads as widely spaced (5 Nov). Drawing only: the physics and N are unchanged. The particles repel
+  // at a distance, so they never touch, as in a colloidal or Wigner crystal.
+  const BALL_D = 0.37;
+  cv.style.width = BOX_W + 'px'; cv.style.height = BOX_H + 'px';
+
+  const thermo = document.getElementById('thermo');
+  const diffCard = document.getElementById('diffCard');
+  diffCard.style.left = (BOX_X + BOX_W - 380) + 'px';
+  diffCard.style.top = (BOX_Y + BOX_H - 360) + 'px';
+  // the build-1 line in the box's bottom-left corner
+  const corrCard = document.getElementById('corrCard');
+  corrCard.style.left = BOX_X + 'px'; corrCard.style.top = '942px'; corrCard.style.whiteSpace = 'nowrap';   // under the box, one line
+
+  // ---- rendering resources, rebuilt on resize --------------------------------
+  let k = 1, paperCv = null, balls = [], shade = null;
+  function layout() {
+    const s = Math.min(innerWidth / W, innerHeight / H);
+    stage.style.transform = `translate(${(innerWidth - W * s) / 2}px, ${(innerHeight - H * s) / 2}px) scale(${s})`;
+    const nk = Math.max(0.5, Math.min(3, s * (window.devicePixelRatio || 1)));
+    if (Math.abs(nk - k) < 1e-3 && paperCv) return;
+    k = nk;
+    bg.width = Math.round(W * k); bg.height = Math.round(H * k);
+    bgCtx.drawImage(Stipple.paper(bg.width, bg.height,
+      { s: k, seed: 21, base: [251, 250, 247], blank: [251, 250, 247], wear: 0 }), 0, 0);
+    cv.width = Math.round(BOX_W * k); cv.height = Math.round(BOX_H * k);
+    paperCv = Stipple.paper(cv.width, cv.height, { s: k, seed: 7 });
+    const R = BALL_D * scale * k / 2;
+    balls = [0, 1, 2, 3, 4, 5].map(i => Stipple.ball(R, { seed: 11 + 7 * i, s: k }));
+    shade = Stipple.shadow(R, { seed: 5 });
+  }
+  addEventListener('resize', layout);
+  layout();
+
+  function draw() {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.drawImage(paperCv, 0, 0);
+    const sk = cv.width / md.Lx, R = BALL_D * sk / 2, bS = balls[0].width, sS = shade.width;
+    const sh = 0.16 * R;                                  // shadow offset, light from upper left
+    const LxP = cv.width, LyP = cv.height;
+    const pos = [];
+    for (let i = 0; i < md.N; i++) {
+      const X = md.x[i] * sk, Y = md.y[i] * sk;
+      // periodic images near the edges
+      const xs = [X], ys = [Y];
+      if (X < R + sh) xs.push(X + LxP); else if (X > LxP - R - sh) xs.push(X - LxP);
+      if (Y < R + sh) ys.push(Y + LyP); else if (Y > LyP - R - sh) ys.push(Y - LyP);
+      for (const a of xs) for (const b of ys) pos.push(a, b, i % balls.length);
+    }
+    for (let p = 0; p < pos.length; p += 3)
+      ctx.drawImage(shade, Math.round(pos[p] + sh - sS / 2), Math.round(pos[p + 1] + 1.3 * sh - sS / 2));
+    for (let p = 0; p < pos.length; p += 3)
+      ctx.drawImage(balls[pos[p + 2]], Math.round(pos[p] - bS / 2), Math.round(pos[p + 1] - bS / 2));
+  }
+
+  // ---- thermometer ---------------------------------------------------------
+  const TUBE_TOP = 40, TUBE_BOT = 650;                   // column range in svg units
+  const column = document.getElementById('column');
+  (function ticks() {
+    const g = document.getElementById('ticks');
+    for (let i = 0; i <= 12; i++) {
+      const y = TUBE_BOT - i * (TUBE_BOT - TUBE_TOP) / 12, len = i % 3 === 0 ? 30 : 16;
+      g.insertAdjacentHTML('beforeend', `<line x1="132" x2="${132 + len}" y1="${y}" y2="${y}"/>`);
+    }
+    // the freezing transition (see the physics notes above)
+    const yc = TUBE_BOT - F_C * (TUBE_BOT - TUBE_TOP);
+    UI.clearNear(g, [yc]);
+    UI.mark(thermo, yc, 'T', 'c');
+  })();
+  // Column colour: red when hot, blue when cold, interpolated in OKLab so the middle stays saturated.
+  const HOT = [214, 40, 40], COLD = [31, 95, 191];
+  const lin = c => { c /= 255; return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  const gam = c => 255 * (c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055);
+  function toLab([r, g, b]) {
+    [r, g, b] = [r, g, b].map(lin);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+            1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+            0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s];
+  }
+  function fromLab([L, a, b]) {
+    const l = (L + 0.3963377774 * a + 0.2158037573 * b) ** 3;
+    const m = (L - 0.1055613458 * a - 0.0638541728 * b) ** 3;
+    const s = (L - 0.0894841775 * a - 1.291485548 * b) ** 3;
+    return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+            -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+            -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s].map(c => Math.round(Math.min(255, Math.max(0, gam(c)))));
+  }
+  const HOT_LAB = toLab(HOT), COLD_LAB = toLab(COLD);
+  const bulb = document.getElementById('bulb');
+  function showTemp() {
+    const fr = Math.min(1, Math.max(0, f));
+    const col = `rgb(${fromLab(HOT_LAB.map((h, i) => COLD_LAB[i] + (h - COLD_LAB[i]) * fr)).join(',')})`;
+    column.setAttribute('fill', col); bulb.setAttribute('fill', col);
+    const y = TUBE_BOT - fr * (TUBE_BOT - TUBE_TOP);
+    column.setAttribute('y', y.toFixed(1));
+    column.setAttribute('height', (720 - y).toFixed(1));
+  }
+  let dragging = false;
+  function setFromPointer(e) {
+    const r = thermo.getBoundingClientRect(), yv = (e.clientY - r.top) * 800 / r.height;
+    ramp = 0; mode = 'cool';
+    setF(Math.min(1, Math.max(0, (TUBE_BOT - yv) / (TUBE_BOT - TUBE_TOP))));
+  }
+  thermo.addEventListener('pointerdown', e => { dragging = true; thermo.setPointerCapture(e.pointerId); setFromPointer(e); });
+  thermo.addEventListener('pointermove', e => { if (dragging) setFromPointer(e); });
+  thermo.addEventListener('pointerup', () => { dragging = false; });
+
+  // ---- diffraction inset -------------------------------------------------
+  const sqCv = document.getElementById('sq'), sqCtx = sqCv.getContext('2d');
+  const QMAX = 9;
+  const K1 = Math.floor(QMAX * md.Lx / (2 * Math.PI)), K2 = Math.floor(QMAX * md.Ly / (2 * Math.PI));
+  const gW = 2 * K1 + 1, gH = 2 * K2 + 1;
+  const grid = Stipple.canvas(gW, gH), gctx = grid.getContext('2d'), gimg = gctx.createImageData(gW, gH);
+  const cmap = Stipple.ramp(Stipple.LAJOLLA);
+  const LOG_LO = -1, LOG_HI = 2;                         // colour limits of log10 S
+  let sAvg = null;
+  function drawSq() {
+    const S = md.structureFactor(K1, K2);
+    if (!sAvg) sAvg = Float32Array.from(S);
+    for (let i = 0; i < S.length; i++) sAvg[i] = 0.6 * sAvg[i] + 0.4 * S[i];
+    for (let i = 0; i < S.length; i++) {
+      const c = cmap((Math.log10(Math.max(sAvg[i], 1e-3)) - LOG_LO) / (LOG_HI - LOG_LO));
+      gimg.data[4 * i] = c[0]; gimg.data[4 * i + 1] = c[1]; gimg.data[4 * i + 2] = c[2]; gimg.data[4 * i + 3] = 255;
+    }
+    gctx.putImageData(gimg, 0, 0);
+    sqCtx.imageSmoothingEnabled = true;
+    // the q-grid spacings differ in x and y; draw so that q-space is isotropic
+    const qw = gW * 2 * Math.PI / md.Lx, qh = gH * 2 * Math.PI / md.Ly, f = 300 / Math.max(qw, qh);
+    sqCtx.fillStyle = `rgb(${cmap(0).join(',')})`;
+    sqCtx.fillRect(0, 0, 300, 300);
+    sqCtx.drawImage(grid, (300 - qw * f) / 2, (300 - qh * f) / 2, qw * f, qh * f);
+  }
+  (function colourbar() {
+    const c = document.getElementById('cbar').getContext('2d');
+    for (let y = 0; y < 300; y++) { c.fillStyle = `rgb(${cmap(1 - y / 299).join(',')})`; c.fillRect(0, y, 18, 1); }
+  })();
+
+  // ---- keys: space cool/heat, Q quench, F diffraction, R reset ----------------
+  function setRamp(m) {
+    const dir = m === 'heat' ? 1 : -1;
+    ramp = ramp === dir && mode === m ? 0 : dir; mode = m;
+  }
+  addEventListener('keydown', e => {
+    if (e.key === ' ') { e.preventDefault(); setRamp(f > F_C || ramp > 0 ? 'cool' : 'heat'); }
+    else if (e.key === 'q' || e.key === 'Q') setRamp('quench');
+    else if (e.key === 'f' || e.key === 'F') diffCard.classList.toggle('show');
+    else if (e.key === 'r' || e.key === 'R') { solid = null; md.reset(T_HOT, 1500); f = F_HOT; ramp = 0; }
+  });
+
+  // ---- a new thermometer reading: crossing T_c freezes or melts at once (the quench skips the freezing) ----
+  function setF(nf) {
+    const was = f;
+    f = nf;
+    if (was >= F_C && f < F_C && !solid && mode !== 'quench') freeze();
+    else if (f >= F_C && solid) melt();
+    if (!solid) md.T = mdT(f);
+  }
+
+  // URL hooks for jumping straight to a state: ?f=0.1 (thermometer fraction; below 1/4 starts frozen), ?diff=1.
+  const qs = new URLSearchParams(location.search);
+  if (qs.has('f')) { f = +qs.get('f'); md.reset(mdT(Math.max(f, F_C)), 1500); if (f < F_C) freeze(); }
+  if (qs.get('diff') === '1') diffCard.classList.add('show');
+
+  // ---- main loop -----------------------------------------------------------
+  let last = performance.now(), frame = 0;
+  function tick(now) {
+    const dtr = Math.min(0.05, (now - last) / 1000); last = now;
+    if (ramp) {
+      let nf = f + ramp * RATE[mode] * dtr;
+      if (nf <= F_COLD && ramp < 0) { nf = F_COLD; ramp = 0; }
+      if (nf >= F_HOT && ramp > 0) { nf = F_HOT; ramp = 0; }
+      setF(nf);
+      if (mode === 'quench' && !ramp) mode = 'cool';
+    }
+    if (solid) placeSolid(dtr);
+    else md.step(Math.max(1, Math.round(stepsPerSec(md.T) * dtr)));
+    draw();
+    showTemp();
+    // the label arrives by itself once the crystal has formed (and leaves when it melts)
+    corrCard.classList.toggle('hidden', !(solid && solid.t > GLIDE + 0.4));
+    if (diffCard.classList.contains('show') && frame % 8 === 0) drawSq();         // ~8 ms per call
+    frame++;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  window.__md = md;                                     // for console inspection
+  // build 1: the line "Spontaneous translation symmetry breaking"
+  // (6 Nov) click 1 cools the liquid (stepping back warms it again); space / drag still work by hand
+  Deck.slide({ steps: 1, claims: [' ', 'f'], onStep: s => { mode = s >= 1 ? 'cool' : 'heat'; ramp = s >= 1 ? -1 : 1; } });
+})();
+</script>
+</body>
+</html>
