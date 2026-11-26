@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the five MBI 2026 figure/presentation skills into ~/.claude/skills/
+# Install the MBI 2026 figure/presentation skills into ~/.claude/skills/
 # (Team repos must keep their own .claude/ folder untouched.)
 set -euo pipefail
 
@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TARGET="${HOME}/.claude/skills"
 mkdir -p "${TARGET}"
 
-SKILLS=(figure-style render-and-look schematic html-animation blender-scene)
+SKILLS=(figure-style render-and-look schematic html-animation blender-scene html-fractal)
 
 for s in "${SKILLS[@]}"; do
   rm -rf "${TARGET}/${s}"
@@ -16,5 +16,5 @@ for s in "${SKILLS[@]}"; do
 done
 
 echo ""
-echo "Done. All 5 skills are now available in Claude Code across any project."
+echo "Done. All 6 skills (5 from the talk + the bonus html-fractal) are now available in Claude Code across any project."
 echo "Optional: copy ${SCRIPT_DIR}/figure-style/mbi.mplstyle into your team repo as code/team.mplstyle."

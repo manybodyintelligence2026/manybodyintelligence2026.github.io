@@ -243,13 +243,13 @@
           visuals or HTML demos for your lightning talk.</li>
       </ol>
       <div class="action-row">
-        <a class="dl-btn" href="mbi2026-figure-skills.zip" download>Download all 5 skills (.zip)</a>
+        <a class="dl-btn" href="mbi2026-figure-skills.zip" download>Download all skills: 5 + bonus (.zip)</a>
         <a class="dl-btn sec" href="slides/">Open talk slides (13 slides) &rarr;</a>
       </div>
     </div>
     <div class="prompt-card" style="margin-top:-0.4rem;">
       <button class="copy-btn">Copy</button>
-      <pre>Unzip ~/Downloads/mbi2026-figure-skills.zip (or wherever I saved it) and install all five skills into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.</pre>
+      <pre>Unzip ~/Downloads/mbi2026-figure-skills.zip (or wherever I saved it) and install all the skills into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.</pre>
     </div>
 
     <h2>Roadmap: the five Claude Code skills</h2>
@@ -301,6 +301,13 @@
             <td><a href="#s5"><code>/blender-scene</code></a></td>
             <td>Scripted 3D Blender renders (Cycles ray-tracing or EEVEE) when a browser page isn't enough.</td>
             <td><a href="skills/blender-scene/scene_template.py"><code>scene_template.py</code></a></td>
+          </tr>
+          <tr>
+            <td>Bonus</td>
+            <td><a href="#s6"><code>/html-fractal</code></a></td>
+            <td>Animate any calculation the way a fractal is built &mdash; level by level, iteration by iteration
+              &mdash; as a live HTML figure for your slides, with every number computed by the page.</td>
+            <td><a href="skills/html-fractal/template.html"><code>template.html</code></a></td>
           </tr>
         </tbody>
       </table>
@@ -469,6 +476,26 @@ from [data file] automatically via Blender in the background. Keep Standard view
 (true colours) and clean studio lighting; use EEVEE for fast previews or Cycles for
 photoreal glass and shadows. Render ONE still frame first, inspect the PNG, and only
 render animation frames once the still looks right.</pre>
+    </div>
+
+    <h2 id="s6">Bonus &middot; Animate a calculation like a fractal (<code>/html-fractal</code>)</h2>
+    <p><span class="stack-tag">Level by level &middot; one offline HTML file</span>
+      A fractal is a rule applied again and again, and most calculations have the same shape: a solver iterates, a
+      simulation steps in time, a lattice grows, a parameter is swept. <code>/html-fractal</code> turns that sequence
+      into a live figure for your lightning talk or slides: one step per beat, the new part glowing, a HUD with numbers
+      the page computes (and that Claude checks against Python), click for the next level, double-click to start,
+      <code>?t=</code> to freeze any moment. It also covers putting the figure into an HTML slide deck (videos, keys,
+      hidden slides). The bundled <a href="skills/html-fractal/template.html"><code>template.html</code></a> is a
+      working example on a non-fractal problem: the Laplace equation relaxed by Jacobi iteration, with its convergence
+      plot. Slide 11 of the <a href="slides/#11">talk</a> (growing {7,3} hyperbolic lattice, Sierpi&nacute;ski carpet)
+      was built the same way.</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /html-fractal and /render-and-look.
+Starting from template.html, build talk/anim.html that shows [our calculation] step by step:
+one beat per [iteration / time step / generation / parameter value], using the numbers from [data file or code].
+Show [observable] in the HUD, let a click jump to the next step, start paused until a double-click,
+and check every number on screen against our Python result before you finish.</pre>
     </div>
 
     <h2>Further reading &amp; credits</h2>

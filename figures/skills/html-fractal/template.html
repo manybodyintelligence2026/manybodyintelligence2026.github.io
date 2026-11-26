@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jacobi relaxation, level by level</title>
+<!--
+  /html-fractal template. One file, no dependencies, works from file:// and inside a slide.
+  The pattern: model (pure functions) -> precomputed steps -> stateAt(t) -> draw(state).
+  Replace the MODEL block and the BEATS/captions; keep the clock, sizing, HUD and checks.
+
+  Model: Laplace equation u_xx + u_yy = 0 on the unit square, u = sin(pi x) on the top edge, 0 on the others.
+  Exact solution u(x, y) = sin(pi x) sinh(pi y) / sinh(pi). Jacobi iteration on an (n+2) x (n+2) grid, n = 48.
+  The levels are k = 0, 1, 4, 16, ..., 4^8 iterations ("the fractal pattern": each level is the rule applied more).
+  Controls: double-click = start / pause, click = jump to the next level, ?t=12 = freeze at t = 12 s.
+-->
+<style>
+  :root {
+    --bg-0: #08040d; --bg-1: #0f0716; --bg-2: #170b21; --hair-2: rgba(255,190,160,.20);
+    --ink-0: #fff3ec; --ink-2: #b9a3b7; --violet: #7d4fc0; --lilac: #b3a5c9;
+    --ember-0: #fff1e0; --ember-1: #ffc49b; --ember-2: #ff8f45; --ember-3: #ff5a1f; --ember-4: #e3262f;
+    --sans: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+    --serif: "EB Garamond", Georgia, "Times New Roman", serif;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg-0); color: var(--ink-0); font-family: var(--sans); }
+  .fig { box-sizing: border-box; height: 100%; padding: 16px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
+  .panel { position: relative; min-height: 0; border: 1px solid var(--hair-2); border-radius: 8px; overflow: hidden;
+    background: radial-gradient(ellipse at 50% 45%, var(--bg-2), var(--bg-1) 55%, var(--bg-0)); }
+  .panel canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: pointer; }
+  .cap { position: absolute; left: 12px; top: 12px; max-width: calc(100% - 24px); padding: 8px 12px; font-size: 15px;
+    line-height: 1.4; background: rgba(8,4,13,.78); border: 1px solid var(--hair-2); border-radius: 6px; pointer-events: none; }
+  .hud { position: absolute; left: 12px; bottom: 10px; right: 12px; font-size: 13.5px; line-height: 1.55; color: var(--ink-2);
+    font-variant-numeric: tabular-nums; pointer-events: none; text-shadow: 0 1px 6px rgba(8,4,13,.9); }
+  .hud b { color: var(--ink-0); font-weight: 500; }
+  .m { font-family: var(--serif); font-style: italic; font-size: 1.12em; }
+  .hot { color: var(--ember-1); }
+  @media (max-width: 700px) { .fig { grid-template-columns: 1fr; grid-template-rows: 1.2fr 1fr; } }
+</style>
+</head>
+<body>
+<div class="fig" id="fig">
+  <div class="panel"><canvas id="cvMap" aria-label="Heat map of the Jacobi iterate u_k on the grid"></canvas>
+    <div class="cap" id="cap"></div><div class="hud" id="hud"></div></div>
+  <div class="panel"><canvas id="cvPlot" aria-label="Residual and error versus iteration number, log-log"></canvas></div>
+</div>
+<script>
+(() => {
+  // ============================== MODEL (pure functions, no drawing) ==============================
+  const n = 48, W = n + 2;                                     // interior n x n, plus the boundary
+  const h = 1 / (n + 1);
+  const exact = (x, y) => Math.sin(Math.PI * x) * Math.sinh(Math.PI * y) / Math.sinh(Math.PI);
+  function initial() {
+    const u = new Float64Array(W * W);
+    for (let i = 0; i < W; i++) u[(W - 1) * W + i] = Math.sin(Math.PI * i * h);   // top edge (row W-1 = y = 1)
+    return u;
+  }
+  function jacobi(u, v) {                                      // one sweep: v = average of the four neighbours
+    v.set(u);
+    for (let j = 1; j <= n; j++) for (let i = 1; i <= n; i++) {
+      const k = j * W + i;
+      v[k] = 0.25 * (u[k - 1] + u[k + 1] + u[k - W] + u[k + W]);
+    }
+  }
+  function observables(u) {
+    let res = 0, err = 0;
+    for (let j = 1; j <= n; j++) for (let i = 1; i <= n; i++) {
+      const k = j * W + i;
+      res = Math.max(res, Math.abs(u[k - 1] + u[k + 1] + u[k - W] + u[k + W] - 4 * u[k]) / (h * h));
+      err = Math.max(err, Math.abs(u[k] - exact(i * h, j * h)));
+    }
+    return { res, err };
+  }
+
+  // ============================== PRECOMPUTED STEPS ==============================
+  const LEVELS = [0, 1, 4, 16, 64, 256, 1024, 4096, 16384, 65536];
+  const SNAP = [], OBS = [], CURVE = [];                       // snapshots per level, observables, full curve
+  {
+    let u = initial(), v = new Float64Array(W * W), it = 0;
+    for (const L of LEVELS) {
+      while (it < L) {
+        jacobi(u, v); [u, v] = [v, u]; it++;
+        if ((it & (it - 1)) === 0 || it % 256 === 0) CURVE.push([it, observables(u)]);
+      }
+      SNAP.push(u.slice()); OBS.push(observables(u));
+    }
+  }
+  window.__fig = { n, LEVELS, OBS, SNAP };                    // for the independent check (numpy)
+
+  // ============================== BEATS ==============================
+  const PER = 2.6, FADE = 0.8, DURATION = LEVELS.length * PER + 2, SPEED = 1;
+  const smooth = s => (s <= 0 ? 0 : s >= 1 ? 1 : s * s * (3 - 2 * s));
+  function stateAt(t) {
+    const tc = Math.min(t, DURATION - 1e-6);
+    const b = Math.min(LEVELS.length - 1, Math.floor(tc / PER));
+    return { beat: b, fade: b === 0 ? 1 : smooth((tc - b * PER) / FADE) };
+  }
+  const caption = b => b === 0
+    ? "Start: u = 0 inside, u = sin(&pi;<span class='m'>x</span>) on the top edge."
+    : `After ${LEVELS[b].toLocaleString("en-US")} Jacobi sweeps: each sweep replaces every value by the mean of its 4 neighbours.`;
+
+  // ============================== DRAWING ==============================
+  // batlow (Crameri), approximate stops: perceptually uniform and colour-blind safe
+  const LUT = [[1,25,89],[16,63,96],[28,90,98],[60,109,86],[104,123,62],[157,137,43],[210,147,67],[248,161,123],[250,204,250]];
+  function cmap(x) {
+    x = Math.max(0, Math.min(1, x)) * (LUT.length - 1);
+    const i = Math.min(LUT.length - 2, Math.floor(x)), f = x - i, a = LUT[i], c = LUT[i + 1];
+    return [a[0] + (c[0] - a[0]) * f, a[1] + (c[1] - a[1]) * f, a[2] + (c[2] - a[2]) * f];
+  }
+  function fit(cv) {                                           // sharp inside scaled decks
+    const ctx = cv.getContext("2d"), r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    const w = cv.clientWidth || 1, hh = cv.clientHeight || 1;
+    const bw = Math.max(1, Math.round(r.width * dpr)), bh = Math.max(1, Math.round(r.height * dpr));
+    if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
+    ctx.setTransform(bw / w, 0, 0, bh / hh, 0, 0); ctx.clearRect(0, 0, w, hh);
+    return { ctx, w, h: hh };
+  }
+  const off = document.createElement("canvas"); off.width = off.height = W;
+  const offCtx = off.getContext("2d"), img = offCtx.createImageData(W, W);
+
+  function drawMap(st) {
+    const { ctx, w, h: H } = fit(document.getElementById("cvMap"));
+    const a = SNAP[Math.max(0, st.beat - 1)], b = SNAP[st.beat], f = st.fade;
+    for (let j = 0; j < W; j++) for (let i = 0; i < W; i++) {
+      const k = j * W + i, val = a[k] + (b[k] - a[k]) * f;
+      const [r, g, bb] = cmap(val), p = ((W - 1 - j) * W + i) * 4;          // y up
+      img.data[p] = r; img.data[p + 1] = g; img.data[p + 2] = bb; img.data[p + 3] = 255;
+    }
+    offCtx.putImageData(img, 0, 0);
+    const top = 64, bot = 58, S = Math.min(w * 0.9, H - top - bot), x0 = (w - S) / 2, y0 = top + (H - top - bot - S) / 2;
+    ctx.imageSmoothingEnabled = false; ctx.drawImage(off, x0, y0, S, S);
+    // the hot thing: where this level changed u (glow ~ |u_b - u_a|), added as light, fading as the level settles
+    if (st.beat > 0) {
+      const A = 1 - 0.75 * st.fade;
+      for (let j = 0; j < W; j++) for (let i = 0; i < W; i++) {
+        const k = j * W + i, d = Math.min(1, Math.abs(b[k] - a[k]) / 0.15), p = ((W - 1 - j) * W + i) * 4;
+        img.data[p] = 255; img.data[p + 1] = 90 + 120 * d; img.data[p + 2] = 31 + 60 * d; img.data[p + 3] = 255 * Math.sqrt(d) * A;
+      }
+      offCtx.putImageData(img, 0, 0);
+      ctx.globalCompositeOperation = "lighter"; ctx.imageSmoothingEnabled = true;
+      ctx.globalAlpha = 0.55; ctx.drawImage(off, x0, y0, S, S);
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+    }
+    ctx.strokeStyle = "rgba(179,165,201,.45)"; ctx.strokeRect(x0 + 0.5, y0 + 0.5, S - 1, S - 1);
+  }
+
+  function drawPlot(st) {
+    const { ctx, w, h: H } = fit(document.getElementById("cvPlot"));
+    const L = 60, R = 18, T = 24, B = 48, pw = w - L - R, ph = H - T - B;
+    const X = it => L + pw * Math.log10(it) / Math.log10(LEVELS[LEVELS.length - 1]);
+    const Y = v => T + ph * (1 - (Math.log10(v) + 7) / 11);         // 1e-7 .. 1e4
+    ctx.font = "12.5px " + getComputedStyle(document.body).fontFamily; ctx.fillStyle = "#b9a3b7";
+    ctx.strokeStyle = "rgba(255,190,160,.20)"; ctx.lineWidth = 1;
+    for (let e = -7; e <= 4; e++) { const y = Y(10 ** e); ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(L + pw, y); ctx.stroke(); ctx.fillText("1e" + e, 14, y + 4); }
+    ctx.fillText("iterations k (log)", L + pw / 2 - 50, H - 14);
+    const upto = LEVELS[st.beat];
+    const line = (key, col) => {
+      ctx.beginPath(); let first = true;
+      for (const [it, o] of CURVE) { if (it > upto) break; const x = X(it), y = Y(Math.max(1e-7, o[key])); first ? ctx.moveTo(x, y) : ctx.lineTo(x, y); first = false; }
+      ctx.strokeStyle = col; ctx.lineWidth = 1.6; ctx.stroke();
+    };
+    line("res", "#b3a5c9"); line("err", "#ff8f45");
+    if (st.beat > 0) {                                              // current level: core + halo point
+      const o = OBS[st.beat], x = X(upto);
+      for (const [v, col] of [[o.res, "#b3a5c9"], [o.err, "#ff8f45"]]) {
+        ctx.fillStyle = "rgba(255,90,31,.30)"; ctx.beginPath(); ctx.arc(x, Y(Math.max(1e-7, v)), 7, 0, 7); ctx.fill();
+        ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x, Y(Math.max(1e-7, v)), 3, 0, 7); ctx.fill();
+      }
+    }
+    ctx.fillStyle = "#b3a5c9"; ctx.fillText("max residual |∇²u|", L + 8, T + 14);
+    ctx.fillStyle = "#ff8f45"; ctx.fillText("max |u_k − u_exact|", L + 8, T + 30);
+  }
+
+  let lastKey = "";
+  function text(st) {
+    const key = st.beat + "|" + paused + "|" + (paused && pausedAt === 0);
+    if (key === lastKey) return; lastKey = key;
+    document.getElementById("cap").innerHTML = caption(st.beat);
+    const o = OBS[st.beat];
+    document.getElementById("hud").innerHTML =
+      `<span class="m">k</span> = <b>${LEVELS[st.beat].toLocaleString("en-US")}</b> &middot; residual <b>${o.res.toExponential(2)}</b>` +
+      ` &middot; error <b>${o.err.toExponential(2)}</b>` +
+      (paused && !Number.isFinite(qT) ? (pausedAt === 0 ? ' &middot; <span class="hot">double-click to start</span>' : ' &middot; <span class="hot">paused</span>') : "");
+  }
+
+  // ============================== CLOCK, LOOP, INPUT ==============================
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const qT = parseFloat(new URLSearchParams(location.search).get("t"));
+  let t0 = performance.now(), paused = true, pausedAt = 0, raf = 0;   // waits for a double-click
+  const clock = () => (paused ? pausedAt : (performance.now() - t0) / 1000 * SPEED);
+  function frame() {
+    raf = 0;
+    const t = Number.isFinite(qT) ? qT : reduce ? DURATION : clock();
+    const st = stateAt(t);
+    drawMap(st); drawPlot(st); text(st);
+    if (!paused && !reduce && !Number.isFinite(qT) && t < DURATION) raf = requestAnimationFrame(frame);
+  }
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  const setTime = t => { if (paused) pausedAt = t; else t0 = performance.now() - t / SPEED * 1000; kick(); };
+  const fig = document.getElementById("fig");
+  let clickTimer = 0;                                          // a double-click must not also count as a click
+  fig.addEventListener("dblclick", e => {
+    e.preventDefault(); clearTimeout(clickTimer);
+    if (paused) { const t = pausedAt >= DURATION ? 0 : pausedAt; paused = false; setTime(t); }
+    else { pausedAt = clock(); paused = true; kick(); }
+    lastKey = "";
+  });
+  fig.addEventListener("click", e => {                         // one click = the next level, shown at once
+    if (e.detail > 1) return;
+    clickTimer = setTimeout(() => {
+      const b = stateAt(clock()).beat, t = ((b + 1) % LEVELS.length) * PER + FADE;
+      if (paused && pausedAt === 0) pausedAt = 1e-9;           // leave the "waiting" state
+      setTime(t); lastKey = "";
+    }, 260);
+  });
+  addEventListener("resize", kick);
+  kick();
+})();
+</script>
+</body>
+</html>

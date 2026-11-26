@@ -1,6 +1,6 @@
 # MBI 2026 Figure & Presentation Skills
 
-Five numbered Claude Code skills (plus tested starter templates) for the **Figures & Presentation** phase (Monday 30 November 2026, 14:00–15:00), in the exact order covered in the talk and `resources.html`.
+Five numbered Claude Code skills plus one bonus skill (with tested starter templates) for the **Figures & Presentation** phase (Monday 30 November 2026, 14:00–15:00), in the exact order covered in the talk and `resources.html`.
 
 **Core idea — Principles vs. Aesthetics:** Objective *design principles* (readable font sizes for a paper or projector, colour maps that match your data's symmetry and work for colour-blind readers, honest axes, and checking the rendered image) can be handed to Claude Code as skills — leaving you free to focus on the physics and your own *aesthetic* choices.
 
@@ -11,13 +11,14 @@ Five numbered Claude Code skills (plus tested starter templates) for the **Figur
 | Skill 3 | `render-and-look` | — | Quality gate after *any* visual: renders a PNG, forces Claude to inspect every label and inset for collisions & physics errors, fixes the script (max 3 rounds). |
 | Skill 4 | `html-animation` | `template.html` | Interactive talk animations & 3D figures as a single offline browser page (arrow-key beats, time scrubbing, live sliders). Default before Blender. |
 | Skill 5 | `blender-scene` | `scene_template.py` | Drives Blender automatically from Python (no clicking menus) when a browser page isn't enough — checks one still frame first. |
+| Bonus | `html-fractal` | `template.html` | Animate *any* calculation the way a fractal is built — level by level, generation by generation, iteration by iteration (solvers, time steps, lattices, sweeps), with every number on screen computed by the page; how to drop it into an HTML slide deck. |
 
 ## Installing (30 seconds)
 
 **Easiest way — ask Claude Code to do it for you:**
 Download `mbi2026-figure-skills.zip`, then paste into Claude Code:
 ```text
-Unzip ~/Downloads/mbi2026-figure-skills.zip and install all five skills into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.
+Unzip ~/Downloads/mbi2026-figure-skills.zip and install all six skills into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.
 ```
 
 **Or run the installer script yourself** (leaving your team repository's `.claude/` folder untouched so `/log-entry` and `/log-check` keep working):
