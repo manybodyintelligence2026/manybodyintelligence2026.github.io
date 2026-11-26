@@ -1,0 +1,3203 @@
+<!doctype html>
+<html lang="en" class="present">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Figures &amp; Presentation · Many-Body Intelligence 2026</title>
+  <meta name="description"
+    content="Principles vs. Aesthetics: five Claude Code skills for scientific figures and interactive animations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Clean scientific presentation aesthetic:
+   Consistent semantic colour coding across all 12 slides:
+     --principles (#1d5e57, deep teal)   -> objective design principles handed to Claude
+     --aesthetics (#a85513, warm ochre)  -> subjective aesthetic choices kept by the physicist
+     --error      (#9e1f28, crimson)     -> broken rules or physics errors
+   Stage: 1600 x 900 scaled to viewport. Keys: Left/Right/Space, F fullscreen, #1..#12. */
+    :root {
+      --paper: #f6f4ef;
+      --surface: #ffffff;
+      --ink: #1e1d1b;
+      --muted: #6e6a63;
+      --rule: #dcd7ce;
+      --principles: #1d5e57;
+      --principles-tint: #eaf2f1;
+      --aesthetics: #a85513;
+      --aesthetics-tint: #faf0e7;
+      --error: #9e1f28;
+      --error-tint: #f9ebec;
+      --sans: "Helvetica Neue", Helvetica, "Inter", Arial, sans-serif;
+      --math: "STIX Two Text", "Cambria Math", "Computer Modern", Georgia, "Times New Roman", serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: #e2ded6;
+      overflow: hidden;
+    }
+
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1600px;
+      height: 900px;
+      transform-origin: center;
+      overflow: hidden;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+      box-shadow: 0 20px 56px rgba(30, 29, 27, 0.14);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 42px 76px 54px;
+      display: none;
+      flex-direction: column;
+    }
+
+    .slide.on {
+      display: flex;
+    }
+
+    /* Staged click-by-click builds (<html class="present">; pass ?all=1 to show everything immediately) */
+    .present [data-step] {
+      transition: opacity .34s cubic-bezier(.22, 1, .36, 1), transform .34s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .present [data-step].later {
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+    }
+
+    .present .noanim [data-step] {
+      transition: none !important;
+    }
+
+    .curtain-after.glide {
+      transition: clip-path .55s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .curtain-line.glide {
+      transition: left .55s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    /* Quiet beat dots next to slide counter */
+    .dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: 4px;
+    }
+
+    .dots i {
+      display: block;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--rule);
+      transition: background .2s;
+    }
+
+    .dots i.done {
+      background: var(--ink);
+    }
+
+    .dots i.cur {
+      background: var(--principles);
+    }
+
+    /* Slide header + calm numbered skill kicker */
+    .top {
+      flex: none;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 22px;
+    }
+
+    .top-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .sk-kicker {
+      font-size: 14.5px;
+      font-weight: 500;
+      color: var(--principles);
+      line-height: 1.2;
+    }
+
+    .sk-kicker.err {
+      color: var(--error);
+    }
+
+    .top h2 {
+      margin: 0;
+      font-family: var(--sans);
+      font-weight: 500;
+      font-size: 32px;
+      letter-spacing: -0.015em;
+      line-height: 1.18;
+      color: var(--ink);
+    }
+
+    .top .sub {
+      font-size: 15.5px;
+      font-weight: 400;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.88em;
+      color: var(--ink);
+      background: rgba(30, 29, 27, 0.055);
+      padding: 1px 5px;
+      border-radius: 2px;
+    }
+
+    /* Consistent semantic theme colours & tags */
+    .c-p {
+      color: var(--principles);
+      font-weight: 500;
+    }
+
+    .c-a {
+      color: var(--aesthetics);
+      font-weight: 500;
+    }
+
+    .c-e {
+      color: var(--error);
+      font-weight: 500;
+    }
+
+    .theme-tag {
+      display: inline-block;
+      font-size: 15.5px;
+      font-weight: 600;
+      line-height: 1.25;
+      padding-left: 10px;
+      border-left: 3px solid var(--muted);
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+
+    .theme-tag.p {
+      border-left-color: var(--principles);
+      color: var(--principles);
+    }
+
+    .theme-tag.a {
+      border-left-color: var(--aesthetics);
+      color: var(--aesthetics);
+    }
+
+    .theme-tag.e {
+      border-left-color: var(--error);
+      color: var(--error);
+    }
+
+    .frame {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      overflow: hidden;
+    }
+
+    /* Clearly clickable tactile scientific buttons */
+    .btn-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn-opt {
+      font: 500 14.5px var(--sans);
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid #beb8ac;
+      border-radius: 3px;
+      padding: 7px 14px;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(30, 29, 27, 0.07);
+      transition: background .14s ease, border-color .14s ease, color .14s ease, transform .08s ease;
+    }
+
+    .btn-opt:hover {
+      border-color: var(--ink);
+      background: #faf8f4;
+    }
+
+    .btn-opt:active {
+      transform: translateY(1px);
+    }
+
+    .btn-opt.on {
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
+      box-shadow: none;
+    }
+
+    .btn-opt.p.on {
+      background: var(--principles);
+      color: #fff;
+      border-color: var(--principles);
+      box-shadow: none;
+    }
+
+    .btn-opt.a.on {
+      background: var(--aesthetics);
+      color: #fff;
+      border-color: var(--aesthetics);
+      box-shadow: none;
+    }
+
+    .btn-opt.e:hover {
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    .btn-opt.e.on {
+      background: var(--error);
+      color: #fff;
+      border-color: var(--error);
+      box-shadow: none;
+    }
+
+    /* Bottom-right pager & bottom-left citation */
+    .pager {
+      position: absolute;
+      right: 36px;
+      bottom: 18px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font: 400 13px var(--sans);
+      color: var(--muted);
+      opacity: 0.78;
+    }
+
+    .pager:hover {
+      opacity: 1;
+    }
+
+    .pager button {
+      background: transparent;
+      border: 0;
+      color: inherit;
+      font: inherit;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+
+    .pager button:hover {
+      color: var(--ink);
+    }
+
+    .credit {
+      position: absolute;
+      left: 76px;
+      bottom: 18px;
+      z-index: 15;
+      font: 400 13px var(--sans);
+      color: var(--muted);
+      max-width: 1280px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .credit a {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: var(--rule);
+    }
+
+    .credit a:hover {
+      color: var(--ink);
+      text-decoration-color: var(--principles);
+    }
+
+    /* Slide 1 · Title */
+    .s1-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 0.92fr 1.08fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .s1-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s1-meta {
+      font-size: 16px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    .s1-title {
+      margin: 0;
+      font-weight: 500;
+      font-size: 62px;
+      letter-spacing: -0.02em;
+      line-height: 1.06;
+      color: var(--ink);
+    }
+
+    .s1-sub {
+      margin: 26px 0 0;
+      font-size: 28px;
+      font-weight: 400;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .s1-legend {
+      margin-top: 38px;
+      padding-top: 22px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .s1-leg-row {
+      font-size: 16px;
+      color: var(--muted);
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .s1-right {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .s1-crystal {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+    }
+
+    .s1-crystal iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .s1-cap {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* Slide 2 · Roadmap */
+    .rm-body {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .rm-goal {
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--ink);
+      max-width: 1180px;
+      margin: 0;
+    }
+
+    .rm-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid var(--rule);
+    }
+
+    .rm-row {
+      display: grid;
+      grid-template-columns: 92px 230px 1fr 240px;
+      gap: 22px;
+      align-items: baseline;
+      padding: 19px 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .rm-num {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--principles);
+    }
+
+    .rm-row.hl .rm-num,
+    .rm-row.hl .rm-cmd {
+      color: var(--error);
+    }
+
+    .rm-cmd {
+      font-family: var(--mono);
+      font-size: 17.5px;
+      font-weight: 500;
+      color: var(--principles);
+    }
+
+    .rm-what {
+      font-size: 17.5px;
+      color: var(--ink);
+      line-height: 1.35;
+    }
+
+    .rm-when {
+      font-size: 14.5px;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .rm-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 14px 18px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--aesthetics);
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    .rm-foot a {
+      color: var(--principles);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Slide 3 · Principles vs Aesthetics */
+    .pa-layout {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.38fr 0.62fr;
+      gap: 40px;
+      align-items: stretch;
+    }
+
+    .pa-canvas-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .pa-canvas-box canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .pa-controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+    }
+
+    .pa-section {
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: 3px;
+    }
+
+    .pa-section.a {
+      border-top: 3px solid var(--aesthetics);
+    }
+
+    .pa-section.p {
+      border-top: 3px solid var(--principles);
+    }
+
+    .pa-heading {
+      font-size: 19px;
+      font-weight: 500;
+      margin: 4px 0 14px;
+      color: var(--ink);
+    }
+
+    .pa-subrow {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin: 14px 0 8px;
+    }
+
+    .pa-status {
+      margin-top: 16px;
+      padding: 9px 12px;
+      border-radius: 3px;
+      font-size: 14.5px;
+      line-height: 1.35;
+      background: var(--principles-tint);
+      color: var(--principles);
+      font-weight: 500;
+    }
+
+    .pa-status.broken {
+      background: var(--error-tint);
+      color: var(--error);
+    }
+
+    /* Slide 4 · Crameri */
+    .cr-stage {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+    }
+
+    .cr-view {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: none;
+      width: 100%;
+    }
+
+    .cr-view.on {
+      display: flex;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .cr-col {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cr-col-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 15.5px;
+    }
+
+    .cr-img-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+    }
+
+    .cr-img-wrap.grey {
+      background: #e5e5e4;
+    }
+
+    .cr-img-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Slide 5 · Curtain */
+    .curtain {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      cursor: ew-resize;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .curtain-layer {
+      position: absolute;
+      inset: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .curtain-layer img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .curtain-after {
+      position: absolute;
+      inset: 0;
+      background: var(--surface);
+      clip-path: inset(0 0 0 50%);
+    }
+
+    .curtain-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: var(--ink);
+      transform: translateX(-50%);
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .curtain-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--ink);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 16px;
+    }
+
+    .curtain-lbl {
+      position: absolute;
+      top: 14px;
+      z-index: 7;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 4px 10px;
+      background: rgba(255, 255, 255, 0.94);
+      pointer-events: none;
+    }
+
+    .curtain-lbl.l {
+      left: 18px;
+      color: var(--error);
+      border-left: 3px solid var(--error);
+    }
+
+    .curtain-lbl.r {
+      right: 18px;
+      color: var(--principles);
+      border-left: 3px solid var(--principles);
+    }
+
+    /* Slide 6 · Schematics motivation + Figure 1 */
+    .s5-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .s5-intro {
+      display: grid;
+      grid-template-columns: 1.35fr 0.65fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    .wl-quote {
+      margin: 0;
+      padding: 2px 0 2px 16px;
+      border-left: 3px solid var(--principles);
+      font-size: 17.5px;
+      line-height: 1.48;
+      color: var(--ink);
+    }
+
+    .wl-cite {
+      margin: 7px 0 0 19px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .s5-side {
+      padding-top: 2px;
+      font-size: 15.5px;
+      line-height: 1.5;
+      color: var(--ink);
+    }
+
+    .s5-fig {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .s5-fig-box {
+      flex: 1 1 auto;
+      min-height: 0;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .s5-fig-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .s5-cap {
+      font-size: 14.5px;
+      line-height: 1.45;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .s5-cap strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Slide 7 · Published vs No skill vs With skill */
+    .wl-col {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .wl-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
+      margin-bottom: 10px;
+      font-size: 15.5px;
+    }
+
+    .wl-img {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wl-img img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .wl-desc {
+      margin: 10px 0 0;
+      font-size: 14.5px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Slide 8 · Render and Look */
+    .rl-split {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.12fr 0.88fr;
+      gap: 34px;
+    }
+
+    .rl-left {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .rl-img-box {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .rl-img-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .rl-left-cap {
+      font-size: 14px;
+      line-height: 1.4;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .rl-left-cap strong {
+      color: var(--error);
+      font-weight: 500;
+    }
+
+    .ring {
+      position: absolute;
+      border: 3px solid var(--error);
+      border-radius: 50%;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+    }
+
+    .ring-note {
+      position: absolute;
+      background: var(--error);
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 11px;
+      line-height: 1.35;
+    }
+
+    .rl-stat {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 0;
+    }
+
+    .rl-lead {
+      font-size: 15.5px;
+      line-height: 1.45;
+      color: var(--ink);
+      margin: 6px 0 0;
+    }
+
+    .rl-steps {
+      margin: 10px 0 0;
+      padding-left: 20px;
+      font-size: 14.5px;
+      line-height: 1.45;
+      color: var(--ink);
+    }
+
+    .rl-steps li {
+      margin: 5px 0;
+    }
+
+    .rl-steps strong {
+      color: var(--principles);
+      font-weight: 600;
+    }
+
+    .rl-chart-box {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      padding: 10px 14px 8px;
+    }
+
+    .rl-chart-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .rl-when {
+      background: var(--principles-soft);
+      border-left: 3px solid var(--principles);
+      padding: 11px 14px;
+      font-size: 14px;
+      line-height: 1.48;
+      color: var(--ink);
+    }
+
+    .rl-when strong {
+      color: var(--principles);
+      font-weight: 600;
+    }
+
+    .rl-when code {
+      font-family: var(--mono);
+      font-size: 12.8px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      padding: 1px 5px;
+      border-radius: 2px;
+      color: var(--ink);
+    }
+
+    /* Slide 9 · Moire */
+    .full-iframe {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+    }
+
+    .full-iframe iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* Slide 10 · Seminar demos */
+    .sem-wrap {
+      flex: 1 1 auto;
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+      max-height: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      position: relative;
+      background: #fbfaf7;
+      border: 1px solid var(--rule);
+    }
+
+    .sem-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    /* Slide 11 · HTML vs Blender */
+    .two-stacks {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .st-box {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .st-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      font-size: 15.5px;
+    }
+
+    .st-media {
+      flex: 1 1 auto;
+      min-height: 0;
+      background: #dfdad2;
+      border: 1px solid var(--rule);
+      position: relative;
+    }
+
+    .st-media iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .st-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    /* Slide 12 · Getting started at 14:00 (Actionable 3-step guide + clickable resources) */
+    .gs-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 56px;
+      align-items: center;
+    }
+
+    .gs-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .gs-step {
+      border-top: 1px solid var(--rule);
+      padding-top: 18px;
+    }
+
+    .gs-step.first {
+      border-top: 2px solid var(--principles);
+    }
+
+    .gs-step h3 {
+      margin: 4px 0 8px;
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .gs-step p {
+      margin: 0;
+      font-size: 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .gs-step p strong {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .gs-pack {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-top: 3px solid var(--aesthetics);
+      padding: 26px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .gs-item {
+      border-top: 1px solid var(--rule);
+      padding-top: 14px;
+    }
+
+    .gs-item:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .gs-item-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0 0 6px;
+    }
+
+    .gs-item-links {
+      font-size: 15px;
+      line-height: 1.55;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .gs-item-links a {
+      color: var(--principles);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(29, 94, 87, 0.35);
+    }
+
+    .gs-item-links a:hover {
+      text-decoration-color: var(--principles);
+    }
+
+    .gs-foot {
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--rule);
+      margin-top: 14px;
+    }
+
+    .gs-cmd {
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    .gs-cmd a {
+      color: var(--principles);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .btn-clean {
+      font: 500 15px var(--sans);
+      background: var(--principles);
+      color: #fff;
+      border: 0;
+      border-radius: 3px;
+      padding: 10px 20px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-clean:hover {
+      background: var(--ink);
+    }
+
+    /* EXTRA · Fractals slide (ember version: dark violet room lit by one hot filament) */
+    section[data-name="fractals"] {
+      --bg-0: #08040d;
+      --bg-1: #0f0716;
+      --bg-2: #170b21;
+      --bg-3: #22102f;
+      --hair: rgba(255, 190, 160, .10);
+      --hair-2: rgba(255, 190, 160, .20);
+      --ink-0: #fff3ec;
+      --ink-2: #b9a3b7;
+      --ember-0: #fff1e0;
+      --ember-1: #ffc49b;
+      --ember-2: #ff8f45;
+      --lilac: #b3a5c9;
+      --serif: "EB Garamond", "STIX Two Text", Georgia, serif;
+    }
+
+    .fx-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 28px;
+    }
+
+    .fx-video {
+      height: 100%;
+      aspect-ratio: 576 / 1024;
+      background: var(--bg-0);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fx-video video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: var(--bg-0);
+    }
+
+    .fx-box {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .fx-meta {
+      color: var(--muted);
+    }
+
+    .fx-media {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      border-radius: 8px;
+      border: 1px solid var(--hair-2);
+      background: radial-gradient(ellipse at 50% 45%, var(--bg-2) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
+      overflow: hidden;
+    }
+
+    .fx-media canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    .fx-cap {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      right: 14px;
+      width: fit-content;
+      max-width: calc(100% - 28px);
+      padding: 8px 12px;
+      font: 400 15px/1.4 "Inter", var(--sans);
+      color: var(--ink-0);
+      background: rgba(8, 4, 13, .78);
+      border: 1px solid var(--hair-2);
+      border-radius: 6px;
+      pointer-events: none;
+      transition: opacity .35s;
+    }
+
+    .fx-hud {
+      position: absolute;
+      left: 14px;
+      bottom: 12px;
+      right: 14px;
+      font: 400 13.5px/1.55 "Inter", var(--sans);
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-2);
+      pointer-events: none;
+      text-shadow: 0 1px 6px rgba(8, 4, 13, .9);
+    }
+
+    .fx-hud b {
+      color: var(--ink-0);
+      font-weight: 500;
+    }
+
+    .fx-hud .m,
+    .fx-cap .m {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.12em;
+    }
+
+    .fx-hud .hot {
+      color: var(--ember-1);
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <div class="stage" id="stage">
+
+    <!-- 1 · TITLE -->
+    <section class="slide on" data-name="title">
+      <div class="s1-grid">
+        <div class="s1-left">
+          <div class="s1-meta">Many-Body Intelligence 2026 &middot; Uppsala University &middot; 14:00&ndash;15:00</div>
+          <h1 class="s1-title">Figures &amp;<br>presentation</h1>
+          <p class="s1-sub" data-step="1">
+            Hand Claude the <span class="c-p">principles</span>.<br>
+            Keep the <span class="c-a">aesthetics</span>.
+          </p>
+          <div class="s1-legend" data-step="1">
+            <div class="s1-leg-row">
+              <span class="theme-tag p" style="margin:0;">Principles</span>
+              <span>objective rules &mdash; legibility, colour symmetry, physics checks</span>
+            </div>
+            <div class="s1-leg-row">
+              <span class="theme-tag a" style="margin:0;">Aesthetics</span>
+              <span>your judgement &mdash; palette, font family, visual voice</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="s1-right">
+          <div class="s1-crystal">
+            <iframe src="../demos/perovskite-stacks/perovskite_3d.html?hero=1"
+              title="Live 3D ABO3 Perovskite Octahedral Tilt"></iframe>
+          </div>
+          <div class="s1-cap">ABO<sub>3</sub> perovskite soft phonon &middot; 10 kB offline Three.js (drag to rotate)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 · ROADMAP & EXPECTATIONS (UP FRONT!) -->
+    <section class="slide" data-name="roadmap">
+      <div class="top">
+        <div class="top-left">
+          <h2>Roadmap: five Claude Code skills for 14:00&ndash;15:00</h2>
+        </div>
+        <div class="sub">resources.html &amp; Discord &middot; lightning talks at 15:45</div>
+      </div>
+
+      <div class="rm-body">
+        <p class="rm-goal">
+          <strong>Goal for this phase:</strong> turn your team's results into clear figures for the 2-page note and the
+          15:45 lightning talk. We are giving you five Claude Code skills &mdash; this talk walks through each one in
+          order.
+        </p>
+
+        <div class="rm-list" data-step="1">
+          <div class="rm-row">
+            <div class="rm-num">Skill 1</div>
+            <div class="rm-cmd">/figure-style</div>
+            <div class="rm-what">Data plots &mdash; colour-blind friendly Crameri maps, LaTeX math, exact paper/slide
+              sizes.</div>
+            <div class="rm-when">includes <code>mbi.mplstyle</code></div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-num">Skill 2</div>
+            <div class="rm-cmd">/schematic</div>
+            <div class="rm-what">Editable vector schematics from code (SVG / PDF / TikZ), two drafts, referee critique.
+            </div>
+            <div class="rm-when">mechanisms &amp; setups</div>
+          </div>
+          <div class="rm-row hl">
+            <div class="rm-num">Skill 3</div>
+            <div class="rm-cmd">/render-and-look</div>
+            <div class="rm-what">Visual self-review &mdash; forces Claude to open its rendered PNG and fix layout
+              (&le; 3 rounds); you check the physics.</div>
+            <div class="rm-when">pair with any skill</div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-num">Skill 4</div>
+            <div class="rm-cmd">/html-animation</div>
+            <div class="rm-what">Interactive figures &amp; talk animations as one offline HTML file with live controls.
+            </div>
+            <div class="rm-when">includes <code>template.html</code></div>
+          </div>
+          <div class="rm-row">
+            <div class="rm-num">Skill 5</div>
+            <div class="rm-cmd">/blender-scene</div>
+            <div class="rm-what">Scripted 3D Blender renders when a browser page isn't enough &mdash; still frame
+              checked first.</div>
+            <div class="rm-when">includes <code>scene_template.py</code></div>
+          </div>
+        </div>
+
+        <div class="rm-foot" data-step="2">
+          <span><strong>What is expected:</strong> you do <em>not</em> need all five &mdash; install once in 1 minute,
+            then pick the 1 or 2 skills that fit your project (most teams start with Skills 1 &amp; 3).</span>
+          <a href="../" target="_blank" rel="noopener">Open resources.html &rarr;</a>
+        </div>
+      </div>
+      <div class="credit">All five skills, starter templates, copy-and-paste prompts, and working examples from this
+        talk are bundled in <a href="../" target="_blank" rel="noopener">resources.html</a>
+      </div>
+    </section>
+
+    <!-- 3 · CORE IDEA: PRINCIPLES VS AESTHETICS -->
+    <section class="slide" data-name="principles">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Core idea behind all 5 skills</div>
+          <h2><span class="c-p">Principles</span> vs. <span class="c-a">aesthetics</span></h2>
+        </div>
+        <div class="sub">same signed charge-density difference <i style="font-family:var(--math);">&Delta;&rho;(x,
+            y)</i></div>
+      </div>
+      <div class="pa-layout">
+        <div class="pa-canvas-box frame">
+          <canvas id="paCanvas"></canvas>
+        </div>
+        <div class="pa-controls">
+          <div class="pa-section a" data-step="1">
+            <div class="theme-tag a">Aesthetics &middot; You choose (all valid)</div>
+            <div class="pa-heading">Change the look (physics stays identical)</div>
+            <div class="pa-subrow">Palette (diverging, colour-blind friendly)</div>
+            <div class="btn-group" id="paPalBtns">
+              <button class="btn-opt a on" data-pal="vik">vik</button>
+              <button class="btn-opt a" data-pal="cork">cork</button>
+              <button class="btn-opt a" data-pal="bam">bam</button>
+            </div>
+            <div class="pa-subrow">Typeface</div>
+            <div class="btn-group" id="paFontBtns">
+              <button class="btn-opt a on" data-font="serif">Serif (LaTeX)</button>
+              <button class="btn-opt a" data-font="sans">Sans-serif</button>
+              <button class="btn-opt a" data-font="mono">Monospace</button>
+            </div>
+          </div>
+
+          <div class="pa-section p" data-step="2">
+            <div class="theme-tag p">Principles &middot; Hand these to Claude</div>
+            <div class="pa-heading">Break one design principle</div>
+            <div class="btn-group" id="paBreakBtns">
+              <button class="btn-opt p on" data-brk="none">All held</button>
+              <button class="btn-opt e" data-brk="jet">Rainbow / jet</button>
+              <button class="btn-opt e" data-brk="zero">Off-centre zero</button>
+              <button class="btn-opt e" data-brk="font">Tiny font</button>
+              <button class="btn-opt e" data-brk="cyclic">Wrong symmetry</button>
+            </div>
+            <div class="pa-status" id="paStatus">Zero centred &middot; colour-blind friendly &middot; readable at the
+              back</div>
+          </div>
+        </div>
+      </div>
+      <div class="credit">Colour maps: F. Crameri, <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank"
+          rel="noopener">Scientific Colour Maps</a> (CC BY 4.0)</div>
+    </section>
+
+    <!-- 4 · SKILL 1 (1/2): CHOOSING COLOUR MAPS -->
+    <section class="slide" data-name="crameri">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 1 of 5 &middot; <code>/figure-style</code></div>
+          <h2>Choosing colour maps for scientific data</h2>
+        </div>
+        <div class="btn-group" id="crTabs" data-step="2">
+          <button class="btn-opt p on" data-cr="pair">Flowchart &amp; atlas</button>
+          <button class="btn-opt p" data-cr="curie">Why not rainbow?</button>
+          <button class="btn-opt p" data-cr="cvd">Colour-blind &amp; print</button>
+          <button class="btn-opt p" data-cr="diag">Uniformity test</button>
+        </div>
+      </div>
+
+      <div class="cr-stage">
+        <div class="cr-view on" id="cr-pair">
+          <div class="cr-col" style="flex: 0.78;">
+            <div class="cr-col-head">
+              <span class="theme-tag p" style="margin:0;">Principles &middot; give this flowchart to Claude</span>
+              <span style="color:var(--muted); font-size:14px;">data symmetry &rarr; map class</span>
+            </div>
+            <div class="cr-img-wrap grey"><img src="../assets/crameri/flowchart.png"
+                alt="Crameri colour map decision flowchart"></div>
+          </div>
+          <div class="cr-col" style="flex: 1.22;" data-step="1">
+            <div class="cr-col-head">
+              <span class="theme-tag a" style="margin:0;">Aesthetics &middot; pick any palette in that class</span>
+              <span style="color:var(--muted); font-size:14px;">Scientific Colour Maps v8</span>
+            </div>
+            <div class="cr-img-wrap grey"><img src="../assets/crameri/scm8_normal.png"
+                alt="Scientific Colour Maps v8 atlas"></div>
+          </div>
+        </div>
+
+        <div class="cr-view" id="cr-curie">
+          <div class="cr-col">
+            <div class="cr-col-head">
+              <span class="theme-tag e" style="margin:0;">Rainbow / jet creates sharp false edges where smooth data has
+                none</span>
+              <span style="color:var(--muted); font-size:14px;">Crameri et al., Nat. Commun. (2020), Fig. 1</span>
+            </div>
+            <div class="cr-img-wrap"><img src="../assets/crameri/crameri2020_fig1_curie.png"
+                alt="Crameri 2020 Fig 1: Marie Curie in jet vs batlow"></div>
+          </div>
+        </div>
+
+        <div class="cr-view" id="cr-cvd">
+          <div class="cr-col">
+            <div class="cr-col-head">
+              <span class="theme-tag p" style="margin:0;">Principles &middot; stays ordered for colour-blind readers and
+                greyscale print</span>
+              <div class="btn-group" id="cvdBtns">
+                <button class="btn-opt p on" data-cvd="scm8_normal.png">Normal vision</button>
+                <button class="btn-opt p" data-cvd="scm8_deuteranopia.png">Red&ndash;green colour-blind</button>
+                <button class="btn-opt p" data-cvd="scm8_greyscale.png">Black &amp; white print</button>
+              </div>
+            </div>
+            <div class="cr-img-wrap grey"><img id="cvdImg" src="../assets/crameri/scm8_normal.png"
+                alt="Colour-vision simulation"></div>
+          </div>
+        </div>
+
+        <div class="cr-view" id="cr-diag">
+          <div class="cr-col">
+            <div class="cr-col-head">
+              <span class="theme-tag p" style="margin:0;">Principles &middot; equal steps in data look like equal steps
+                in brightness (0.45% error)</span>
+              <span style="color:var(--muted); font-size:14px;">batlow diagnostic profile</span>
+            </div>
+            <div class="cr-img-wrap"><img src="../assets/crameri/batlow_diagnostics.png"
+                alt="batlow perceptual uniformity diagnostics"></div>
+          </div>
+        </div>
+      </div>
+      <div class="credit">F. Crameri, G. E. Shephard &amp; P. J. Heron, <a
+          href="https://doi.org/10.1038/s41467-020-19160-7" target="_blank" rel="noopener">Nat. Commun. 11, 5444
+          (2020)</a> &middot; <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank"
+          rel="noopener">fabiocrameri.ch/colourmaps</a> (CC BY 4.0)</div>
+    </section>
+
+    <!-- 5 · SKILL 1 (2/2): BEFORE -> AFTER DUAL CURTAIN -->
+    <section class="slide" data-name="curtain" data-steps="2">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 1 of 5 &middot; <code>/figure-style</code></div>
+          <h2>Styling data plots: default output vs. <code>/figure-style</code></h2>
+        </div>
+        <div class="btn-group" style="gap:14px; flex-wrap:nowrap;">
+          <div class="btn-group" id="curtainDemos" style="flex-wrap:nowrap;">
+            <button class="btn-opt p on" data-demo="bands">Fat bands + PDOS</button>
+            <button class="btn-opt p" data-demo="spectral">Spectral <i style="font-family:var(--math);">A</i>(<i
+                style="font-family:var(--math);">k,&omega;</i>) + FS</button>
+          </div>
+          <div style="width:1px; height:24px; background:var(--rule);"></div>
+          <div class="btn-group" style="flex-wrap:nowrap;">
+            <button class="btn-opt e on" id="snapB">Before</button>
+            <button class="btn-opt p" id="snapM">50 / 50</button>
+            <button class="btn-opt p" id="snapA">After</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="curtain" id="cBox">
+        <div class="curtain-lbl l">Before (default matplotlib)</div>
+        <div class="curtain-lbl r">After (<code>/figure-style</code> + <code>/render-and-look</code>)</div>
+        <div class="curtain-layer"><img id="cImgBefore" src="../demos/bands-dos/before.png"
+            alt="Before: naive electronic band structure and DOS"></div>
+        <div class="curtain-after" id="cAfter">
+          <div class="curtain-layer"><img id="cImgAfter" src="../demos/bands-dos/after.png"
+              alt="After: orbital-inverted fat bands, BZ inset, and mirrored PDOS"></div>
+        </div>
+        <div class="curtain-line" id="cLine">
+          <div class="curtain-handle">&harr;</div>
+        </div>
+      </div>
+      <div class="credit" id="curtainCredit">Styled with <a href="https://www.fabiocrameri.ch/colourmaps/"
+          target="_blank" rel="noopener">Crameri vik</a> + Computer Modern math + <code>/figure-style</code> &middot;
+        Switch example above or drag the handle</div>
+    </section>
+
+    <!-- 6 · SKILL 2 (1/2): SCHEMATICS MOTIVATION + FIGURE 1 -->
+    <section class="slide" data-name="schematic-intro">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 2 of 5 &middot; <code>/schematic</code></div>
+          <h2>Drawing schematic figures from code</h2>
+        </div>
+        <div class="sub">editable vector graphics (SVG / PDF), not flat pixels</div>
+      </div>
+
+      <div class="s5-wrap">
+        <div class="s5-intro">
+          <div>
+            <blockquote class="wl-quote">
+              &ldquo;Doing science is fun, but drawing the schematic figure that explains it has been challenging for
+              us: we were never trained to do it, yet that figure is often the first thing a reader looks at.&rdquo;
+            </blockquote>
+            <div class="wl-cite">&mdash; Zhao &amp; Wright, <a href="https://lgwrightlab.github.io/schematic-figure/"
+                target="_blank" rel="noopener" style="color:inherit;"><em>Automating schematic figure making</em></a>
+              (Yale LGW Lab, 2026)</div>
+          </div>
+          <div class="s5-side">
+            <div class="theme-tag p" style="margin-bottom:6px;">Why code with a skill?</div>
+            <div>An image generator gives you flat pixels you cannot fix. A skill gives you <strong>editable vector
+                graphics</strong> (SVG / PDF) together with the code that draws them.</div>
+          </div>
+        </div>
+
+        <div class="s5-fig" data-step="1">
+          <div class="s5-fig-box">
+            <img src="../assets/wright-lab/skill_vs_noskill.svg"
+              alt="Figure 1: The same request, Draw Fig. 1 for this paper, without and with the skill">
+          </div>
+          <p class="s5-cap">
+            <strong>Figure 1.</strong> The same request, &ldquo;Draw Fig. 1 for this paper&rdquo;, without and with the
+            skill. With the skill, the drawing agent loads a folder of instructions (<code>SKILL.md</code>), drawing
+            code, optional 3D kits, automatic checks and design references. Like every diagram in this post, this figure
+            was drawn by the skill itself. &mdash; <em>Zhao &amp; Wright (2026)</em>
+          </p>
+        </div>
+      </div>
+      <div class="credit">Source &amp; Figure 1: Zhao &amp; Wright, <a
+          href="https://lgwrightlab.github.io/schematic-figure/" target="_blank"
+          rel="noopener">lgwrightlab.github.io/schematic-figure</a> (Yale LGW Lab, 2026, CC BY 4.0)</div>
+    </section>
+
+    <!-- 7 · SKILL 2 (2/2): PUBLISHED VS NO SKILL VS WITH SKILL -->
+    <section class="slide" data-name="schematic-compare" data-steps="2">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 2 of 5 &middot; <code>/schematic</code></div>
+          <h2>Comparing published and AI schematics</h2>
+        </div>
+        <div class="btn-group" style="gap:14px; flex-wrap:nowrap;">
+          <div class="btn-group" id="wlPaperTabs" style="flex-wrap:nowrap;">
+            <button class="btn-opt p on" data-paper="trion">Trion Hall effect</button>
+            <button class="btn-opt p" data-paper="holo">Holography</button>
+          </div>
+          <div style="width:1px; height:24px; background:var(--rule);"></div>
+          <div class="btn-group" id="wlVerTabs" style="flex-wrap:nowrap;">
+            <button class="btn-opt a on" data-ver="pub">Published</button>
+            <button class="btn-opt e" data-ver="noskill">No skill</button>
+            <button class="btn-opt p" data-ver="ours">With skill</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="wl-col">
+        <div class="wl-head">
+          <span class="theme-tag a" style="margin:0;" id="wlBadge">Published figure &middot; original paper
+            schematic</span>
+          <span style="color:var(--muted); font-size:14.5px;" id="wlPaperCite">Chaturvedi et al., <em>Trion Hall effect
+              in electron&ndash;hole double layers</em>, Nat. Phys. (2026) &middot; CC BY 4.0</span>
+        </div>
+        <div class="wl-img">
+          <img id="wlImg" src="../assets/wright-lab/phys-04-pub.jpg" alt="Trion Hall effect schematic comparison">
+        </div>
+        <p class="wl-desc" id="wlDesc">Original schematic published in Nature Physics (2026): hBN-encapsulated
+          WSe<sub>2</sub>/MoSe<sub>2</sub> double layer, exciton/trion Hall deflection, and gate phase diagrams.</p>
+      </div>
+      <div class="credit">Reproductions &amp; benchmark: Zhao &amp; Wright, <a
+          href="https://lgwrightlab.github.io/schematic-figure/" target="_blank" rel="noopener">Yale LGW Lab</a>
+        &middot; Published paper figures: CC BY 4.0</div>
+    </section>
+
+    <!-- 8 · SKILL 3: RENDER AND LOOK -->
+    <section class="slide" data-name="look">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker p">Skill 3 of 5 &middot; <code>/render-and-look</code></div>
+          <h2>Inspecting rendered figures</h2>
+        </div>
+        <div class="sub">Skills 1, 2, 4, 5 tell Claude how to draw &middot; Skill 3 makes Claude open its eyes</div>
+      </div>
+
+      <div class="rl-split">
+        <div class="rl-left">
+          <div class="rl-img-box">
+            <img src="../assets/wright-lab/lab-pnn-ours.jpg" alt="Wright Lab Nature 2022 AI schematic">
+            <div class="ring" data-step="1" style="left:6.5%; top:27%; width:18%; height:33%;"></div>
+            <div class="ring-note" data-step="1" style="left:25.5%; top:42%;">
+              Pulse shaper never recombines<br>wavelengths &amp; wrong x, &theta; split
+            </div>
+          </div>
+          <p class="rl-left-cap" data-step="1"><strong>Why your eyes still come last:</strong> clean layout, but a
+            physicist catches the optical error in seconds.</p>
+        </div>
+
+        <div class="rl-stat">
+          <div data-step="2">
+            <div class="theme-tag p">What /render-and-look does</div>
+            <p class="rl-lead">Normally Claude stops once code runs &mdash; it never sees the output image. This skill
+              forces a closed visual loop:</p>
+            <ol class="rl-steps">
+              <li><strong>Render &amp; open</strong> the PNG at final size (so Claude inspects the actual pixels).</li>
+              <li><strong>Audit &amp; fix (&le; 3 rounds)</strong> &mdash; catches label collisions, lines crossing
+                text, clipped curves, missing minus signs, and edits the script.</li>
+              <li><strong>Report back</strong> what changed and what still needs your physics check.</li>
+            </ol>
+          </div>
+
+          <div class="rl-chart-box" data-step="2">
+            <div class="rl-chart-title">Why looking matters &middot; scientific plot accuracy (MatPlotAgent, 2024)</div>
+            <svg viewBox="0 0 380 142" width="100%" font-family="Helvetica Neue, Helvetica, Inter, Arial, sans-serif">
+              <line x1="16" y1="112" x2="364" y2="112" stroke="#dcd7ce" stroke-width="1" />
+              <rect x="34" y="48" width="76" height="64" fill="#c9c3b8" />
+              <text x="72" y="39" text-anchor="middle" font-size="18" font-weight="500" fill="#6e6a63">49%</text>
+              <text x="72" y="131" text-anchor="middle" font-size="13" fill="#6e6a63">First try</text>
+
+              <rect x="152" y="39" width="76" height="73" fill="#7d9190" />
+              <text x="190" y="30" text-anchor="middle" font-size="18" font-weight="500" fill="#465c5b">53%</text>
+              <text x="190" y="131" text-anchor="middle" font-size="13" fill="#6e6a63">+ Fix code</text>
+
+              <rect x="270" y="20" width="76" height="92" fill="#1d5e57" />
+              <text x="308" y="14" text-anchor="middle" font-size="19" font-weight="600" fill="#1d5e57">61%</text>
+              <text x="308" y="131" text-anchor="middle" font-size="13" font-weight="500" fill="#1d5e57">+ Look at
+                PNG</text>
+            </svg>
+          </div>
+
+          <div class="rl-when" data-step="3">
+            <strong>When to use it:</strong> pair with any drawing skill (<code>Use /figure-style and
+              /render-and-look</code>), or run standalone on an existing plot (<code>Use /render-and-look on
+              figures/bands.png</code>).
+          </div>
+        </div>
+      </div>
+      <div class="credit">Left: Zhao &amp; Wright, <a href="https://lgwrightlab.github.io/schematic-figure/"
+          target="_blank" rel="noopener">Yale LGW Lab</a> (CC BY 4.0) &middot; Right: Yang et al., <a
+          href="https://arxiv.org/abs/2402.11453" target="_blank" rel="noopener">MatPlotAgent, arXiv:2402.11453
+          (2024)</a></div>
+    </section>
+
+    <!-- 9 · SKILL 4 (1/2): MOIRE FLAT-BAND EXPLORER -->
+    <section class="slide" data-name="moire">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 4 of 5 &middot; <code>/html-animation</code></div>
+          <h2>Interactive figures as a single HTML file</h2>
+        </div>
+        <div class="sub">9 kB offline &middot; drag <i style="font-family:var(--math);">&theta;</i> to the magic angle
+        </div>
+      </div>
+      <div class="full-iframe frame">
+        <iframe src="../demos/moire-explorer/moire_flatband.html"
+          title="Live Twisted Bilayer Moire and Flat Band Explorer"></iframe>
+      </div>
+      <div class="credit">Model: R. Bistritzer &amp; A. H. MacDonald, <a href="https://doi.org/10.1073/pnas.1108174108"
+          target="_blank" rel="noopener">PNAS 108, 12233 (2011)</a> &middot; Self-contained offline HTML/Canvas demo
+      </div>
+    </section>
+
+    <!-- 10 · SKILL 4 (2/2): 6 NOV SEMINAR LIVE -->
+    <section class="slide" data-name="seminar">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 4 of 5 &middot; <code>/html-animation</code></div>
+          <h2>Examples of HTML animations from a seminar talk</h2>
+        </div>
+        <div class="btn-group" id="semTabs">
+          <button class="btn-opt p on" data-sem="../assets/seminar-demos/proto/01_liquid_solid.html">Liquid &rarr;
+            Solid</button>
+          <button class="btn-opt p"
+            data-sem="../assets/seminar-demos/proto/10_peierls_distortion.html?step=2">Peierls</button>
+          <button class="btn-opt p" data-sem="../assets/seminar-demos/proto/09_kohn.html">Kohn</button>
+          <button class="btn-opt p" data-sem="../assets/seminar-demos/proto/04_edge_pdw.html">Edge PDW</button>
+        </div>
+      </div>
+
+      <div class="sem-wrap">
+        <iframe id="semFrame" src="../assets/seminar-demos/proto/01_liquid_solid.html"
+          title="Live 6 Nov Seminar Animation"></iframe>
+      </div>
+      <div class="credit">P. Senarath Yapa, Uppsala Division Seminar (6 Nov 2026) &middot; <a
+          href="https://arxiv.org/abs/2609.04164" target="_blank" rel="noopener">arXiv:2609.04164</a></div>
+    </section>
+
+    <!-- EXTRA · FRACTALS: FILM + LIVE EMBER FRACTALS (version: ember, physics-animations house style) -->
+    <section class="slide" data-name="fractals">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 4 of 5 &middot; <code>/html-animation</code> &middot; bonus</div>
+          <h2>Fractals: a short film, and two fractals computed live in HTML</h2>
+        </div>
+        <div class="sub">drag the disc to move through the plane &middot; click the carpet to cut more holes</div>
+      </div>
+
+      <div class="fx-grid">
+        <div class="fx-video">
+          <video id="fxVideo" src="media/Download.mp4" controls preload="metadata" playsinline></video>
+        </div>
+
+        <div class="fx-box">
+          <div class="st-head">
+            <span class="theme-tag a" style="margin:0;">Hyperbolic {7,3} lattice &middot; Poincar&eacute; disc</span>
+            <span class="fx-meta">grown live</span>
+          </div>
+          <div class="fx-media">
+            <canvas id="fxHyp" tabindex="0" aria-label="The {7,3} lattice of regular heptagons in the Poincare disc, grown generation by generation; then a Mobius translation carries the rim to the centre. Drag to move; double-click to reset."></canvas>
+            <div class="fx-cap" id="fxHypCap"></div>
+            <div class="fx-hud" id="fxHypHud"></div>
+          </div>
+        </div>
+
+        <div class="fx-box">
+          <div class="st-head">
+            <span class="theme-tag p" style="margin:0;">Sierpi&nacute;ski carpet &middot; click to add holes</span>
+            <span class="fx-meta" id="fxCarpetMeta">level 1 of 5</span>
+          </div>
+          <div class="fx-media">
+            <canvas id="fxCarpet" aria-label="Sierpinski carpet; each click cuts the next level of holes"></canvas>
+            <div class="fx-cap" id="fxCarpetCap"></div>
+            <div class="fx-hud" id="fxCarpetHud"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="credit">Film: TikTok short on Sierpi&nacute;ski fractals (2:32) &middot; Both fractals are computed by the page
+        (Canvas2D, no images) &middot; {7,3} geometry from FIG. 7 of the website, N<sub>b</sub>/N &rarr; 1/&phi; &middot; carpet D = log&nbsp;8 / log&nbsp;3 &asymp; 1.893</div>
+    </section>
+
+
+    <!-- 11 · SKILL 5: HTML VS SCRIPTED BLENDER -->
+    <section class="slide" data-name="stacks">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 5 of 5 &middot; <code>/blender-scene</code></div>
+          <h2>3D figures: HTML (Three.js) vs. scripted Blender</h2>
+        </div>
+        <div class="btn-group" id="blModeTabs" data-step="1">
+          <button class="btn-opt a on" data-bl="cycles_anim">Cycles: ray-traced animation</button>
+          <button class="btn-opt p" data-bl="cycles_still">Cycles: high-res still</button>
+        </div>
+      </div>
+
+      <div class="two-stacks">
+        <div class="st-box">
+          <div class="st-head">
+            <span class="theme-tag p" style="margin:0;">HTML / Three.js &middot; interactive for talks</span>
+            <span style="color:var(--principles); font-weight:500;">10 kB &middot; 0 s render &middot; live 60 fps</span>
+          </div>
+          <div class="st-media">
+            <iframe src="../demos/perovskite-stacks/perovskite_3d.html"
+              title="Live Three.js WebGL ABO3 Perovskite Octahedral Tilt"></iframe>
+          </div>
+        </div>
+
+        <div class="st-box" data-step="1">
+          <div class="st-head">
+            <span class="theme-tag a" style="margin:0;" id="blTitle">Blender Cycles &middot; photoreal glass &amp; shadows</span>
+            <span style="color:var(--muted);" id="blMeta">1.0 MB (104&times;) &middot; 2 min render &middot; fixed clip</span>
+          </div>
+          <div class="st-media" style="background:#f5f3ee;">
+            <img id="blImg" src="../demos/perovskite-stacks/blender_cycles_anim.webp" style="object-fit:cover;"
+              alt="Blender 5.3 Cycles ray-traced animation of ABO3 perovskite with refractive glass octahedra">
+          </div>
+        </div>
+      </div>
+      <div class="credit">Same 2&times;2&times;2 ABO<sub>3</sub> perovskite &middot; <a href="https://threejs.org/" target="_blank" rel="noopener">Three.js</a> for live interactive talks vs. <a href="https://www.blender.org/" target="_blank" rel="noopener">Blender Cycles</a> for refractive glass, metallic ions, and ray-traced shadows</div>
+    </section>
+
+    <!-- 12 · GETTING STARTED AT 14:00 (SETUP, EXPECTATIONS & RESOURCES) -->
+    <section class="slide" data-name="resources">
+      <div class="top">
+        <div class="top-left">
+          <h2>Getting started at 14:00</h2>
+        </div>
+        <div class="sub">14:00&ndash;15:00 figures phase &middot; lightning talks at 15:45</div>
+      </div>
+
+      <div class="gs-grid">
+        <div class="gs-steps">
+          <div class="gs-step first" data-step="1">
+            <div class="theme-tag p">Step 1 &middot; Download &amp; let Claude install (30 s)</div>
+            <h3>Install the 5 skills in your home folder</h3>
+            <p>Download <code>mbi2026-figure-skills.zip</code> from <code>resources.html</code> and ask Claude Code to unzip &amp; install them into <code>~/.claude/skills/</code>. <strong>Never edit your team repo's <code>.claude/</code> folder</strong> (that holds the hackathon logger).</p>
+          </div>
+
+          <div class="gs-step" data-step="2">
+            <div class="theme-tag p">Step 2 &middot; Pick only what fits your project</div>
+            <h3>Paste a starter prompt into Claude Code</h3>
+            <p>Most teams start with <strong>Skill 1 (<code>/figure-style</code>) + Skill 3
+                (<code>/render-and-look</code>)</strong> for data plots, then add a schematic or HTML animation if
+              helpful. Copy <code>mbi.mplstyle</code> as <code>code/team.mplstyle</code> so teammates match.</p>
+          </div>
+
+          <div class="gs-step" data-step="3">
+            <div class="theme-tag a">Step 3 &middot; Check the physics &amp; ship by 15:45</div>
+            <h3>What to deliver</h3>
+            <p>Reproducible scripts saving vector PDFs
+              (<code>code/fig_&lt;name&gt;.py &rarr; figures/&lt;name&gt;.pdf</code>) for your 2-page note, plus clean
+              visuals or HTML demos for your <strong>15:45 lightning talk</strong>.</p>
+          </div>
+        </div>
+
+        <div class="gs-pack" data-step="3">
+          <div class="theme-tag a" style="margin:0;">Everything in resources.html &amp; Discord</div>
+
+          <div class="gs-item">
+            <div class="gs-item-title">5 skills + 3 tested starter templates</div>
+            <p class="gs-item-links">
+              <code>1. /figure-style</code> (<code>mbi.mplstyle</code>) &middot; <code>2. /schematic</code> &middot;
+              <code>3. /render-and-look</code> &middot;
+              <code>4. /html-animation</code> (<a href="../skills/html-animation/template.html" target="_blank"
+                rel="noopener">template.html</a>) &middot;
+              <code>5. /blender-scene</code> (<a href="../skills/blender-scene/scene_template.py" target="_blank"
+                rel="noopener">scene_template.py</a>)
+            </p>
+          </div>
+
+          <div class="gs-item">
+            <div class="gs-item-title">5 copy-and-paste starter prompts</div>
+            <p class="gs-item-links">One ready-to-use prompt per skill inside <a href="../"
+                target="_blank" rel="noopener">resources.html</a> and <a href="../RESOURCE_PACK.md"
+                target="_blank" rel="noopener">RESOURCE_PACK.md</a>.</p>
+          </div>
+
+          <div class="gs-item">
+            <div class="gs-item-title">Working examples from this talk</div>
+            <p class="gs-item-links">
+              <a href="../demos/bands-dos/after.py" target="_blank" rel="noopener">Fat-band inversion + PDOS</a>
+              &middot;
+              <a href="../demos/spectral-fs/after.py" target="_blank" rel="noopener">Spectral A(k,&omega;) + FS</a>
+              &middot;
+              <a href="../demos/moire-explorer/moire_flatband.html" target="_blank" rel="noopener">Moir&eacute;
+                explorer</a> &middot;
+              <a href="../demos/perovskite-stacks/perovskite_3d.html" target="_blank" rel="noopener">Perovskite 3D</a>
+              &middot;
+              <a href="../demos/perovskite-stacks/perovskite_blender.py" target="_blank" rel="noopener">Perovskite
+                Blender</a>
+            </p>
+          </div>
+
+          <div class="gs-item">
+            <div class="gs-item-title">Reference guides &amp; tools</div>
+            <p class="gs-item-links">
+              <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank" rel="noopener">Crameri Maps</a> &middot;
+              <a href="https://personal.sron.nl/~pault/" target="_blank" rel="noopener">Paul Tol</a> &middot;
+              <a href="https://github.com/rougier/scientific-visualization-book" target="_blank" rel="noopener">Rougier
+                Book</a> &middot;
+              <a href="https://clauswilke.com/dataviz/" target="_blank" rel="noopener">Wilke Dataviz</a> &middot;
+              <a href="https://github.com/janosh/matterviz" target="_blank" rel="noopener">MatterViz</a> &middot;
+              <a href="https://smoothstep.io/" target="_blank" rel="noopener">smoothstep.io</a> &middot;
+              VESTA &amp; OVITO
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="gs-foot" data-step="3">
+        <div class="gs-cmd">
+          Full participant guide: <a href="../" target="_blank" rel="noopener">Open
+            resources.html</a> &middot;
+          <span style="color:var(--muted);">Hand Claude the <span class="c-p">principles</span>. Keep the <span
+              class="c-a">aesthetics</span>.</span>
+        </div>
+        <button class="btn-clean" id="copyBtn">Copy starter prompt</button>
+      </div>
+      <div class="credit">Skills inspired by <a href="https://lgwrightlab.github.io/schematic-figure/" target="_blank"
+          rel="noopener">Wright Lab</a>, <a href="https://arxiv.org/abs/2402.11453" target="_blank"
+          rel="noopener">MatPlotAgent</a>, <a
+          href="https://github.com/K-Dense-AI/scientific-agent-skills/tree/main/skills/scientific-visualization"
+          target="_blank" rel="noopener">K-Dense</a>, <a
+          href="https://github.com/Pirat83/claude-code-skills/tree/main/matplotlib-render-review" target="_blank"
+          rel="noopener">Pirat83</a> &amp; <a href="https://github.com/anthropics/skills" target="_blank"
+          rel="noopener">Anthropic skills</a></div>
+    </section>
+
+    <div class="pager">
+      <span class="dots" id="stepDots"></span>
+      <button id="prevBtn">&larr;</button>
+      <span id="counter">1 / 13</span>
+      <button id="nextBtn">&rarr;</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const stage = document.getElementById("stage");
+      function fit() {
+        const s = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+        stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+      }
+      fit();
+      window.addEventListener("resize", fit);
+
+      const paCv = document.getElementById("paCanvas");
+      const paCtx = paCv.getContext("2d");
+      const paState = { pal: "vik", font: "serif", brk: "none" };
+
+      const LUTS = {
+        vik: [[0, [0, 18, 96]], [0.25, [42, 110, 166]], [0.5, [238, 236, 232]], [0.75, [198, 100, 40]], [1, [89, 0, 7]]],
+        cork: [[0, [44, 25, 76]], [0.25, [68, 125, 163]], [0.5, [238, 239, 235]], [0.75, [98, 144, 86]], [1, [25, 60, 36]]],
+        bam: [[0, [101, 1, 75]], [0.25, [194, 104, 162]], [0.5, [242, 239, 238]], [0.75, [121, 168, 85]], [1, [12, 76, 12]]],
+        jet: [[0, [0, 0, 140]], [0.22, [0, 90, 255]], [0.45, [0, 235, 235]], [0.68, [255, 240, 0]], [0.88, [255, 40, 0]], [1, [128, 0, 0]]],
+        cyclic: [[0, [120, 60, 120]], [0.25, [40, 125, 165]], [0.5, [175, 165, 70]], [0.75, [195, 85, 75]], [1, [120, 60, 120]]],
+      };
+      function sampleLut(name, t) {
+        const s = LUTS[name];
+        t = Math.max(0, Math.min(1, t));
+        for (let i = 0; i < s.length - 1; i++) {
+          const [t0, c0] = s[i], [t1, c1] = s[i + 1];
+          if (t <= t1) {
+            const f = (t - t0) / (t1 - t0);
+            return [
+              Math.round(c0[0] + (c1[0] - c0[0]) * f),
+              Math.round(c0[1] + (c1[1] - c0[1]) * f),
+              Math.round(c0[2] + (c1[2] - c0[2]) * f),
+            ];
+          }
+        }
+        return s[s.length - 1][1];
+      }
+
+      const GW = 160, GH = 110;
+      const FIELD = new Float32Array(GW * GH);
+      for (let j = 0; j < GH; j++) {
+        const y = (j / (GH - 1)) * 2 - 1;
+        for (let i = 0; i < GW; i++) {
+          const x = (i / (GW - 1)) * 2.6 - 1.3;
+          const r1 = Math.hypot(x + 0.48, y);
+          const r2 = Math.hypot(x - 0.48, y);
+          const v = Math.exp(-r1 * r1 * 4.5) * Math.cos(r1 * 4.2) - Math.exp(-r2 * r2 * 4.5) * Math.cos(r2 * 4.2);
+          FIELD[j * GW + i] = Math.max(-1, Math.min(1, v * 1.15));
+        }
+      }
+      const offCv = document.createElement("canvas");
+      offCv.width = GW; offCv.height = GH;
+      const offCtx = offCv.getContext("2d");
+
+      function drawMathLine(ctx, parts, x, y, size, fontFam, align) {
+        ctx.save();
+        let totalW = 0;
+        const widths = parts.map(p => {
+          const sz = p.sub ? Math.round(size * 0.70) : size;
+          ctx.font = `${p.it ? "italic " : ""}${sz}px ${fontFam}`;
+          const w = ctx.measureText(p.t).width;
+          totalW += w;
+          return w;
+        });
+        let cx = align === "center" ? x - totalW * 0.5 : (align === "right" ? x - totalW : x);
+        ctx.textAlign = "left";
+        ctx.textBaseline = "alphabetic";
+        parts.forEach((p, idx) => {
+          const sz = p.sub ? Math.round(size * 0.70) : size;
+          ctx.font = `${p.it ? "italic " : ""}${sz}px ${fontFam}`;
+          ctx.fillText(p.t, cx, y + (p.sub ? Math.round(size * 0.24) : 0));
+          cx += widths[idx];
+        });
+        ctx.restore();
+      }
+
+      function drawPrinciplesPlot() {
+        const w = paCv.clientWidth || 860, h = paCv.clientHeight || 620;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        if (paCv.width !== Math.round(w * dpr) || paCv.height !== Math.round(h * dpr)) {
+          paCv.width = Math.round(w * dpr); paCv.height = Math.round(h * dpr);
+        }
+        paCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        paCtx.fillStyle = "#ffffff";
+        paCtx.fillRect(0, 0, w, h);
+
+        const activeLut = paState.brk === "jet" ? "jet" : (paState.brk === "cyclic" ? "cyclic" : paState.pal);
+        const shiftZero = paState.brk === "zero";
+        const tinyFont = paState.brk === "font";
+
+        const fontFam = paState.font === "serif" ? '"STIX Two Text", "Cambria Math", "Computer Modern", Georgia, "Times New Roman", serif'
+          : paState.font === "mono" ? 'Consolas, "Liberation Mono", monospace'
+            : '"Helvetica Neue", Helvetica, "Inter", Arial, sans-serif';
+        const useItalic = paState.font === "serif";
+        const fsAxis = tinyFont ? 7.5 : 20;
+        const fsTick = tinyFont ? 6.5 : 15.5;
+        const fsTitle = tinyFont ? 8.5 : 22;
+
+        const img = offCtx.createImageData(GW, GH);
+        for (let k = 0; k < GW * GH; k++) {
+          const v = FIELD[k];
+          const t = shiftZero ? (v + 0.45) / 1.45 : (v + 1) * 0.5;
+          const [r, g, b] = sampleLut(activeLut, t);
+          img.data[k * 4] = r; img.data[k * 4 + 1] = g; img.data[k * 4 + 2] = b; img.data[k * 4 + 3] = 255;
+        }
+        offCtx.putImageData(img, 0, 0);
+
+        const px = 86, py = 62, pw = w - 216, ph = h - 140;
+        paCtx.imageSmoothingEnabled = true;
+        paCtx.drawImage(offCv, px, py, pw, ph);
+
+        if (shiftZero) {
+          paCtx.save();
+          paCtx.strokeStyle = "#1e1d1b";
+          paCtx.setLineDash([6, 5]);
+          paCtx.lineWidth = 1.8;
+          paCtx.beginPath();
+          paCtx.moveTo(px + pw * 0.5, py);
+          paCtx.lineTo(px + pw * 0.5, py + ph);
+          paCtx.stroke();
+          paCtx.fillStyle = "#1e1d1b";
+          drawMathLine(paCtx, [{ t: "true Δ" }, { t: "ρ", it: true }, { t: " = 0" }], px + pw * 0.5 + 8, py + 24, 15, fontFam, "left");
+          paCtx.restore();
+        }
+
+        paCtx.strokeStyle = "#1e1d1b";
+        paCtx.lineWidth = 1.4;
+        paCtx.strokeRect(px, py, pw, ph);
+
+        paCtx.fillStyle = "#1e1d1b";
+        drawMathLine(paCtx, [
+          { t: "Signed charge-density difference   Δ" },
+          { t: "ρ", it: useItalic },
+          { t: "(" }, { t: "x", it: useItalic }, { t: ", " }, { t: "y", it: useItalic }, { t: ") / " },
+          { t: "ρ", it: useItalic }, { t: "0", sub: true }
+        ], px, py - 20, fsTitle, fontFam, "left");
+
+        paCtx.font = `400 ${fsTick}px ${fontFam}`;
+        paCtx.textAlign = "center";
+        [-1, -0.5, 0, 0.5, 1].forEach((val, idx) => {
+          const tx = px + (idx / 4) * pw;
+          paCtx.beginPath(); paCtx.moveTo(tx, py + ph); paCtx.lineTo(tx, py + ph - 7); paCtx.stroke();
+          paCtx.beginPath(); paCtx.moveTo(tx, py); paCtx.lineTo(tx, py + 7); paCtx.stroke();
+          paCtx.fillText(val.toFixed(1), tx, py + ph + (tinyFont ? 11 : 24));
+        });
+        paCtx.textAlign = "right";
+        [-1, 0, 1].forEach((val, idx) => {
+          const ty = py + ph - (idx / 2) * ph;
+          paCtx.beginPath(); paCtx.moveTo(px, ty); paCtx.lineTo(px + 7, ty); paCtx.stroke();
+          paCtx.beginPath(); paCtx.moveTo(px + pw, ty); paCtx.lineTo(px + pw - 7, ty); paCtx.stroke();
+          paCtx.fillText(val.toFixed(1), px - 10, ty + fsTick * 0.35);
+        });
+
+        drawMathLine(paCtx, [{ t: "x", it: useItalic }, { t: " / " }, { t: "L", it: useItalic }], px + pw * 0.5, py + ph + (tinyFont ? 24 : 58), fsAxis, fontFam, "center");
+        paCtx.save();
+        paCtx.translate(px - (tinyFont ? 32 : 56), py + ph * 0.5);
+        paCtx.rotate(-Math.PI / 2);
+        drawMathLine(paCtx, [{ t: "y", it: useItalic }, { t: " / " }, { t: "L", it: useItalic }], 0, 0, fsAxis, fontFam, "center");
+        paCtx.restore();
+
+        const cbx = px + pw + 26, cbw = 24;
+        for (let y = 0; y < ph; y++) {
+          const t = 1 - y / (ph - 1);
+          const [r, g, b] = sampleLut(activeLut, t);
+          paCtx.fillStyle = `rgb(${r},${g},${b})`;
+          paCtx.fillRect(cbx, py + y, cbw, 1.5);
+        }
+        paCtx.strokeStyle = "#1e1d1b";
+        paCtx.lineWidth = 1.2;
+        paCtx.strokeRect(cbx, py, cbw, ph);
+
+        paCtx.font = `400 ${fsTick}px ${fontFam}`;
+        paCtx.textAlign = "left";
+        const cbLabels = shiftZero ? [["+1.0", 0], ["0.0", 0.69], ["-0.45", 1]] : [["+1.0", 0], ["0.0", 0.5], ["-1.0", 1]];
+        cbLabels.forEach(([lbl, frac]) => {
+          const cy = py + frac * ph;
+          paCtx.beginPath(); paCtx.moveTo(cbx + cbw, cy); paCtx.lineTo(cbx + cbw + 5, cy); paCtx.stroke();
+          paCtx.fillText(lbl, cbx + cbw + 9, cy + fsTick * 0.35);
+        });
+        paCtx.save();
+        paCtx.translate(cbx + cbw + (tinyFont ? 34 : 66), py + ph * 0.5);
+        paCtx.rotate(-Math.PI / 2);
+        drawMathLine(paCtx, [{ t: "Δ" }, { t: "ρ", it: useItalic }, { t: " / " }, { t: "ρ", it: useItalic }, { t: "0", sub: true }], 0, 0, fsAxis, fontFam, "center");
+        paCtx.restore();
+      }
+
+      const STATUS_TEXT = {
+        none: ["Zero centred · colour-blind friendly · readable at the back", false],
+        jet: ["False bright yellow/cyan edges + breaks for colour-blind readers", true],
+        zero: ["Neutral white shifted off zero — neutral background looks negative", true],
+        font: ["Too small to read from the back of the lecture room", true],
+        cyclic: ["Cyclic map wraps around, making +1 and −1 look identical", true],
+      };
+
+      function syncPA() {
+        const [msg, bad] = STATUS_TEXT[paState.brk];
+        const st = document.getElementById("paStatus");
+        st.textContent = msg;
+        st.classList.toggle("broken", bad);
+        drawPrinciplesPlot();
+      }
+      document.querySelectorAll("#paPalBtns .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#paPalBtns .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          paState.pal = b.getAttribute("data-pal");
+          if (paState.brk === "jet" || paState.brk === "cyclic") {
+            paState.brk = "none";
+            document.querySelectorAll("#paBreakBtns .btn-opt").forEach(x => x.classList.toggle("on", x.getAttribute("data-brk") === "none"));
+          }
+          syncPA();
+        };
+      });
+      document.querySelectorAll("#paFontBtns .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#paFontBtns .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          paState.font = b.getAttribute("data-font");
+          syncPA();
+        };
+      });
+      document.querySelectorAll("#paBreakBtns .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#paBreakBtns .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          paState.brk = b.getAttribute("data-brk");
+          syncPA();
+        };
+      });
+
+      document.querySelectorAll("#crTabs .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#crTabs .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          const id = b.getAttribute("data-cr");
+          document.querySelectorAll(".cr-view").forEach(v => v.classList.toggle("on", v.id === "cr-" + id));
+        };
+      });
+      document.querySelectorAll("#cvdBtns .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#cvdBtns .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          document.getElementById("cvdImg").src = "../assets/crameri/" + b.getAttribute("data-cvd");
+        };
+      });
+
+      const CURTAIN_DEMOS = {
+        bands: {
+          before: "../demos/bands-dos/before.png",
+          after: "../demos/bands-dos/after.png",
+          credit: 'Styled with <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank" rel="noopener">Crameri vik</a> + Computer Modern math + <code>/figure-style</code> &middot; Switch example above or drag the handle',
+        },
+        spectral: {
+          before: "../demos/spectral-fs/before.png",
+          after: "../demos/spectral-fs/after.png",
+          credit: 'Styled with <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank" rel="noopener">Crameri lipari</a> + Computer Modern math + <code>/figure-style</code> &middot; Switch example above or drag the handle',
+        },
+      };
+      document.querySelectorAll("#curtainDemos .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#curtainDemos .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          const d = CURTAIN_DEMOS[b.getAttribute("data-demo")];
+          if (!d) return;
+          document.getElementById("cImgBefore").src = d.before;
+          document.getElementById("cImgAfter").src = d.after;
+          document.getElementById("curtainCredit").innerHTML = d.credit;
+        };
+      });
+
+      const cBox = document.getElementById("cBox");
+      const cAfter = document.getElementById("cAfter");
+      const cLine = document.getElementById("cLine");
+      const snaps = { b: document.getElementById("snapB"), m: document.getElementById("snapM"), a: document.getElementById("snapA") };
+      function setCurtain(p, glide) {
+        p = Math.max(0, Math.min(100, p));
+        cAfter.classList.toggle("glide", !!glide);
+        cLine.classList.toggle("glide", !!glide);
+        cAfter.style.clipPath = `inset(0 0 0 ${p}%)`;
+        cLine.style.left = p + "%";
+      }
+      function snap(k, p, glide) {
+        Object.entries(snaps).forEach(([id, el]) => el.classList.toggle("on", id === k));
+        setCurtain(p, glide);
+      }
+      snaps.b.onclick = () => snap("b", 98, true);
+      snaps.m.onclick = () => snap("m", 50, true);
+      snaps.a.onclick = () => snap("a", 2, true);
+      let drag = false;
+      function moveC(e) {
+        const r = cBox.getBoundingClientRect();
+        setCurtain(((e.clientX - r.left) / r.width) * 100, false);
+        Object.values(snaps).forEach(el => el.classList.remove("on"));
+      }
+      cBox.addEventListener("pointerdown", e => { drag = true; cBox.setPointerCapture(e.pointerId); moveC(e); });
+      cBox.addEventListener("pointermove", e => { if (drag) moveC(e); });
+      cBox.addEventListener("pointerup", () => { drag = false; });
+
+      const WL_PAPERS = {
+        trion: {
+          cite: 'Chaturvedi et al., <em>Trion Hall effect in electron–hole double layers</em>, Nat. Phys. (2026) · CC BY 4.0',
+          vers: {
+            pub: { img: "phys-04-pub.jpg", cls: "a", badge: "Published figure · original paper schematic", desc: "Original schematic published in Nature Physics (2026): hBN-encapsulated WSe₂/MoSe₂ double layer, exciton/trion Hall deflection, and gate phase diagrams." },
+            noskill: { img: "phys-04-noskill.jpg", cls: "e", badge: "No skill · prompted directly without /schematic", desc: "Without a skill: six cluttered textbook panels with long equations and paragraphs of explanatory text." },
+            ours: { img: "phys-04-ours.jpg", cls: "p", badge: "With skill · editable vector code from /schematic", desc: "With the schematic skill: exploded 3D heterostructure with excitons and trions, crisp Lorentz-force panels, and clean phase diagrams — all editable vector code." },
+          },
+          labels: { pub: "Published", noskill: "No skill", ours: "With skill" },
+        },
+        holo: {
+          cite: 'Zhao & Wright (2026) · single-sentence prompt: “Draw an off-axis digital holography setup and its spatial-frequency spectrum”',
+          vers: {
+            pub: { img: "prompt-holo-noskill.jpg", cls: "e", badge: "No skill · single-sentence prompt", desc: "Single-sentence prompt with no skill: generic flat boxes and awkward spacing." },
+            noskill: { img: "prompt-holo-ours.jpg", cls: "p", badge: "With skill · editable SVG from 1 sentence", desc: "Exact same 1-sentence prompt with the schematic skill: clean 3D beam splitter, reference/object paths, and FFT spectrum." },
+            ours: { img: "prompt-holo-photo.jpg", cls: "p", badge: "With skill + optional Blender 3D kit", desc: "Exact same prompt using the skill's optional Blender 3D kit for glass optics and ray-traced lighting." },
+          },
+          labels: { pub: "No skill", noskill: "With skill (SVG)", ours: "Blender 3D kit" },
+        },
+      };
+      const wlState = { paper: "trion", ver: "pub" };
+      function syncWL() {
+        const P = WL_PAPERS[wlState.paper];
+        const V = P.vers[wlState.ver];
+        document.getElementById("wlImg").src = "../assets/wright-lab/" + V.img;
+        const badge = document.getElementById("wlBadge");
+        badge.textContent = V.badge;
+        badge.className = "theme-tag " + V.cls;
+        document.getElementById("wlPaperCite").innerHTML = P.cite;
+        document.getElementById("wlDesc").innerHTML = V.desc;
+        document.querySelectorAll("#wlPaperTabs .btn-opt").forEach(x => x.classList.toggle("on", x.getAttribute("data-paper") === wlState.paper));
+        document.querySelectorAll("#wlVerTabs .btn-opt").forEach(x => {
+          const k = x.getAttribute("data-ver");
+          x.textContent = P.labels[k];
+          x.classList.toggle("on", k === wlState.ver);
+        });
+      }
+      document.querySelectorAll("#wlPaperTabs .btn-opt").forEach(b => {
+        b.onclick = () => { wlState.paper = b.getAttribute("data-paper"); syncWL(); };
+      });
+      document.querySelectorAll("#wlVerTabs .btn-opt").forEach(b => {
+        b.onclick = () => { wlState.ver = b.getAttribute("data-ver"); syncWL(); };
+      });
+
+      const semFrame = document.getElementById("semFrame");
+      function wakeSem() { try { semFrame.contentWindow.postMessage({ deck: true, type: "enter", dir: 1 }, "*"); } catch (_) { } }
+      function sleepSem() { try { semFrame.contentWindow.postMessage({ deck: true, type: "leave" }, "*"); } catch (_) { } }
+      semFrame.addEventListener("load", () => { if (slides[cur].getAttribute("data-name") === "seminar") setTimeout(wakeSem, 80); });
+      document.querySelectorAll("#semTabs .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#semTabs .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          semFrame.src = b.getAttribute("data-sem");
+        };
+      });
+
+      const BL_MODES = {
+        cycles_anim: {
+          img: "../demos/perovskite-stacks/blender_cycles_anim.webp",
+          title: "Blender Cycles · photoreal glass & shadows",
+          meta: "1.0 MB (104×) · 2 min render · fixed clip",
+          bg: "#f5f3ee",
+        },
+        cycles_still: {
+          img: "../demos/perovskite-stacks/blender_cycles.png",
+          title: "Blender Cycles · high-res print / cover still",
+          meta: "1.2 MB · 31 s render · 1200×960 PNG",
+          bg: "#f5f3ee",
+        },
+      };
+      document.querySelectorAll("#blModeTabs .btn-opt").forEach(b => {
+        b.onclick = () => {
+          document.querySelectorAll("#blModeTabs .btn-opt").forEach(x => x.classList.remove("on"));
+          b.classList.add("on");
+          const m = BL_MODES[b.getAttribute("data-bl")];
+          if (!m) return;
+          const imgEl = document.getElementById("blImg");
+          imgEl.src = m.img;
+          imgEl.style.objectFit = "cover";
+          imgEl.parentElement.style.background = m.bg;
+          document.getElementById("blTitle").textContent = m.title;
+          document.getElementById("blMeta").textContent = m.meta;
+        };
+      });
+
+      const STARTER = `Use /figure-style and /render-and-look. Read our checked data from code/results.json and write code/fig_main.py to produce figures/main.pdf and figures/main.png (APS double-column, 178 mm). Message: [one sentence]. Show [panels]. Follow Crameri colour-map principles (colour-blind friendly, matched to sequential/diverging/cyclic data) using [palette] and [font], label every axis and colorbar with units, then render the PNG, inspect it, and fix any layout or physics issues (max 3 rounds).`;
+      document.getElementById("copyBtn").onclick = e => {
+        (navigator.clipboard ? navigator.clipboard.writeText(STARTER) : Promise.reject()).then(() => {
+          e.target.textContent = "Copied!";
+          setTimeout(() => { e.target.textContent = "Copy starter prompt"; }, 1600);
+        }, () => { e.target.textContent = "See resources.html"; });
+      };
+
+      // ---- Staged click-by-click navigation ----
+      const slides = Array.from(document.querySelectorAll(".slide"));
+      const counter = document.getElementById("counter");
+      const stepDots = document.getElementById("stepDots");
+      const params = new URLSearchParams(location.search);
+      const showAll = params.get("all") === "1";
+      if (showAll) document.documentElement.classList.remove("present");
+      const present = document.documentElement.classList.contains("present");
+
+      let cur = 0, step = 0;
+
+      function maxStep(i) {
+        if (!present) return 0;
+        let m = parseInt(slides[i].getAttribute("data-steps"), 10) || 0;
+        slides[i].querySelectorAll("[data-step]").forEach(el => {
+          m = Math.max(m, parseInt(el.getAttribute("data-step"), 10) || 0);
+        });
+        return m;
+      }
+
+      function renderSlide(entering) {
+        slides.forEach((s, idx) => s.classList.toggle("on", idx === cur));
+        const sl = slides[cur];
+        const ms = maxStep(cur);
+        if (present) {
+          if (entering) sl.classList.add("noanim");
+          sl.querySelectorAll("[data-step]").forEach(el => {
+            const k = parseInt(el.getAttribute("data-step"), 10) || 0;
+            el.classList.toggle("later", k > step);
+          });
+          if (entering) { void sl.offsetWidth; sl.classList.remove("noanim"); }
+        }
+        const name = sl.getAttribute("data-name");
+        if (name === "curtain") {
+          if (!present) snap("m", 50, false);
+          else if (step === 0) snap("b", 98, !entering);
+          else if (step === 1) snap("m", 50, !entering);
+          else snap("a", 2, !entering);
+        }
+        if (name === "schematic-compare") {
+          if (!present) wlState.ver = "ours";
+          else if (step === 0) wlState.ver = "pub";
+          else if (step === 1) wlState.ver = "noskill";
+          else wlState.ver = "ours";
+          syncWL();
+        }
+        if (name === "principles") requestAnimationFrame(drawPrinciplesPlot);
+
+        stepDots.innerHTML = ms > 0
+          ? Array.from({ length: ms + 1 }, (_, k) => `<i class="${k < step ? "done" : (k === step ? "cur" : "")}"></i>`).join("")
+          : "";
+        counter.textContent = `${cur + 1} / ${slides.length}`;
+        history.replaceState(null, "", `#${cur + 1}`);
+      }
+
+      function go(i, fromRight) {
+        i = Math.max(0, Math.min(slides.length - 1, i));
+        const wasSem = slides[cur].getAttribute("data-name") === "seminar";
+        cur = i;
+        step = fromRight ? maxStep(cur) : 0;
+        renderSlide(true);
+        if (slides[cur].getAttribute("data-name") === "seminar") setTimeout(wakeSem, 120);
+        else if (wasSem) sleepSem();
+      }
+
+      function next() {
+        if (step < maxStep(cur)) { step++; renderSlide(false); }
+        else go(cur + 1, false);
+      }
+      function prev() {
+        if (step > 0) { step--; renderSlide(false); }
+        else go(cur - 1, true);
+      }
+
+      document.getElementById("nextBtn").onclick = next;
+      document.getElementById("prevBtn").onclick = prev;
+      window.addEventListener("keydown", e => {
+        if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA")) return;
+        if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); next(); }
+        else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); prev(); }
+        else if (e.key === "Home") go(0, false);
+        else if (e.key === "End") go(slides.length - 1, true);
+        else if (e.key === "f" || e.key === "F") {
+          if (document.fullscreenElement) document.exitFullscreen();
+          else document.documentElement.requestFullscreen();
+        }
+      });
+
+      const h = parseInt(location.hash.slice(1), 10);
+      cur = !isNaN(h) && h >= 1 && h <= slides.length ? h - 1 : 0;
+      step = showAll ? maxStep(cur) : 0;
+      renderSlide(true);
+      if (slides[cur].getAttribute("data-name") === "seminar") setTimeout(wakeSem, 120);
+    })();
+  </script>
+  <script type="module">
+    // EXTRA · Fractals slide (ember version). Everything drawn here is computed by the page:
+    //  - {7,3} hyperbolic lattice in the Poincare disc: the animation of FIG. 7 (a) of the website. Generations 0..6
+    //    grow one per beat, then a Mobius translation carries the rim to the centre, the rim heptagons are marked
+    //    L / S, and the view returns. Geometry and counts come from hyperbolic-geom.js, which build.py copies from
+    //    the website's js/fig/fig7-hyperbolic.js (the tested code), so nothing is re-derived here.
+    //  - Sierpinski carpet: level l removes the middle ninth of every square left after level l-1.
+    //    Hole counts and the area left are counted from the drawn holes, not from the formula.
+    // ---- geometry (inlined) ----
+// Copied by extra-slide/build.py from Web/js/fig/fig7-hyperbolic.js (geometry part only). Do not edit here.
+// fig7-hyperbolic.js — FIG. 7: the {7,3} hyperbolic lattice in the Poincaré disc (SPEC §5.7). Owner: fig7 agent.
+//
+// Geometry (pure functions; tests/fig7.test.html imports them, tools/ref/fig7_ref.py is the independent check):
+//   createTiling()  heptagons by generation. Generation 0 is the central heptagon, circumradius
+//                   r0 = sqrt(cos(pi/p + pi/q) / cos(pi/p - pi/q)) in the disc; generation g holds every heptagon that
+//                   shares an edge with the flake of generation g - 1 (for q = 3 the same as sharing a vertex). A new
+//                   heptagon is the mirror image of a frontier heptagon in the geodesic through one of its edges: the
+//                   inversion in a circle orthogonal to the unit circle, evaluated as T_a^-1 o R o T_a with
+//                   T_a(z) = (z - a)/(1 - conj(a) z) and R the reflection in a diameter. Sites and heptagons are
+//                   merged with a hash grid on their disc coordinates. Ids are given in order of generation, so the
+//                   flake of generation g is tiles < ntUpTo[g], sites < nvUpTo[g], bonds < neUpTo[g].
+//   flakeStats()    sites N, bonds E, boundary sites N_b of a flake given as a list of tiles (boundary = endpoints of
+//                   bonds that belong to one tile only). The same function counts the L x L square flakes of (b).
+//   rimWord()       the generation-g heptagons read once around the boundary: L = attached to the inner flake (the
+//                   generations < g) by one edge, S = by two edges.
+// Panels: (a) the disc: one beat per generation, then a Möbius translation carries the rim to the centre and the rim
+// heptagons are marked L / S; dragging composes further translations z -> (z - a)/(1 - conj(a) z). (b) N_b/N vs N for
+// {7,3} and square flakes. (c) the rim words as bar codes (one seventh of the rim, lengths phi and 1), aligned so that
+// each row is the inflation L -> LSL, S -> LS of the row above. All counts are computed here, none typed in.
+
+
+const P = 7, Q = 3;
+const PHI = (1 + Math.sqrt(5)) / 2;
+const G_DRAW = 6;                 // generations drawn in (a) and (c)
+const G_COUNT = 8;                // generations counted for (b) (7 and 8 after the first frame)
+const SQUARE_L = [2, 3, 4, 6, 8, 10, 18, 32, 64, 100, 200, 316];
+
+/** Circumradius of the central {p,q} polygon in the Poincaré disc. */
+const circumradius = (p = P, q = Q) =>
+  Math.sqrt(Math.cos(Math.PI / p + Math.PI / q) / Math.cos(Math.PI / p - Math.PI / q));
+/** Hyperbolic edge length of {p,q} (curvature -1): cosh(l/2) = cos(pi/p)/sin(pi/q). */
+const edgeLength = (p = P, q = Q) => 2 * Math.acosh(Math.cos(Math.PI / p) / Math.sin(Math.PI / q));
+/** Hyperbolic distance between two points of the disc. */
+function hypDist(ax, ay, bx, by) {
+  const dx = ax - bx, dy = ay - by;
+  return Math.acosh(1 + (2 * (dx * dx + dy * dy)) / ((1 - ax * ax - ay * ay) * (1 - bx * bx - by * by)));
+}
+
+// ------------------------------------------------------------------------------------------- reflections, Möbius maps
+
+/** Reflection in the geodesic through a and b: returns f(x, y, out) writing the image into out[0], out[1]. */
+function reflector(ax, ay, bx, by) {
+  // w = T_a(b) = (b - a)/(1 - conj(a) b); the geodesic is the diameter through 0 and w in the T_a frame
+  const nr = bx - ax, ni = by - ay;
+  const dr = 1 - (ax * bx + ay * by), di = -(ax * by - ay * bx);
+  const dd = dr * dr + di * di;
+  const wr = (nr * dr + ni * di) / dd, wi = (ni * dr - nr * di) / dd;
+  const wn = Math.hypot(wr, wi);
+  const er = wr / wn, ei = wi / wn;
+  const e2r = er * er - ei * ei, e2i = 2 * er * ei;          // e^{2i arg w}
+  return function reflect(x, y, out) {
+    const ur0 = x - ax, ui0 = y - ay;                       // u = T_a(z)
+    const vr = 1 - (ax * x + ay * y), vi = -(ax * y - ay * x);
+    const vv = vr * vr + vi * vi;
+    const ur = (ur0 * vr + ui0 * vi) / vv, ui = (ui0 * vr - ur0 * vi) / vv;
+    const pr = e2r * ur + e2i * ui, pi = e2i * ur - e2r * ui; // u' = e^{2i arg w} conj(u)
+    const qr = pr + ax, qi = pi + ay;                       // z' = T_a^-1(u') = (u' + a)/(1 + conj(a) u')
+    const sr = 1 + (ax * pr + ay * pi), si = ax * pi - ay * pr;
+    const ss = sr * sr + si * si;
+    out[0] = (qr * sr + qi * si) / ss;
+    out[1] = (qi * sr - qr * si) / ss;
+    return out;
+  };
+}
+
+// Orientation-preserving isometries z -> (A z + B)/(conj(B) z + conj(A)), |A|^2 - |B|^2 = 1, stored as [Ar, Ai, Br, Bi].
+const MOB_ID = Object.freeze([1, 0, 0, 0]);
+/** T_a: z -> (z - a)/(1 - conj(a) z), moves a to 0. */
+function mobTo0(ax, ay) { const s = 1 / Math.sqrt(1 - ax * ax - ay * ay); return [s, 0, -ax * s, -ay * s]; }
+/** T_a^-1: z -> (z + a)/(1 + conj(a) z), moves 0 to a. */
+function mobFrom0(ax, ay) { const s = 1 / Math.sqrt(1 - ax * ax - ay * ay); return [s, 0, ax * s, ay * s]; }
+/** Composition m o n, renormalised to |A|^2 - |B|^2 = 1. */
+function mobMul(m, n) {
+  const a1r = m[0], a1i = m[1], b1r = m[2], b1i = m[3], a2r = n[0], a2i = n[1], b2r = n[2], b2i = n[3];
+  const Ar = a1r * a2r - a1i * a2i + (b1r * b2r + b1i * b2i);
+  const Ai = a1r * a2i + a1i * a2r + (b1i * b2r - b1r * b2i);
+  const Br = a1r * b2r - a1i * b2i + (b1r * a2r + b1i * a2i);
+  const Bi = a1r * b2i + a1i * b2r + (b1i * a2r - b1r * a2i);
+  const s = 1 / Math.sqrt(Ar * Ar + Ai * Ai - Br * Br - Bi * Bi);
+  return [Ar * s, Ai * s, Br * s, Bi * s];
+}
+function mobApply(m, x, y, out = [0, 0]) {
+  const Ar = m[0], Ai = m[1], Br = m[2], Bi = m[3];
+  const nr = Ar * x - Ai * y + Br, ni = Ar * y + Ai * x + Bi;
+  const dr = Br * x + Bi * y + Ar, di = Br * y - Bi * x - Ai;
+  const d = dr * dr + di * di;
+  out[0] = (nr * dr + ni * di) / d;
+  out[1] = (ni * dr - nr * di) / d;
+  return out;
+}
+
+// ------------------------------------------------------------------------------------------- tiling
+
+/** Hash grid on disc coordinates (bins of h; neighbour bins are checked only next to a bin edge). */
+class PointHash {
+  constructor(h) { this.inv = 1 / h; this.map = new Map(); }
+  add(x, y, id) {
+    this.map.set(Math.floor((x + 1) * this.inv) * 33554432 + Math.floor((y + 1) * this.inv), id);
+  }
+  find(x, y) {
+    const fx = (x + 1) * this.inv, fy = (y + 1) * this.inv;
+    const ix = Math.floor(fx), iy = Math.floor(fy), m = this.map;
+    let r = m.get(ix * 33554432 + iy);
+    if (r !== undefined) return r;
+    const dx = fx - ix, dy = fy - iy;
+    const sx = dx < 1e-3 ? -1 : dx > 1 - 1e-3 ? 1 : 0, sy = dy < 1e-3 ? -1 : dy > 1 - 1e-3 ? 1 : 0;
+    if (sx && (r = m.get((ix + sx) * 33554432 + iy)) !== undefined) return r;
+    if (sy && (r = m.get(ix * 33554432 + iy + sy)) !== undefined) return r;
+    if (sx && sy && (r = m.get((ix + sx) * 33554432 + iy + sy)) !== undefined) return r;
+    return -1;
+  }
+}
+
+/** The central heptagon; call T.grow() once per generation. */
+function createTiling(p = P, q = Q) {
+  const r0 = circumradius(p, q);
+  const T = {
+    p, q, r0, g: 0,
+    vx: [], vy: [],                   // site coordinates in the disc
+    tv: [],                           // p site ids per tile, cyclic order
+    cx: [], cy: [], layer: [],        // tile centres and generations
+    ntUpTo: [1], nvUpTo: [p], neUpTo: [],
+    ev1: [], ev2: [], eo1: [], eo2: [], // bonds: end sites, owner tiles (eo2 = -1 while only one owner is known)
+    te: [],                           // bond id of edge k of tile t: te[t*p + k]
+    frontier: [0],
+  };
+  const vh = new PointHash(2e-7), th = new PointHash(2e-7), emap = new Map();
+  let edgesDone = 0;
+  for (let k = 0; k < p; k++) {
+    const a = Math.PI / 2 + (2 * Math.PI * k) / p;
+    T.vx.push(r0 * Math.cos(a)); T.vy.push(r0 * Math.sin(a)); T.tv.push(k);
+    vh.add(T.vx[k], T.vy[k], k);
+  }
+  T.cx.push(0); T.cy.push(0); T.layer.push(0); th.add(0, 0, 0);
+
+  function addEdges() {
+    const nt = T.layer.length;
+    for (let t = edgesDone; t < nt; t++) {
+      for (let k = 0; k < p; k++) {
+        const a = T.tv[t * p + k], b = T.tv[t * p + ((k + 1) % p)];
+        const key = a < b ? a * 4194304 + b : b * 4194304 + a;
+        let id = emap.get(key);
+        if (id === undefined) {
+          id = T.ev1.length; emap.set(key, id);
+          T.ev1.push(a); T.ev2.push(b); T.eo1.push(t); T.eo2.push(-1);
+        } else if (T.eo2[id] < 0) T.eo2[id] = t;
+        else T.eo2[id] = -2;            // a third owner would be an overlap; flagged for the tests
+        T.te.push(id);
+      }
+    }
+    edgesDone = nt;
+    T.neUpTo[T.g] = T.ev1.length;
+  }
+  addEdges();
+
+  T.grow = function grow() {
+    const it = T.growSteps(Infinity);
+    while (!it.next().done);
+    return T;
+  };
+  /** The same growth as a generator that yields after every `chunk` frontier tiles (for short main-thread tasks). */
+  T.growSteps = function* growSteps(chunk = 400) {
+    const { vx, vy, tv, cx, cy, layer } = T;
+    const g = T.g + 1, next = [], out = [0, 0];
+    let done = 0;
+    for (const t of T.frontier) {
+      if (++done % chunk === 0) yield done;
+      const base = t * p;
+      for (let e = 0; e < p; e++) {
+        const ia = tv[base + e], ib = tv[base + ((e + 1) % p)];
+        const R = reflector(vx[ia], vy[ia], vx[ib], vy[ib]);
+        R(cx[t], cy[t], out);
+        if (th.find(out[0], out[1]) >= 0) continue;          // parent or a sibling already there
+        const id = layer.length;
+        cx.push(out[0]); cy.push(out[1]); layer.push(g); th.add(out[0], out[1], id);
+        for (let k = 0; k < p; k++) {
+          const v = tv[base + k];
+          if (v === ia || v === ib) { tv.push(v); continue; }   // the mirror edge keeps its sites
+          R(vx[v], vy[v], out);
+          let w = vh.find(out[0], out[1]);
+          if (w < 0) { w = vx.length; vx.push(out[0]); vy.push(out[1]); vh.add(out[0], out[1], w); }
+          tv.push(w);
+        }
+        next.push(id);
+      }
+    }
+    T.frontier = next;
+    T.g = g;
+    T.ntUpTo.push(layer.length);
+    T.nvUpTo.push(vx.length);
+    addEdges();
+    return T;
+  };
+  return T;
+}
+
+/** Tiles of an (L-1) x (L-1) square flake on an L x L grid of sites, counter-clockwise. */
+function squareTiles(L) {
+  const n = (L - 1) * (L - 1), tv = new Int32Array(4 * n);
+  let m = 0;
+  for (let i = 0; i < L - 1; i++) {
+    for (let j = 0; j < L - 1; j++) {
+      tv[m++] = i * L + j; tv[m++] = (i + 1) * L + j; tv[m++] = (i + 1) * L + j + 1; tv[m++] = i * L + j + 1;
+    }
+  }
+  return tv;
+}
+
+/** Counts of a flake given as nt tiles of k sites each (tv[t*k + i], cyclic). Same code for {7,3} and squares. */
+function flakeStats(tv, k, nt) {
+  let M = 0;
+  for (let i = 0; i < nt * k; i++) if (tv[i] > M) M = tv[i];
+  M += 1;
+  const mult = new Map(), isV = new Uint8Array(M);
+  for (let t = 0; t < nt; t++) {
+    for (let e = 0; e < k; e++) {
+      const a = tv[t * k + e], b = tv[t * k + ((e + 1) % k)];
+      const key = a < b ? a * M + b : b * M + a;
+      mult.set(key, (mult.get(key) || 0) + 1);
+      isV[a] = 1;
+    }
+  }
+  const deg = new Int32Array(M), onB = new Uint8Array(M);
+  let maxMult = 0;
+  for (const [key, c] of mult) {
+    const a = Math.floor(key / M), b = key - a * M;
+    deg[a]++; deg[b]++;
+    if (c === 1) { onB[a] = 1; onB[b] = 1; }
+    if (c > maxMult) maxMult = c;
+  }
+  let N = 0, Nb = 0, maxDeg = 0, minDegInt = Infinity, maxDegInt = 0;
+  for (let v = 0; v < M; v++) {
+    if (!isV[v]) continue;
+    N++;
+    if (deg[v] > maxDeg) maxDeg = deg[v];
+    if (onB[v]) Nb++;
+    else { if (deg[v] < minDegInt) minDegInt = deg[v]; if (deg[v] > maxDegInt) maxDegInt = deg[v]; }
+  }
+  return { N, Nb, E: mult.size, F: nt, frac: Nb / N, maxMult, maxDeg, minDegInt, maxDegInt, onB };
+}
+
+/**
+ * Boundary cycle of the flake of generation g and the L/S word of its rim (the generation-g heptagons), read once
+ * around the boundary counter-clockwise. Returns {word, single (one cycle through all boundary sites), rimOk (every
+ * generation-g heptagon appears exactly once, and nothing else), tiles (rim heptagons in reading order),
+ * cyc / edges (boundary sites and bonds in order)}. For g = 0 the word is empty.
+ */
+function rimWord(T, g) {
+  const p = T.p, nt = T.ntUpTo[g], ne = T.neUpTo[g], nv = T.nvUpTo[g];
+  const ntIn = g > 0 ? T.ntUpTo[g - 1] : 0;
+  const { ev1, ev2, eo1, eo2, te, vx, vy } = T;
+  const nb = new Int32Array(2 * nv).fill(-1);
+  let nBV = 0, bad = false;
+  for (let e = 0; e < ne; e++) {
+    const o2 = eo2[e];
+    if (o2 >= 0 && o2 < nt) continue;                     // two owners inside the flake: interior bond
+    for (const v of [ev1[e], ev2[e]]) {
+      if (nb[2 * v] < 0) { nb[2 * v] = e; nBV++; } else if (nb[2 * v + 1] < 0) nb[2 * v + 1] = e; else bad = true;
+    }
+  }
+  let start = -1;
+  for (let v = 0; v < nv && start < 0; v++) if (nb[2 * v] >= 0) start = v;
+  let cyc = [], edges = [], seq = [];
+  let prevE = -1, cur = start;
+  for (let guard = 0; guard <= ne && start >= 0; guard++) {
+    const e = nb[2 * cur] !== prevE ? nb[2 * cur] : nb[2 * cur + 1];
+    if (e < 0) { bad = true; break; }
+    cyc.push(cur); edges.push(e); seq.push(eo1[e]);
+    prevE = e;
+    cur = ev1[e] === cur ? ev2[e] : ev1[e];
+    if (cur === start) break;
+  }
+  const single = !bad && cur === start && cyc.length === nBV;
+  // counter-clockwise in the disc
+  let area = 0;
+  for (let i = 0; i < cyc.length; i++) {
+    const a = cyc[i], b = cyc[(i + 1) % cyc.length];
+    area += vx[a] * vy[b] - vx[b] * vy[a];
+  }
+  if (area < 0) {
+    cyc = [cyc[0], ...cyc.slice(1).reverse()];
+    edges = edges.slice().reverse();
+    seq = seq.slice().reverse();
+  }
+  if (g === 0) return { word: '', single, rimOk: true, tiles: [0], cyc, edges };
+  let tiles = seq.filter((t, i) => t !== seq[(i - 1 + seq.length) % seq.length]);
+  if (tiles.length > 1 && tiles[0] === tiles[tiles.length - 1]) tiles = tiles.slice(0, -1);
+  const seen = new Uint8Array(nt - ntIn);
+  let rimOk = tiles.length === nt - ntIn;
+  for (const t of tiles) {
+    if (t < ntIn || t >= nt || seen[t - ntIn]) rimOk = false;
+    else seen[t - ntIn] = 1;
+  }
+  let word = '';
+  for (const t of tiles) {
+    let k = 0;
+    for (let e = 0; e < p; e++) {
+      const id = te[t * p + e];
+      const other = eo1[id] === t ? eo2[id] : eo1[id];
+      if (other >= 0 && other < ntIn) k++;
+    }
+    word += k === 1 ? 'L' : k === 2 ? 'S' : '?';
+  }
+  return { word, single, rimOk, tiles, cyc, edges };
+}
+
+/** Inflation L -> LSL, S -> LS. */
+const inflate = (w) => w.replace(/[LS]/g, (c) => (c === 'L' ? 'LSL' : 'LS'));
+/** Equal as cyclic words. */
+const cyclicEqual = (a, b) => a.length === b.length && (a + a).includes(b);
+/** Fibonacci words C1 = S, C2 = L, C_n = C_(n-1) C_(n-2) (A -> L, B -> S as in FIB). */
+function fibWord(n) {
+  let a = 'S', b = 'L';
+  if (n === 1) return a;
+  for (let k = 3; k <= n; k++) [a, b] = [b, b + a];
+  return b;
+}
+/**
+ * Rotations of the computed rim words that line up under the inflation: rows[1] = words[1], rows[g] = inflate(rows[g-1])
+ * provided that this is a rotation of words[g] (the check); otherwise null from the first failing generation on.
+ */
+function alignedRows(words, gmax) {
+  const rows = [];
+  rows[1] = words[1];
+  for (let g = 2; g <= gmax; g++) {
+    const target = inflate(rows[g - 1]);
+    if (!words[g] || !cyclicEqual(words[g], target)) return { rows, ok: false, failAt: g };
+    rows[g] = target;
+  }
+  return { rows, ok: true, failAt: 0 };
+}
+
+// ---- end of geometry ----
+
+    const sec = document.querySelector('section[data-name="fractals"]');
+    if (sec) {
+      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+      const smoothstep = (e0, e1, x) => { const s = clamp((x - e0) / (e1 - e0)); return s * s * (3 - 2 * s); };
+      const smooth = u => smoothstep(0, 1, u);
+      const fmt = x => x.toLocaleString("en-US");
+      const C = {                                    // house-style tokens (same values as the website's base.css)
+        bg0: "#08040d", bg1: "#0f0716", bg2: "#170b21", plum: "#3b1240", violet: "#7d4fc0", lilac: "#b3a5c9",
+        e0: "#fff1e0", e1: "#ffc49b", e2: "#ff8f45", e3: "#ff5a1f", e4: "#e3262f", tA: "#ffb067", tB: "#d44a86",
+        hair2: "rgba(255,190,160,.20)",
+      };
+
+      // Backing store follows the on-screen (scaled) size; drawing uses the canvas's CSS units.
+      function fit(cv, ctx) {
+        const r = cv.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = cv.clientWidth || 1, h = cv.clientHeight || 1;
+        const bw = Math.max(1, Math.round(r.width * dpr)), bh = Math.max(1, Math.round(r.height * dpr));
+        if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
+        ctx.setTransform(bw / w, 0, 0, bh / h, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        return { w, h };
+      }
+
+      // Video: stop it when the slide is left; Space on the focused video plays/pauses it only.
+      const vid = document.getElementById("fxVideo");
+      vid.addEventListener("keydown", e => { if (e.key === " ") e.stopPropagation(); });
+
+      // ================= {7,3} hyperbolic lattice (FIG. 7 (a) of the website) =================
+      const G_DRAW = 6;
+      const T = createTiling();
+      for (let g = 1; g <= G_DRAW; g++) T.grow();
+      const stats = [], rims = [];
+      for (let g = 0; g <= G_DRAW; g++) { stats[g] = flakeStats(T.tv, P, T.ntUpTo[g]); rims[g] = rimWord(T, g); }
+      const words = rims.map(r => r.word);
+      const lsOk = alignedRows(words, G_DRAW).ok;    // L / S are shown only if the inflation check passes
+      const rimType = new Uint8Array(T.layer.length);
+      for (let g = 1; g <= G_DRAW; g++) rims[g].tiles.forEach((t, i) => { rimType[t] = words[g][i] === "L" ? 1 : 2; });
+      const tilesByType = [];
+      for (let g = 1; g <= G_DRAW; g++) {
+        const L = [], S = [];
+        for (let t = T.ntUpTo[g - 1]; t < T.ntUpTo[g]; t++) (rimType[t] === 1 ? L : S).push(t);
+        tilesByType[g] = { L, S };
+      }
+      window.__hyp = { T, stats, words, lsOk };        // for checking against the reference numbers
+
+      // beats exactly as on the website: one generation per beat, then translation, L/S, back
+      const BEATS = [[0, 3], [3, 6], [6, 9], [9, 12], [12, 15], [15, 18], [18, 21.5], [21.5, 26], [26, 32], [32, 36]];
+      const DURATION = 36, STILL_T = 30, TOUR_D = 5.4, TOUR_TH = -1.92;
+      const SPEED = 2;                               // playback 2x faster than the website (one loop = 18 s)
+      function beatAt(t) {
+        let idx = 0;
+        for (let k = 0; k < BEATS.length; k++) if (t >= BEATS[k][0] - 1e-9) idx = k;
+        const [s, e] = BEATS[idx];
+        return { index: idx, local: clamp((t - s) / (e - s)), start: s };
+      }
+      function stateAt(t) {
+        const b = beatAt(t);
+        if (b.index <= G_DRAW) return { beat: b.index, g: b.index, fade: smoothstep(0, 0.9, t - b.start), d: 0, ls: 0 };
+        let d = TOUR_D, ls = 0;
+        if (b.index === 7) d = TOUR_D * smoothstep(0, 1, b.local);
+        else if (b.index === 8) ls = smoothstep(0.3, 1.5, t - b.start);
+        else { d = TOUR_D * (1 - smoothstep(0, 1, b.local)); ls = 1; }
+        return { beat: b.index, g: G_DRAW, fade: 1, d, ls };
+      }
+
+      const MAXSEG = 16, STRIDE = 2 * (MAXSEG + 1);
+      const nVd = T.nvUpTo[G_DRAW], nEd = T.neUpTo[G_DRAW];
+      const ZX = new Float64Array(nVd), ZY = new Float64Array(nVd), X = new Float32Array(nVd), Y = new Float32Array(nVd);
+      const EP = new Float32Array(nEd * STRIDE), EN = new Uint8Array(nEd), ELEN = new Float32Array(nEd);
+      const { tv, te, ev1, ev2, vx, vy } = T, ntU = T.ntUpTo, nvU = T.nvUpTo, neU = T.neUpTo;
+
+      const hCv = document.getElementById("fxHyp"), g2 = hCv.getContext("2d");
+      const hCap = document.getElementById("fxHypCap"), hHud = document.getElementById("fxHypHud");
+      let W = 0, Hc = 0, RR = 1, CX = 0, CY = 0, Muser = MOB_ID;
+      const out = [0, 0];
+
+      function addTile(t) {
+        const base = t * P;
+        let first = true;
+        for (let k = 0; k < P; k++) {
+          const e = te[base + k], n = EN[e], off = e * STRIDE;
+          if (ev1[e] === tv[base + k]) {
+            for (let i = 0; i < n; i++) { const x = EP[off + 2 * i], y = EP[off + 2 * i + 1]; if (first) { g2.moveTo(x, y); first = false; } else g2.lineTo(x, y); }
+          } else {
+            for (let i = n; i > 0; i--) { const x = EP[off + 2 * i], y = EP[off + 2 * i + 1]; if (first) { g2.moveTo(x, y); first = false; } else g2.lineTo(x, y); }
+          }
+        }
+        g2.closePath();
+      }
+      const MIN_TILE = 0.5, MIN_EDGE = 0.3;
+      const big = t => ELEN[te[t * P]] >= MIN_TILE;
+      function fillRange(t0, t1, color, alpha) {
+        if (t1 <= t0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (let t = t0; t < t1; t++) if (big(t)) addTile(t);
+        g2.fill();
+      }
+      function fillList(list, color, alpha) {
+        if (!list.length || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (const t of list) if (big(t)) addTile(t);
+        g2.fill();
+      }
+      function addEdge(e) {
+        const n = EN[e], off = e * STRIDE;
+        g2.moveTo(EP[off], EP[off + 1]);
+        for (let i = 1; i <= n; i++) g2.lineTo(EP[off + 2 * i], EP[off + 2 * i + 1]);
+      }
+      function strokeEdges(e0, e1, minLen, maxLen, color, alpha, width) {
+        if (e1 <= e0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.strokeStyle = color; g2.lineWidth = width; g2.beginPath();
+        for (let e = e0; e < e1; e++) { const l = ELEN[e]; if (l >= minLen && l < maxLen) addEdge(e); }
+        g2.stroke();
+      }
+      function boundaryPath(gk) {
+        const { cyc, edges } = rims[gk];
+        g2.beginPath();
+        let lx = 0, ly = 0;
+        for (let i = 0; i < edges.length; i++) {
+          const e = edges[i], n = EN[e], off = e * STRIDE, fwd = ev1[e] === cyc[i];
+          for (let j = i === 0 ? 0 : 1; j <= n; j++) {
+            const q = fwd ? j : n - j, x = EP[off + 2 * q], y = EP[off + 2 * q + 1];
+            if (i === 0 && j === 0) { g2.moveTo(x, y); lx = x; ly = y; }
+            else if (Math.abs(x - lx) + Math.abs(y - ly) > 0.4) { g2.lineTo(x, y); lx = x; ly = y; }
+          }
+        }
+        g2.closePath();
+      }
+      function glowRim(gk, A) {
+        if (gk < 0 || A < 0.004) return;
+        boundaryPath(gk);
+        g2.globalAlpha = 0.10 * A; g2.strokeStyle = C.e4; g2.lineWidth = 9; g2.stroke();
+        g2.globalAlpha = 0.28 * A; g2.strokeStyle = C.e3; g2.lineWidth = 4.2; g2.stroke();
+        g2.globalAlpha = 0.95 * A; g2.strokeStyle = C.e1; g2.lineWidth = 1.35; g2.stroke();
+      }
+      function dots(v0, v1, k, rmax, color, alpha) {
+        if (v1 <= v0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (let v = v0; v < v1; v++) {
+          const r = Math.min(rmax, k * (1 - ZX[v] * ZX[v] - ZY[v] * ZY[v]) * RR);
+          if (r < 0.45) continue;
+          g2.moveTo(X[v] + r, Y[v]); g2.arc(X[v], Y[v], r, 0, 2 * Math.PI);
+        }
+        g2.fill();
+      }
+      function viewMap(st) {
+        if (st.d <= 0) return Muser;
+        const r = Math.tanh(st.d / 2);
+        return mobMul(Muser, mobTo0(r * Math.cos(TOUR_TH), r * Math.sin(TOUR_TH)));
+      }
+
+      function drawDisc(t) {
+        ({ w: W, h: Hc } = fit(hCv, g2));
+        const top = 62, bot = 54;                    // room for caption box and HUD
+        RR = Math.min(W * 0.95, Hc - top - bot) / 2 - 4; CX = W / 2; CY = top + (Hc - top - bot) / 2;
+        const st = stateAt(t), M = viewMap(st);
+        const gS = st.g, gP = gS - 1, nV = nvU[gS], nE = neU[gS];
+        g2.lineJoin = "round"; g2.lineCap = "round";
+
+        g2.globalAlpha = 1;
+        const bg = g2.createRadialGradient(CX, CY, 0, CX, CY, RR);
+        bg.addColorStop(0, C.bg1); bg.addColorStop(1, C.bg0);
+        g2.fillStyle = bg; g2.beginPath(); g2.arc(CX, CY, RR, 0, 2 * Math.PI); g2.fill();
+        const hz = g2.createRadialGradient(CX, CY, 0, CX, CY, RR * 0.9);
+        hz.addColorStop(0, C.plum); hz.addColorStop(1, "rgba(0,0,0,0)");
+        g2.globalAlpha = 0.35; g2.fillStyle = hz; g2.beginPath(); g2.arc(CX, CY, RR, 0, 2 * Math.PI); g2.fill();
+
+        for (let v = 0; v < nV; v++) {
+          mobApply(M, vx[v], vy[v], out);
+          ZX[v] = out[0]; ZY[v] = out[1]; X[v] = CX + RR * out[0]; Y[v] = CY - RR * out[1];
+        }
+        // bonds as geodesics z(s) = (a + s w)/(1 + conj(a) s w), w = T_a(b), subdivided where the arc bends
+        for (let e = 0; e < nE; e++) {
+          const a = ev1[e], b = ev2[e], ax = ZX[a], ay = ZY[a], bx = ZX[b], by = ZY[b], off = e * STRIDE;
+          const cxv = bx - ax, cyv = by - ay, cl = Math.hypot(cxv, cyv);
+          ELEN[e] = cl * RR; EP[off] = X[a]; EP[off + 1] = Y[a];
+          let n = 1;
+          if (ELEN[e] > 2) {
+            const dr = 1 - (ax * bx + ay * by), di = -(ax * by - ay * bx), dd = dr * dr + di * di;
+            const wr = (cxv * dr + cyv * di) / dd, wi = (cyv * dr - cxv * di) / dd;
+            const geo = s => {
+              const ur = s * wr, ui = s * wi, qr = ur + ax, qi = ui + ay;
+              const sr = 1 + ax * ur + ay * ui, si = ax * ui - ay * ur, ss = sr * sr + si * si;
+              out[0] = (qr * sr + qi * si) / ss; out[1] = (qi * sr - qr * si) / ss;
+            };
+            geo(0.5);
+            const dev = (Math.abs(cxv * (out[1] - ay) - cyv * (out[0] - ax)) / cl) * RR;
+            if (dev > 0.25) {
+              n = Math.min(MAXSEG, Math.ceil(Math.sqrt(dev / 0.2)));
+              for (let i = 1; i < n; i++) { geo(i / n); EP[off + 2 * i] = CX + RR * out[0]; EP[off + 2 * i + 1] = CY - RR * out[1]; }
+            }
+          }
+          EN[e] = n; EP[off + 2 * n] = X[b]; EP[off + 2 * n + 1] = Y[b];
+        }
+
+        const fade = st.fade, ls = lsOk ? st.ls : 0;
+        for (let par = 0; par < 2; par++) {
+          g2.globalAlpha = par ? 0.30 : 0.44; g2.fillStyle = C.plum; g2.beginPath();
+          for (let k = par; k < gS; k += 2) for (let tt = k ? ntU[k - 1] : 0; tt < ntU[k]; tt++) addTile(tt);
+          g2.fill();
+        }
+        if (gP >= 0) fillRange(gP ? ntU[gP - 1] : 0, ntU[gP], C.e2, 0.36 * (1 - fade));
+        const r0 = gS ? ntU[gS - 1] : 0, r1 = ntU[gS];
+        if (ls > 0 && gS >= 1) {
+          fillRange(r0, r1, C.e2, 0.36 * fade * (1 - ls));
+          fillList(tilesByType[gS].L, C.tA, 0.50 * ls);
+          fillList(tilesByType[gS].S, C.tB, 0.62 * ls);
+        } else fillRange(r0, r1, C.e2, 0.36 * fade);
+
+        const eOld = gP >= 0 ? neU[gP] : 0;
+        strokeEdges(0, eOld, 2.5, Infinity, C.violet, 0.85, 1);
+        strokeEdges(0, eOld, MIN_EDGE, 2.5, C.violet, 0.45, 0.8);
+        strokeEdges(eOld, nE, MIN_EDGE, Infinity, C.e1, 0.75 * fade, 1);
+        glowRim(gP, 1 - fade);
+        glowRim(gS, fade);
+        const vOld = gP >= 0 ? nvU[gP] : 0;
+        dots(0, vOld, 0.045, 1.7, C.lilac, 0.9);
+        dots(vOld, nV, 0.065, 2.4, C.e0, fade);
+
+        g2.globalAlpha = 0.9; g2.strokeStyle = C.hair2; g2.lineWidth = 1;
+        g2.beginPath(); g2.arc(CX, CY, RR + 0.5, 0, 2 * Math.PI); g2.stroke();
+        g2.globalAlpha = 1;
+        return st;
+      }
+
+      const nb = g => stats[g].Nb, f3 = x => x.toFixed(3);
+      const CAPS = [
+        "One regular heptagon of the negatively curved plane, drawn in the Poincar&eacute; disc.",
+        "Generation 1: the 7 heptagons that share an edge with it. Three meet at every corner.",
+        `Generation 2: the newest ring (orange) is the rim; ${nb(2)} of its ${stats[2].N} sites lie on the boundary.`,
+        `Generation 3: the boundary grows by &times;${(nb(3) / nb(2)).toFixed(2)} per generation, tending to <span class="m">&phi;</span>&sup2; &asymp; ${(PHI * PHI).toFixed(3)}.`,
+        `Generation 4: <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = ${f3(stats[4].frac)}.`,
+        "Generation 5: the heptagons look smaller towards the edge, but all of them are congruent.",
+        `Generation 6: <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = ${f3(stats[6].frac)}; the limit is 1/<span class="m">&phi;</span> &asymp; ${f3(1 / PHI)}.`,
+        'A M&ouml;bius translation <span class="m">z</span> &rarr; (<span class="m">z</span> &minus; <span class="m">a</span>)/(1 &minus; <span class="m">&amacr;z</span>) carries the rim to the middle of the disc.',
+        lsOk ? 'Rim heptagons touch the flake along one edge (<b style="color:#ffb067">L</b>) or two (<b style="color:#d44a86">S</b>): L &rarr; LSL, S &rarr; LS.'
+          : "Rim heptagons touch the flake along one edge or two.",
+        "Back to the centre. Drag the disc to move through the plane.",
+      ];
+      let hLastKey = "";
+      function hypText(st) {
+        const waiting = paused && pausedAt === 0;
+        const key = `${st.beat}|${paused}|${waiting}`;
+        if (key === hLastKey) return;
+        hLastKey = key;
+        hCap.innerHTML = CAPS[st.beat];
+        const s = stats[st.g];
+        hHud.innerHTML =
+          `<span class="m">g</span> = <b>${st.g}</b> &middot; <span class="m">N</span> = <b>${fmt(s.N)}</b>` +
+          ` &middot; <span class="m">N</span><sub>b</sub> = <b>${fmt(s.Nb)}</b>` +
+          ` &middot; <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = <b>${s.frac.toFixed(4)}</b>` +
+          (waiting ? ' &middot; <span class="hot">double-click to start</span>'
+            : paused ? ' &middot; <span class="hot">paused &middot; double-click to resume</span>' : "");
+      }
+
+      // drag = Mobius translation of the view (pauses the animation); double-click resets and resumes
+      let dragging = false, last = [0, 0];
+      const toDisc = ev => {
+        const r = hCv.getBoundingClientRect(), s = (hCv.clientWidth || 1) / r.width;
+        return [((ev.clientX - r.left) * s - CX) / RR, -((ev.clientY - r.top) * s - CY) / RR];
+      };
+      const clampDisc = (z, m = 0.965) => { const r = Math.hypot(z[0], z[1]); return r > m ? [(z[0] * m) / r, (z[1] * m) / r] : z; };
+      hCv.addEventListener("pointerdown", ev => {
+        if (ev.button !== 0) return;
+        const z = toDisc(ev);
+        if (z[0] * z[0] + z[1] * z[1] > 0.995) return;
+        dragging = true; last = clampDisc(z);
+        try { hCv.setPointerCapture(ev.pointerId); } catch (_) { }
+      });
+      hCv.addEventListener("pointermove", ev => {
+        if (!dragging) return;
+        const z = clampDisc(toDisc(ev));
+        if (Math.abs(z[0] - last[0]) + Math.abs(z[1] - last[1]) < 1e-6) return;
+        if (!paused) { pausedAt = clock(); paused = true; }
+        Muser = mobMul(mobMul(mobFrom0(z[0], z[1]), mobTo0(last[0], last[1])), Muser);
+        last = z; kick();
+      });
+      const endDrag = () => { dragging = false; };
+      hCv.addEventListener("pointerup", endDrag);
+      hCv.addEventListener("pointercancel", endDrag);
+      hCv.addEventListener("dblclick", ev => {
+        ev.preventDefault(); Muser = MOB_ID;
+        if (paused) { t0 = performance.now() - pausedAt * 1000; paused = false; }
+        kick();
+      });
+
+      // ================= Sierpinski carpet =================
+      const MAXL = 5;
+      const CEN = [[[0.5, 0.5]]];                  // CEN[l-1]: centres of the squares left after level l-1 (unit square)
+      for (let l = 1; l < MAXL; l++) {
+        const prev = CEN[l - 1], s3 = 1 / Math.pow(3, l), next = [];
+        for (const [cx, cy] of prev)
+          for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++)
+            if (i || j) next.push([cx + i * s3, cy + j * s3]);
+        CEN.push(next);
+      }
+      window.__carpet = { CEN };
+
+      function glow(ctx, path, k, core) {
+        ctx.lineJoin = "round"; ctx.lineCap = "round";
+        ctx.strokeStyle = "rgba(227,38,47,.10)"; ctx.lineWidth = 9 * k; ctx.stroke(path);
+        ctx.strokeStyle = "rgba(255,90,31,.28)"; ctx.lineWidth = 4 * k; ctx.stroke(path);
+        ctx.strokeStyle = core; ctx.lineWidth = 1.3 * k; ctx.stroke(path);
+      }
+
+      const cCv = document.getElementById("fxCarpet"), cCtx = cCv.getContext("2d");
+      const cCap = document.getElementById("fxCarpetCap"), cHud = document.getElementById("fxCarpetHud");
+      const cMeta = document.getElementById("fxCarpetMeta");
+      let lev = 1, prevLev = 1, tChange = -10;         // tChange in slide-clock seconds
+      const T_CUT = reduce ? 0 : 0.9, T_COOL = reduce ? 0 : 1.8;
+
+      function carpetText() {
+        let holes = 0, area = 1;
+        for (let l = 1; l <= lev; l++) { holes += CEN[l - 1].length; area -= CEN[l - 1].length / Math.pow(9, l); }
+        cMeta.textContent = `level ${lev} of ${MAXL}`;
+        cCap.innerHTML = lev === 0
+          ? "A full square. Click to cut out its middle ninth."
+          : lev < MAXL ? "Click: cut the middle ninth out of every square that is left."
+            : "Level 5: one more click closes every hole again.";
+        cHud.innerHTML =
+          `<span class="m">n</span> = <b>${lev}</b> &middot; holes <b>${fmt(holes)}</b> = (8<sup><span class="m">n</span></sup> &minus; 1)/7` +
+          ` &middot; area left <b>${(area * 100).toFixed(1)} %</b> = (8/9)<sup><span class="m">n</span></sup><br>` +
+          `<span class="m">N</span> = 8 copies at scale 1/3 &rarr; <span class="m">D</span> = log 8 / log 3 &asymp; 1.893`;
+      }
+
+      function drawCarpet(t) {
+        const { w, h } = fit(cCv, cCtx);
+        const top = 58, bot = 66;
+        const S = Math.min(w * 0.84, (h - top - bot) * 0.94);
+        const X0 = (w - S) / 2, Y0 = top + (h - top - bot - S) / 2;
+        const closing = lev === 0 && prevLev > 0;
+        const g = smooth((t - tChange) / (closing ? 1.2 : T_CUT || 1e-9));
+        const cool = smooth((t - tChange - T_CUT) / (T_COOL || 1e-9));
+
+        const grd = cCtx.createLinearGradient(X0, Y0, X0 + S, Y0 + S);
+        grd.addColorStop(0, "#4a1a57"); grd.addColorStop(1, "#2a1036");
+        cCtx.fillStyle = grd; cCtx.fillRect(X0, Y0, S, S);
+        cCtx.strokeStyle = "rgba(179,165,201,.45)"; cCtx.lineWidth = 1; cCtx.strokeRect(X0 + 0.5, Y0 + 0.5, S - 1, S - 1);
+
+        const shown = closing ? prevLev : lev;
+        const older = new Path2D(), newest = new Path2D();
+        for (let l = 1; l <= shown; l++) {
+          const isNew = closing || l === lev;
+          const f = closing ? 1 - g : (isNew ? g : 1);
+          if (f <= 0) continue;
+          const side = (S / Math.pow(3, l)) * f;
+          const Pth = isNew ? newest : older;
+          for (const [cx, cy] of CEN[l - 1]) Pth.rect(X0 + cx * S - side / 2, Y0 + cy * S - side / 2, side, side);
+        }
+        cCtx.fillStyle = "#0b0612"; cCtx.fill(older); cCtx.fill(newest);
+        cCtx.strokeStyle = "rgba(179,165,201,.28)"; cCtx.lineWidth = 0.6; cCtx.stroke(older);
+        if (!closing && lev > 0) {
+          const kk = Math.max(0.25, Math.min(1, S / Math.pow(3, lev) / 20)) * (1 - 0.8 * cool);
+          cCtx.globalAlpha = 1 - 0.55 * cool;
+          glow(cCtx, newest, kk, "rgba(255,241,224,.95)");
+          cCtx.globalAlpha = 1;
+        }
+        return t - tChange < Math.max(T_CUT, 1.2) + T_COOL;
+      }
+
+      cCv.addEventListener("click", () => {
+        prevLev = lev;
+        lev = lev >= MAXL ? 0 : lev + 1;
+        tChange = cclock();
+        carpetText();
+        kick();
+      });
+
+      // ================= clocks and loop (only while this slide is shown) =================
+      // the disc waits paused at generation 0 until the first double-click
+      let t0 = performance.now(), paused = true, pausedAt = 0, raf = 0;
+      const cT0 = performance.now();
+      const clock = () => (paused ? pausedAt : (performance.now() - t0) / 1000);
+      const cclock = () => (performance.now() - cT0) / 1000;      // carpet clock never pauses
+      const qT = parseFloat(new URLSearchParams(location.search).get("t"));   // ?t= freezes the disc at that time
+      function frame() {
+        raf = 0;
+        if (!sec.classList.contains("on")) return;
+        const t = Number.isFinite(qT) ? qT : reduce ? STILL_T : (clock() * SPEED) % DURATION;
+        hypText(drawDisc(t));
+        const busy = drawCarpet(cclock());
+        if ((!paused && !reduce && !Number.isFinite(qT)) || busy) raf = requestAnimationFrame(frame);
+      }
+      function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+
+      new MutationObserver(() => {
+        if (sec.classList.contains("on")) { paused = true; pausedAt = 0; Muser = MOB_ID; hLastKey = ""; kick(); }
+        else vid.pause();
+      }).observe(sec, { attributes: true, attributeFilter: ["class"] });
+      window.addEventListener("resize", kick);
+      carpetText();
+      kick();
+    }
+  </script>
+
+</body>
+
+</html>
