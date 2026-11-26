@@ -1181,7 +1181,125 @@
     .btn-clean:hover {
       background: var(--ink);
     }
+
+    /* EXTRA · Fractals slide (ember version: dark violet room lit by one hot filament) */
+    section[data-name="fractals"] {
+      --bg-0: #08040d;
+      --bg-1: #0f0716;
+      --bg-2: #170b21;
+      --bg-3: #22102f;
+      --hair: rgba(255, 190, 160, .10);
+      --hair-2: rgba(255, 190, 160, .20);
+      --ink-0: #fff3ec;
+      --ink-2: #b9a3b7;
+      --ember-0: #fff1e0;
+      --ember-1: #ffc49b;
+      --ember-2: #ff8f45;
+      --lilac: #b3a5c9;
+      --serif: "EB Garamond", "STIX Two Text", Georgia, serif;
+    }
+
+    .fx-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: auto 1fr 1fr;
+      gap: 28px;
+    }
+
+    .fx-video {
+      height: 100%;
+      aspect-ratio: 576 / 1024;
+      background: var(--bg-0);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .fx-video video {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+      background: var(--bg-0);
+    }
+
+    .fx-box {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      min-width: 0;
+    }
+
+    .fx-meta {
+      color: var(--muted);
+    }
+
+    .fx-media {
+      flex: 1 1 auto;
+      min-height: 0;
+      position: relative;
+      border-radius: 8px;
+      border: 1px solid var(--hair-2);
+      background: radial-gradient(ellipse at 50% 45%, var(--bg-2) 0%, var(--bg-1) 55%, var(--bg-0) 100%);
+      overflow: hidden;
+    }
+
+    .fx-media canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+    }
+
+    .fx-cap {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      right: 14px;
+      width: fit-content;
+      max-width: calc(100% - 28px);
+      padding: 8px 12px;
+      font: 400 15px/1.4 "Inter", var(--sans);
+      color: var(--ink-0);
+      background: rgba(8, 4, 13, .78);
+      border: 1px solid var(--hair-2);
+      border-radius: 6px;
+      pointer-events: none;
+      transition: opacity .35s;
+    }
+
+    .fx-hud {
+      position: absolute;
+      left: 14px;
+      bottom: 12px;
+      right: 14px;
+      font: 400 13.5px/1.55 "Inter", var(--sans);
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-2);
+      pointer-events: none;
+      text-shadow: 0 1px 6px rgba(8, 4, 13, .9);
+    }
+
+    .fx-hud b {
+      color: var(--ink-0);
+      font-weight: 500;
+    }
+
+    .fx-hud .m,
+    .fx-cap .m {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.12em;
+    }
+
+    .fx-hud .hot {
+      color: var(--ember-1);
+    }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -1654,6 +1772,51 @@
           href="https://arxiv.org/abs/2609.04164" target="_blank" rel="noopener">arXiv:2609.04164</a></div>
     </section>
 
+    <!-- EXTRA · FRACTALS: FILM + LIVE EMBER FRACTALS (version: ember, physics-animations house style) -->
+    <section class="slide" data-name="fractals">
+      <div class="top">
+        <div class="top-left">
+          <div class="sk-kicker">Skill 4 of 5 &middot; <code>/html-animation</code> &middot; bonus</div>
+          <h2>Fractals: a short film, and two fractals computed live in HTML</h2>
+        </div>
+        <div class="sub">drag the disc to move through the plane &middot; click the carpet to cut more holes</div>
+      </div>
+
+      <div class="fx-grid">
+        <div class="fx-video">
+          <video id="fxVideo" src="media/Download.mp4" controls preload="metadata" playsinline></video>
+        </div>
+
+        <div class="fx-box">
+          <div class="st-head">
+            <span class="theme-tag a" style="margin:0;">Hyperbolic {7,3} lattice &middot; Poincar&eacute; disc</span>
+            <span class="fx-meta">grown live</span>
+          </div>
+          <div class="fx-media">
+            <canvas id="fxHyp" tabindex="0" aria-label="The {7,3} lattice of regular heptagons in the Poincare disc, grown generation by generation; then a Mobius translation carries the rim to the centre. Drag to move; double-click to reset."></canvas>
+            <div class="fx-cap" id="fxHypCap"></div>
+            <div class="fx-hud" id="fxHypHud"></div>
+          </div>
+        </div>
+
+        <div class="fx-box">
+          <div class="st-head">
+            <span class="theme-tag p" style="margin:0;">Sierpi&nacute;ski carpet &middot; click to add holes</span>
+            <span class="fx-meta" id="fxCarpetMeta">level 1 of 5</span>
+          </div>
+          <div class="fx-media">
+            <canvas id="fxCarpet" aria-label="Sierpinski carpet; each click cuts the next level of holes"></canvas>
+            <div class="fx-cap" id="fxCarpetCap"></div>
+            <div class="fx-hud" id="fxCarpetHud"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="credit">Film: TikTok short on Sierpi&nacute;ski fractals (2:32) &middot; Both fractals are computed by the page
+        (Canvas2D, no images) &middot; {7,3} geometry from FIG. 7 of the website, N<sub>b</sub>/N &rarr; 1/&phi; &middot; carpet D = log&nbsp;8 / log&nbsp;3 &asymp; 1.893</div>
+    </section>
+
+
     <!-- 11 · SKILL 5: HTML VS SCRIPTED BLENDER -->
     <section class="slide" data-name="stacks">
       <div class="top">
@@ -1803,7 +1966,7 @@
     <div class="pager">
       <span class="dots" id="stepDots"></span>
       <button id="prevBtn">&larr;</button>
-      <span id="counter">1 / 12</span>
+      <span id="counter">1 / 13</span>
       <button id="nextBtn">&rarr;</button>
     </div>
   </div>
@@ -2294,6 +2457,747 @@
       if (slides[cur].getAttribute("data-name") === "seminar") setTimeout(wakeSem, 120);
     })();
   </script>
+  <script type="module">
+    // EXTRA · Fractals slide (ember version). Everything drawn here is computed by the page:
+    //  - {7,3} hyperbolic lattice in the Poincare disc: the animation of FIG. 7 (a) of the website. Generations 0..6
+    //    grow one per beat, then a Mobius translation carries the rim to the centre, the rim heptagons are marked
+    //    L / S, and the view returns. Geometry and counts come from hyperbolic-geom.js, which build.py copies from
+    //    the website's js/fig/fig7-hyperbolic.js (the tested code), so nothing is re-derived here.
+    //  - Sierpinski carpet: level l removes the middle ninth of every square left after level l-1.
+    //    Hole counts and the area left are counted from the drawn holes, not from the formula.
+    // ---- geometry (inlined) ----
+// Copied by extra-slide/build.py from Web/js/fig/fig7-hyperbolic.js (geometry part only). Do not edit here.
+// fig7-hyperbolic.js — FIG. 7: the {7,3} hyperbolic lattice in the Poincaré disc (SPEC §5.7). Owner: fig7 agent.
+//
+// Geometry (pure functions; tests/fig7.test.html imports them, tools/ref/fig7_ref.py is the independent check):
+//   createTiling()  heptagons by generation. Generation 0 is the central heptagon, circumradius
+//                   r0 = sqrt(cos(pi/p + pi/q) / cos(pi/p - pi/q)) in the disc; generation g holds every heptagon that
+//                   shares an edge with the flake of generation g - 1 (for q = 3 the same as sharing a vertex). A new
+//                   heptagon is the mirror image of a frontier heptagon in the geodesic through one of its edges: the
+//                   inversion in a circle orthogonal to the unit circle, evaluated as T_a^-1 o R o T_a with
+//                   T_a(z) = (z - a)/(1 - conj(a) z) and R the reflection in a diameter. Sites and heptagons are
+//                   merged with a hash grid on their disc coordinates. Ids are given in order of generation, so the
+//                   flake of generation g is tiles < ntUpTo[g], sites < nvUpTo[g], bonds < neUpTo[g].
+//   flakeStats()    sites N, bonds E, boundary sites N_b of a flake given as a list of tiles (boundary = endpoints of
+//                   bonds that belong to one tile only). The same function counts the L x L square flakes of (b).
+//   rimWord()       the generation-g heptagons read once around the boundary: L = attached to the inner flake (the
+//                   generations < g) by one edge, S = by two edges.
+// Panels: (a) the disc: one beat per generation, then a Möbius translation carries the rim to the centre and the rim
+// heptagons are marked L / S; dragging composes further translations z -> (z - a)/(1 - conj(a) z). (b) N_b/N vs N for
+// {7,3} and square flakes. (c) the rim words as bar codes (one seventh of the rim, lengths phi and 1), aligned so that
+// each row is the inflation L -> LSL, S -> LS of the row above. All counts are computed here, none typed in.
+
+
+const P = 7, Q = 3;
+const PHI = (1 + Math.sqrt(5)) / 2;
+const G_DRAW = 6;                 // generations drawn in (a) and (c)
+const G_COUNT = 8;                // generations counted for (b) (7 and 8 after the first frame)
+const SQUARE_L = [2, 3, 4, 6, 8, 10, 18, 32, 64, 100, 200, 316];
+
+/** Circumradius of the central {p,q} polygon in the Poincaré disc. */
+const circumradius = (p = P, q = Q) =>
+  Math.sqrt(Math.cos(Math.PI / p + Math.PI / q) / Math.cos(Math.PI / p - Math.PI / q));
+/** Hyperbolic edge length of {p,q} (curvature -1): cosh(l/2) = cos(pi/p)/sin(pi/q). */
+const edgeLength = (p = P, q = Q) => 2 * Math.acosh(Math.cos(Math.PI / p) / Math.sin(Math.PI / q));
+/** Hyperbolic distance between two points of the disc. */
+function hypDist(ax, ay, bx, by) {
+  const dx = ax - bx, dy = ay - by;
+  return Math.acosh(1 + (2 * (dx * dx + dy * dy)) / ((1 - ax * ax - ay * ay) * (1 - bx * bx - by * by)));
+}
+
+// ------------------------------------------------------------------------------------------- reflections, Möbius maps
+
+/** Reflection in the geodesic through a and b: returns f(x, y, out) writing the image into out[0], out[1]. */
+function reflector(ax, ay, bx, by) {
+  // w = T_a(b) = (b - a)/(1 - conj(a) b); the geodesic is the diameter through 0 and w in the T_a frame
+  const nr = bx - ax, ni = by - ay;
+  const dr = 1 - (ax * bx + ay * by), di = -(ax * by - ay * bx);
+  const dd = dr * dr + di * di;
+  const wr = (nr * dr + ni * di) / dd, wi = (ni * dr - nr * di) / dd;
+  const wn = Math.hypot(wr, wi);
+  const er = wr / wn, ei = wi / wn;
+  const e2r = er * er - ei * ei, e2i = 2 * er * ei;          // e^{2i arg w}
+  return function reflect(x, y, out) {
+    const ur0 = x - ax, ui0 = y - ay;                       // u = T_a(z)
+    const vr = 1 - (ax * x + ay * y), vi = -(ax * y - ay * x);
+    const vv = vr * vr + vi * vi;
+    const ur = (ur0 * vr + ui0 * vi) / vv, ui = (ui0 * vr - ur0 * vi) / vv;
+    const pr = e2r * ur + e2i * ui, pi = e2i * ur - e2r * ui; // u' = e^{2i arg w} conj(u)
+    const qr = pr + ax, qi = pi + ay;                       // z' = T_a^-1(u') = (u' + a)/(1 + conj(a) u')
+    const sr = 1 + (ax * pr + ay * pi), si = ax * pi - ay * pr;
+    const ss = sr * sr + si * si;
+    out[0] = (qr * sr + qi * si) / ss;
+    out[1] = (qi * sr - qr * si) / ss;
+    return out;
+  };
+}
+
+// Orientation-preserving isometries z -> (A z + B)/(conj(B) z + conj(A)), |A|^2 - |B|^2 = 1, stored as [Ar, Ai, Br, Bi].
+const MOB_ID = Object.freeze([1, 0, 0, 0]);
+/** T_a: z -> (z - a)/(1 - conj(a) z), moves a to 0. */
+function mobTo0(ax, ay) { const s = 1 / Math.sqrt(1 - ax * ax - ay * ay); return [s, 0, -ax * s, -ay * s]; }
+/** T_a^-1: z -> (z + a)/(1 + conj(a) z), moves 0 to a. */
+function mobFrom0(ax, ay) { const s = 1 / Math.sqrt(1 - ax * ax - ay * ay); return [s, 0, ax * s, ay * s]; }
+/** Composition m o n, renormalised to |A|^2 - |B|^2 = 1. */
+function mobMul(m, n) {
+  const a1r = m[0], a1i = m[1], b1r = m[2], b1i = m[3], a2r = n[0], a2i = n[1], b2r = n[2], b2i = n[3];
+  const Ar = a1r * a2r - a1i * a2i + (b1r * b2r + b1i * b2i);
+  const Ai = a1r * a2i + a1i * a2r + (b1i * b2r - b1r * b2i);
+  const Br = a1r * b2r - a1i * b2i + (b1r * a2r + b1i * a2i);
+  const Bi = a1r * b2i + a1i * b2r + (b1i * a2r - b1r * a2i);
+  const s = 1 / Math.sqrt(Ar * Ar + Ai * Ai - Br * Br - Bi * Bi);
+  return [Ar * s, Ai * s, Br * s, Bi * s];
+}
+function mobApply(m, x, y, out = [0, 0]) {
+  const Ar = m[0], Ai = m[1], Br = m[2], Bi = m[3];
+  const nr = Ar * x - Ai * y + Br, ni = Ar * y + Ai * x + Bi;
+  const dr = Br * x + Bi * y + Ar, di = Br * y - Bi * x - Ai;
+  const d = dr * dr + di * di;
+  out[0] = (nr * dr + ni * di) / d;
+  out[1] = (ni * dr - nr * di) / d;
+  return out;
+}
+
+// ------------------------------------------------------------------------------------------- tiling
+
+/** Hash grid on disc coordinates (bins of h; neighbour bins are checked only next to a bin edge). */
+class PointHash {
+  constructor(h) { this.inv = 1 / h; this.map = new Map(); }
+  add(x, y, id) {
+    this.map.set(Math.floor((x + 1) * this.inv) * 33554432 + Math.floor((y + 1) * this.inv), id);
+  }
+  find(x, y) {
+    const fx = (x + 1) * this.inv, fy = (y + 1) * this.inv;
+    const ix = Math.floor(fx), iy = Math.floor(fy), m = this.map;
+    let r = m.get(ix * 33554432 + iy);
+    if (r !== undefined) return r;
+    const dx = fx - ix, dy = fy - iy;
+    const sx = dx < 1e-3 ? -1 : dx > 1 - 1e-3 ? 1 : 0, sy = dy < 1e-3 ? -1 : dy > 1 - 1e-3 ? 1 : 0;
+    if (sx && (r = m.get((ix + sx) * 33554432 + iy)) !== undefined) return r;
+    if (sy && (r = m.get(ix * 33554432 + iy + sy)) !== undefined) return r;
+    if (sx && sy && (r = m.get((ix + sx) * 33554432 + iy + sy)) !== undefined) return r;
+    return -1;
+  }
+}
+
+/** The central heptagon; call T.grow() once per generation. */
+function createTiling(p = P, q = Q) {
+  const r0 = circumradius(p, q);
+  const T = {
+    p, q, r0, g: 0,
+    vx: [], vy: [],                   // site coordinates in the disc
+    tv: [],                           // p site ids per tile, cyclic order
+    cx: [], cy: [], layer: [],        // tile centres and generations
+    ntUpTo: [1], nvUpTo: [p], neUpTo: [],
+    ev1: [], ev2: [], eo1: [], eo2: [], // bonds: end sites, owner tiles (eo2 = -1 while only one owner is known)
+    te: [],                           // bond id of edge k of tile t: te[t*p + k]
+    frontier: [0],
+  };
+  const vh = new PointHash(2e-7), th = new PointHash(2e-7), emap = new Map();
+  let edgesDone = 0;
+  for (let k = 0; k < p; k++) {
+    const a = Math.PI / 2 + (2 * Math.PI * k) / p;
+    T.vx.push(r0 * Math.cos(a)); T.vy.push(r0 * Math.sin(a)); T.tv.push(k);
+    vh.add(T.vx[k], T.vy[k], k);
+  }
+  T.cx.push(0); T.cy.push(0); T.layer.push(0); th.add(0, 0, 0);
+
+  function addEdges() {
+    const nt = T.layer.length;
+    for (let t = edgesDone; t < nt; t++) {
+      for (let k = 0; k < p; k++) {
+        const a = T.tv[t * p + k], b = T.tv[t * p + ((k + 1) % p)];
+        const key = a < b ? a * 4194304 + b : b * 4194304 + a;
+        let id = emap.get(key);
+        if (id === undefined) {
+          id = T.ev1.length; emap.set(key, id);
+          T.ev1.push(a); T.ev2.push(b); T.eo1.push(t); T.eo2.push(-1);
+        } else if (T.eo2[id] < 0) T.eo2[id] = t;
+        else T.eo2[id] = -2;            // a third owner would be an overlap; flagged for the tests
+        T.te.push(id);
+      }
+    }
+    edgesDone = nt;
+    T.neUpTo[T.g] = T.ev1.length;
+  }
+  addEdges();
+
+  T.grow = function grow() {
+    const it = T.growSteps(Infinity);
+    while (!it.next().done);
+    return T;
+  };
+  /** The same growth as a generator that yields after every `chunk` frontier tiles (for short main-thread tasks). */
+  T.growSteps = function* growSteps(chunk = 400) {
+    const { vx, vy, tv, cx, cy, layer } = T;
+    const g = T.g + 1, next = [], out = [0, 0];
+    let done = 0;
+    for (const t of T.frontier) {
+      if (++done % chunk === 0) yield done;
+      const base = t * p;
+      for (let e = 0; e < p; e++) {
+        const ia = tv[base + e], ib = tv[base + ((e + 1) % p)];
+        const R = reflector(vx[ia], vy[ia], vx[ib], vy[ib]);
+        R(cx[t], cy[t], out);
+        if (th.find(out[0], out[1]) >= 0) continue;          // parent or a sibling already there
+        const id = layer.length;
+        cx.push(out[0]); cy.push(out[1]); layer.push(g); th.add(out[0], out[1], id);
+        for (let k = 0; k < p; k++) {
+          const v = tv[base + k];
+          if (v === ia || v === ib) { tv.push(v); continue; }   // the mirror edge keeps its sites
+          R(vx[v], vy[v], out);
+          let w = vh.find(out[0], out[1]);
+          if (w < 0) { w = vx.length; vx.push(out[0]); vy.push(out[1]); vh.add(out[0], out[1], w); }
+          tv.push(w);
+        }
+        next.push(id);
+      }
+    }
+    T.frontier = next;
+    T.g = g;
+    T.ntUpTo.push(layer.length);
+    T.nvUpTo.push(vx.length);
+    addEdges();
+    return T;
+  };
+  return T;
+}
+
+/** Tiles of an (L-1) x (L-1) square flake on an L x L grid of sites, counter-clockwise. */
+function squareTiles(L) {
+  const n = (L - 1) * (L - 1), tv = new Int32Array(4 * n);
+  let m = 0;
+  for (let i = 0; i < L - 1; i++) {
+    for (let j = 0; j < L - 1; j++) {
+      tv[m++] = i * L + j; tv[m++] = (i + 1) * L + j; tv[m++] = (i + 1) * L + j + 1; tv[m++] = i * L + j + 1;
+    }
+  }
+  return tv;
+}
+
+/** Counts of a flake given as nt tiles of k sites each (tv[t*k + i], cyclic). Same code for {7,3} and squares. */
+function flakeStats(tv, k, nt) {
+  let M = 0;
+  for (let i = 0; i < nt * k; i++) if (tv[i] > M) M = tv[i];
+  M += 1;
+  const mult = new Map(), isV = new Uint8Array(M);
+  for (let t = 0; t < nt; t++) {
+    for (let e = 0; e < k; e++) {
+      const a = tv[t * k + e], b = tv[t * k + ((e + 1) % k)];
+      const key = a < b ? a * M + b : b * M + a;
+      mult.set(key, (mult.get(key) || 0) + 1);
+      isV[a] = 1;
+    }
+  }
+  const deg = new Int32Array(M), onB = new Uint8Array(M);
+  let maxMult = 0;
+  for (const [key, c] of mult) {
+    const a = Math.floor(key / M), b = key - a * M;
+    deg[a]++; deg[b]++;
+    if (c === 1) { onB[a] = 1; onB[b] = 1; }
+    if (c > maxMult) maxMult = c;
+  }
+  let N = 0, Nb = 0, maxDeg = 0, minDegInt = Infinity, maxDegInt = 0;
+  for (let v = 0; v < M; v++) {
+    if (!isV[v]) continue;
+    N++;
+    if (deg[v] > maxDeg) maxDeg = deg[v];
+    if (onB[v]) Nb++;
+    else { if (deg[v] < minDegInt) minDegInt = deg[v]; if (deg[v] > maxDegInt) maxDegInt = deg[v]; }
+  }
+  return { N, Nb, E: mult.size, F: nt, frac: Nb / N, maxMult, maxDeg, minDegInt, maxDegInt, onB };
+}
+
+/**
+ * Boundary cycle of the flake of generation g and the L/S word of its rim (the generation-g heptagons), read once
+ * around the boundary counter-clockwise. Returns {word, single (one cycle through all boundary sites), rimOk (every
+ * generation-g heptagon appears exactly once, and nothing else), tiles (rim heptagons in reading order),
+ * cyc / edges (boundary sites and bonds in order)}. For g = 0 the word is empty.
+ */
+function rimWord(T, g) {
+  const p = T.p, nt = T.ntUpTo[g], ne = T.neUpTo[g], nv = T.nvUpTo[g];
+  const ntIn = g > 0 ? T.ntUpTo[g - 1] : 0;
+  const { ev1, ev2, eo1, eo2, te, vx, vy } = T;
+  const nb = new Int32Array(2 * nv).fill(-1);
+  let nBV = 0, bad = false;
+  for (let e = 0; e < ne; e++) {
+    const o2 = eo2[e];
+    if (o2 >= 0 && o2 < nt) continue;                     // two owners inside the flake: interior bond
+    for (const v of [ev1[e], ev2[e]]) {
+      if (nb[2 * v] < 0) { nb[2 * v] = e; nBV++; } else if (nb[2 * v + 1] < 0) nb[2 * v + 1] = e; else bad = true;
+    }
+  }
+  let start = -1;
+  for (let v = 0; v < nv && start < 0; v++) if (nb[2 * v] >= 0) start = v;
+  let cyc = [], edges = [], seq = [];
+  let prevE = -1, cur = start;
+  for (let guard = 0; guard <= ne && start >= 0; guard++) {
+    const e = nb[2 * cur] !== prevE ? nb[2 * cur] : nb[2 * cur + 1];
+    if (e < 0) { bad = true; break; }
+    cyc.push(cur); edges.push(e); seq.push(eo1[e]);
+    prevE = e;
+    cur = ev1[e] === cur ? ev2[e] : ev1[e];
+    if (cur === start) break;
+  }
+  const single = !bad && cur === start && cyc.length === nBV;
+  // counter-clockwise in the disc
+  let area = 0;
+  for (let i = 0; i < cyc.length; i++) {
+    const a = cyc[i], b = cyc[(i + 1) % cyc.length];
+    area += vx[a] * vy[b] - vx[b] * vy[a];
+  }
+  if (area < 0) {
+    cyc = [cyc[0], ...cyc.slice(1).reverse()];
+    edges = edges.slice().reverse();
+    seq = seq.slice().reverse();
+  }
+  if (g === 0) return { word: '', single, rimOk: true, tiles: [0], cyc, edges };
+  let tiles = seq.filter((t, i) => t !== seq[(i - 1 + seq.length) % seq.length]);
+  if (tiles.length > 1 && tiles[0] === tiles[tiles.length - 1]) tiles = tiles.slice(0, -1);
+  const seen = new Uint8Array(nt - ntIn);
+  let rimOk = tiles.length === nt - ntIn;
+  for (const t of tiles) {
+    if (t < ntIn || t >= nt || seen[t - ntIn]) rimOk = false;
+    else seen[t - ntIn] = 1;
+  }
+  let word = '';
+  for (const t of tiles) {
+    let k = 0;
+    for (let e = 0; e < p; e++) {
+      const id = te[t * p + e];
+      const other = eo1[id] === t ? eo2[id] : eo1[id];
+      if (other >= 0 && other < ntIn) k++;
+    }
+    word += k === 1 ? 'L' : k === 2 ? 'S' : '?';
+  }
+  return { word, single, rimOk, tiles, cyc, edges };
+}
+
+/** Inflation L -> LSL, S -> LS. */
+const inflate = (w) => w.replace(/[LS]/g, (c) => (c === 'L' ? 'LSL' : 'LS'));
+/** Equal as cyclic words. */
+const cyclicEqual = (a, b) => a.length === b.length && (a + a).includes(b);
+/** Fibonacci words C1 = S, C2 = L, C_n = C_(n-1) C_(n-2) (A -> L, B -> S as in FIB). */
+function fibWord(n) {
+  let a = 'S', b = 'L';
+  if (n === 1) return a;
+  for (let k = 3; k <= n; k++) [a, b] = [b, b + a];
+  return b;
+}
+/**
+ * Rotations of the computed rim words that line up under the inflation: rows[1] = words[1], rows[g] = inflate(rows[g-1])
+ * provided that this is a rotation of words[g] (the check); otherwise null from the first failing generation on.
+ */
+function alignedRows(words, gmax) {
+  const rows = [];
+  rows[1] = words[1];
+  for (let g = 2; g <= gmax; g++) {
+    const target = inflate(rows[g - 1]);
+    if (!words[g] || !cyclicEqual(words[g], target)) return { rows, ok: false, failAt: g };
+    rows[g] = target;
+  }
+  return { rows, ok: true, failAt: 0 };
+}
+
+// ---- end of geometry ----
+
+    const sec = document.querySelector('section[data-name="fractals"]');
+    if (sec) {
+      const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+      const smoothstep = (e0, e1, x) => { const s = clamp((x - e0) / (e1 - e0)); return s * s * (3 - 2 * s); };
+      const smooth = u => smoothstep(0, 1, u);
+      const fmt = x => x.toLocaleString("en-US");
+      const C = {                                    // house-style tokens (same values as the website's base.css)
+        bg0: "#08040d", bg1: "#0f0716", bg2: "#170b21", plum: "#3b1240", violet: "#7d4fc0", lilac: "#b3a5c9",
+        e0: "#fff1e0", e1: "#ffc49b", e2: "#ff8f45", e3: "#ff5a1f", e4: "#e3262f", tA: "#ffb067", tB: "#d44a86",
+        hair2: "rgba(255,190,160,.20)",
+      };
+
+      // Backing store follows the on-screen (scaled) size; drawing uses the canvas's CSS units.
+      function fit(cv, ctx) {
+        const r = cv.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const w = cv.clientWidth || 1, h = cv.clientHeight || 1;
+        const bw = Math.max(1, Math.round(r.width * dpr)), bh = Math.max(1, Math.round(r.height * dpr));
+        if (cv.width !== bw || cv.height !== bh) { cv.width = bw; cv.height = bh; }
+        ctx.setTransform(bw / w, 0, 0, bh / h, 0, 0);
+        ctx.clearRect(0, 0, w, h);
+        return { w, h };
+      }
+
+      // Video: stop it when the slide is left; Space on the focused video plays/pauses it only.
+      const vid = document.getElementById("fxVideo");
+      vid.addEventListener("keydown", e => { if (e.key === " ") e.stopPropagation(); });
+
+      // ================= {7,3} hyperbolic lattice (FIG. 7 (a) of the website) =================
+      const G_DRAW = 6;
+      const T = createTiling();
+      for (let g = 1; g <= G_DRAW; g++) T.grow();
+      const stats = [], rims = [];
+      for (let g = 0; g <= G_DRAW; g++) { stats[g] = flakeStats(T.tv, P, T.ntUpTo[g]); rims[g] = rimWord(T, g); }
+      const words = rims.map(r => r.word);
+      const lsOk = alignedRows(words, G_DRAW).ok;    // L / S are shown only if the inflation check passes
+      const rimType = new Uint8Array(T.layer.length);
+      for (let g = 1; g <= G_DRAW; g++) rims[g].tiles.forEach((t, i) => { rimType[t] = words[g][i] === "L" ? 1 : 2; });
+      const tilesByType = [];
+      for (let g = 1; g <= G_DRAW; g++) {
+        const L = [], S = [];
+        for (let t = T.ntUpTo[g - 1]; t < T.ntUpTo[g]; t++) (rimType[t] === 1 ? L : S).push(t);
+        tilesByType[g] = { L, S };
+      }
+      window.__hyp = { T, stats, words, lsOk };        // for checking against the reference numbers
+
+      // beats exactly as on the website: one generation per beat, then translation, L/S, back
+      const BEATS = [[0, 3], [3, 6], [6, 9], [9, 12], [12, 15], [15, 18], [18, 21.5], [21.5, 26], [26, 32], [32, 36]];
+      const DURATION = 36, STILL_T = 30, TOUR_D = 5.4, TOUR_TH = -1.92;
+      const SPEED = 2;                               // playback 2x faster than the website (one loop = 18 s)
+      function beatAt(t) {
+        let idx = 0;
+        for (let k = 0; k < BEATS.length; k++) if (t >= BEATS[k][0] - 1e-9) idx = k;
+        const [s, e] = BEATS[idx];
+        return { index: idx, local: clamp((t - s) / (e - s)), start: s };
+      }
+      function stateAt(t) {
+        const b = beatAt(t);
+        if (b.index <= G_DRAW) return { beat: b.index, g: b.index, fade: smoothstep(0, 0.9, t - b.start), d: 0, ls: 0 };
+        let d = TOUR_D, ls = 0;
+        if (b.index === 7) d = TOUR_D * smoothstep(0, 1, b.local);
+        else if (b.index === 8) ls = smoothstep(0.3, 1.5, t - b.start);
+        else { d = TOUR_D * (1 - smoothstep(0, 1, b.local)); ls = 1; }
+        return { beat: b.index, g: G_DRAW, fade: 1, d, ls };
+      }
+
+      const MAXSEG = 16, STRIDE = 2 * (MAXSEG + 1);
+      const nVd = T.nvUpTo[G_DRAW], nEd = T.neUpTo[G_DRAW];
+      const ZX = new Float64Array(nVd), ZY = new Float64Array(nVd), X = new Float32Array(nVd), Y = new Float32Array(nVd);
+      const EP = new Float32Array(nEd * STRIDE), EN = new Uint8Array(nEd), ELEN = new Float32Array(nEd);
+      const { tv, te, ev1, ev2, vx, vy } = T, ntU = T.ntUpTo, nvU = T.nvUpTo, neU = T.neUpTo;
+
+      const hCv = document.getElementById("fxHyp"), g2 = hCv.getContext("2d");
+      const hCap = document.getElementById("fxHypCap"), hHud = document.getElementById("fxHypHud");
+      let W = 0, Hc = 0, RR = 1, CX = 0, CY = 0, Muser = MOB_ID;
+      const out = [0, 0];
+
+      function addTile(t) {
+        const base = t * P;
+        let first = true;
+        for (let k = 0; k < P; k++) {
+          const e = te[base + k], n = EN[e], off = e * STRIDE;
+          if (ev1[e] === tv[base + k]) {
+            for (let i = 0; i < n; i++) { const x = EP[off + 2 * i], y = EP[off + 2 * i + 1]; if (first) { g2.moveTo(x, y); first = false; } else g2.lineTo(x, y); }
+          } else {
+            for (let i = n; i > 0; i--) { const x = EP[off + 2 * i], y = EP[off + 2 * i + 1]; if (first) { g2.moveTo(x, y); first = false; } else g2.lineTo(x, y); }
+          }
+        }
+        g2.closePath();
+      }
+      const MIN_TILE = 0.5, MIN_EDGE = 0.3;
+      const big = t => ELEN[te[t * P]] >= MIN_TILE;
+      function fillRange(t0, t1, color, alpha) {
+        if (t1 <= t0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (let t = t0; t < t1; t++) if (big(t)) addTile(t);
+        g2.fill();
+      }
+      function fillList(list, color, alpha) {
+        if (!list.length || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (const t of list) if (big(t)) addTile(t);
+        g2.fill();
+      }
+      function addEdge(e) {
+        const n = EN[e], off = e * STRIDE;
+        g2.moveTo(EP[off], EP[off + 1]);
+        for (let i = 1; i <= n; i++) g2.lineTo(EP[off + 2 * i], EP[off + 2 * i + 1]);
+      }
+      function strokeEdges(e0, e1, minLen, maxLen, color, alpha, width) {
+        if (e1 <= e0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.strokeStyle = color; g2.lineWidth = width; g2.beginPath();
+        for (let e = e0; e < e1; e++) { const l = ELEN[e]; if (l >= minLen && l < maxLen) addEdge(e); }
+        g2.stroke();
+      }
+      function boundaryPath(gk) {
+        const { cyc, edges } = rims[gk];
+        g2.beginPath();
+        let lx = 0, ly = 0;
+        for (let i = 0; i < edges.length; i++) {
+          const e = edges[i], n = EN[e], off = e * STRIDE, fwd = ev1[e] === cyc[i];
+          for (let j = i === 0 ? 0 : 1; j <= n; j++) {
+            const q = fwd ? j : n - j, x = EP[off + 2 * q], y = EP[off + 2 * q + 1];
+            if (i === 0 && j === 0) { g2.moveTo(x, y); lx = x; ly = y; }
+            else if (Math.abs(x - lx) + Math.abs(y - ly) > 0.4) { g2.lineTo(x, y); lx = x; ly = y; }
+          }
+        }
+        g2.closePath();
+      }
+      function glowRim(gk, A) {
+        if (gk < 0 || A < 0.004) return;
+        boundaryPath(gk);
+        g2.globalAlpha = 0.10 * A; g2.strokeStyle = C.e4; g2.lineWidth = 9; g2.stroke();
+        g2.globalAlpha = 0.28 * A; g2.strokeStyle = C.e3; g2.lineWidth = 4.2; g2.stroke();
+        g2.globalAlpha = 0.95 * A; g2.strokeStyle = C.e1; g2.lineWidth = 1.35; g2.stroke();
+      }
+      function dots(v0, v1, k, rmax, color, alpha) {
+        if (v1 <= v0 || alpha < 0.004) return;
+        g2.globalAlpha = alpha; g2.fillStyle = color; g2.beginPath();
+        for (let v = v0; v < v1; v++) {
+          const r = Math.min(rmax, k * (1 - ZX[v] * ZX[v] - ZY[v] * ZY[v]) * RR);
+          if (r < 0.45) continue;
+          g2.moveTo(X[v] + r, Y[v]); g2.arc(X[v], Y[v], r, 0, 2 * Math.PI);
+        }
+        g2.fill();
+      }
+      function viewMap(st) {
+        if (st.d <= 0) return Muser;
+        const r = Math.tanh(st.d / 2);
+        return mobMul(Muser, mobTo0(r * Math.cos(TOUR_TH), r * Math.sin(TOUR_TH)));
+      }
+
+      function drawDisc(t) {
+        ({ w: W, h: Hc } = fit(hCv, g2));
+        const top = 62, bot = 54;                    // room for caption box and HUD
+        RR = Math.min(W * 0.95, Hc - top - bot) / 2 - 4; CX = W / 2; CY = top + (Hc - top - bot) / 2;
+        const st = stateAt(t), M = viewMap(st);
+        const gS = st.g, gP = gS - 1, nV = nvU[gS], nE = neU[gS];
+        g2.lineJoin = "round"; g2.lineCap = "round";
+
+        g2.globalAlpha = 1;
+        const bg = g2.createRadialGradient(CX, CY, 0, CX, CY, RR);
+        bg.addColorStop(0, C.bg1); bg.addColorStop(1, C.bg0);
+        g2.fillStyle = bg; g2.beginPath(); g2.arc(CX, CY, RR, 0, 2 * Math.PI); g2.fill();
+        const hz = g2.createRadialGradient(CX, CY, 0, CX, CY, RR * 0.9);
+        hz.addColorStop(0, C.plum); hz.addColorStop(1, "rgba(0,0,0,0)");
+        g2.globalAlpha = 0.35; g2.fillStyle = hz; g2.beginPath(); g2.arc(CX, CY, RR, 0, 2 * Math.PI); g2.fill();
+
+        for (let v = 0; v < nV; v++) {
+          mobApply(M, vx[v], vy[v], out);
+          ZX[v] = out[0]; ZY[v] = out[1]; X[v] = CX + RR * out[0]; Y[v] = CY - RR * out[1];
+        }
+        // bonds as geodesics z(s) = (a + s w)/(1 + conj(a) s w), w = T_a(b), subdivided where the arc bends
+        for (let e = 0; e < nE; e++) {
+          const a = ev1[e], b = ev2[e], ax = ZX[a], ay = ZY[a], bx = ZX[b], by = ZY[b], off = e * STRIDE;
+          const cxv = bx - ax, cyv = by - ay, cl = Math.hypot(cxv, cyv);
+          ELEN[e] = cl * RR; EP[off] = X[a]; EP[off + 1] = Y[a];
+          let n = 1;
+          if (ELEN[e] > 2) {
+            const dr = 1 - (ax * bx + ay * by), di = -(ax * by - ay * bx), dd = dr * dr + di * di;
+            const wr = (cxv * dr + cyv * di) / dd, wi = (cyv * dr - cxv * di) / dd;
+            const geo = s => {
+              const ur = s * wr, ui = s * wi, qr = ur + ax, qi = ui + ay;
+              const sr = 1 + ax * ur + ay * ui, si = ax * ui - ay * ur, ss = sr * sr + si * si;
+              out[0] = (qr * sr + qi * si) / ss; out[1] = (qi * sr - qr * si) / ss;
+            };
+            geo(0.5);
+            const dev = (Math.abs(cxv * (out[1] - ay) - cyv * (out[0] - ax)) / cl) * RR;
+            if (dev > 0.25) {
+              n = Math.min(MAXSEG, Math.ceil(Math.sqrt(dev / 0.2)));
+              for (let i = 1; i < n; i++) { geo(i / n); EP[off + 2 * i] = CX + RR * out[0]; EP[off + 2 * i + 1] = CY - RR * out[1]; }
+            }
+          }
+          EN[e] = n; EP[off + 2 * n] = X[b]; EP[off + 2 * n + 1] = Y[b];
+        }
+
+        const fade = st.fade, ls = lsOk ? st.ls : 0;
+        for (let par = 0; par < 2; par++) {
+          g2.globalAlpha = par ? 0.30 : 0.44; g2.fillStyle = C.plum; g2.beginPath();
+          for (let k = par; k < gS; k += 2) for (let tt = k ? ntU[k - 1] : 0; tt < ntU[k]; tt++) addTile(tt);
+          g2.fill();
+        }
+        if (gP >= 0) fillRange(gP ? ntU[gP - 1] : 0, ntU[gP], C.e2, 0.36 * (1 - fade));
+        const r0 = gS ? ntU[gS - 1] : 0, r1 = ntU[gS];
+        if (ls > 0 && gS >= 1) {
+          fillRange(r0, r1, C.e2, 0.36 * fade * (1 - ls));
+          fillList(tilesByType[gS].L, C.tA, 0.50 * ls);
+          fillList(tilesByType[gS].S, C.tB, 0.62 * ls);
+        } else fillRange(r0, r1, C.e2, 0.36 * fade);
+
+        const eOld = gP >= 0 ? neU[gP] : 0;
+        strokeEdges(0, eOld, 2.5, Infinity, C.violet, 0.85, 1);
+        strokeEdges(0, eOld, MIN_EDGE, 2.5, C.violet, 0.45, 0.8);
+        strokeEdges(eOld, nE, MIN_EDGE, Infinity, C.e1, 0.75 * fade, 1);
+        glowRim(gP, 1 - fade);
+        glowRim(gS, fade);
+        const vOld = gP >= 0 ? nvU[gP] : 0;
+        dots(0, vOld, 0.045, 1.7, C.lilac, 0.9);
+        dots(vOld, nV, 0.065, 2.4, C.e0, fade);
+
+        g2.globalAlpha = 0.9; g2.strokeStyle = C.hair2; g2.lineWidth = 1;
+        g2.beginPath(); g2.arc(CX, CY, RR + 0.5, 0, 2 * Math.PI); g2.stroke();
+        g2.globalAlpha = 1;
+        return st;
+      }
+
+      const nb = g => stats[g].Nb, f3 = x => x.toFixed(3);
+      const CAPS = [
+        "One regular heptagon of the negatively curved plane, drawn in the Poincar&eacute; disc.",
+        "Generation 1: the 7 heptagons that share an edge with it. Three meet at every corner.",
+        `Generation 2: the newest ring (orange) is the rim; ${nb(2)} of its ${stats[2].N} sites lie on the boundary.`,
+        `Generation 3: the boundary grows by &times;${(nb(3) / nb(2)).toFixed(2)} per generation, tending to <span class="m">&phi;</span>&sup2; &asymp; ${(PHI * PHI).toFixed(3)}.`,
+        `Generation 4: <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = ${f3(stats[4].frac)}.`,
+        "Generation 5: the heptagons look smaller towards the edge, but all of them are congruent.",
+        `Generation 6: <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = ${f3(stats[6].frac)}; the limit is 1/<span class="m">&phi;</span> &asymp; ${f3(1 / PHI)}.`,
+        'A M&ouml;bius translation <span class="m">z</span> &rarr; (<span class="m">z</span> &minus; <span class="m">a</span>)/(1 &minus; <span class="m">&amacr;z</span>) carries the rim to the middle of the disc.',
+        lsOk ? 'Rim heptagons touch the flake along one edge (<b style="color:#ffb067">L</b>) or two (<b style="color:#d44a86">S</b>): L &rarr; LSL, S &rarr; LS.'
+          : "Rim heptagons touch the flake along one edge or two.",
+        "Back to the centre. Drag the disc to move through the plane.",
+      ];
+      let hLastKey = "";
+      function hypText(st) {
+        const waiting = paused && pausedAt === 0;
+        const key = `${st.beat}|${paused}|${waiting}`;
+        if (key === hLastKey) return;
+        hLastKey = key;
+        hCap.innerHTML = CAPS[st.beat];
+        const s = stats[st.g];
+        hHud.innerHTML =
+          `<span class="m">g</span> = <b>${st.g}</b> &middot; <span class="m">N</span> = <b>${fmt(s.N)}</b>` +
+          ` &middot; <span class="m">N</span><sub>b</sub> = <b>${fmt(s.Nb)}</b>` +
+          ` &middot; <span class="m">N</span><sub>b</sub>/<span class="m">N</span> = <b>${s.frac.toFixed(4)}</b>` +
+          (waiting ? ' &middot; <span class="hot">double-click to start</span>'
+            : paused ? ' &middot; <span class="hot">paused &middot; double-click to resume</span>' : "");
+      }
+
+      // drag = Mobius translation of the view (pauses the animation); double-click resets and resumes
+      let dragging = false, last = [0, 0];
+      const toDisc = ev => {
+        const r = hCv.getBoundingClientRect(), s = (hCv.clientWidth || 1) / r.width;
+        return [((ev.clientX - r.left) * s - CX) / RR, -((ev.clientY - r.top) * s - CY) / RR];
+      };
+      const clampDisc = (z, m = 0.965) => { const r = Math.hypot(z[0], z[1]); return r > m ? [(z[0] * m) / r, (z[1] * m) / r] : z; };
+      hCv.addEventListener("pointerdown", ev => {
+        if (ev.button !== 0) return;
+        const z = toDisc(ev);
+        if (z[0] * z[0] + z[1] * z[1] > 0.995) return;
+        dragging = true; last = clampDisc(z);
+        try { hCv.setPointerCapture(ev.pointerId); } catch (_) { }
+      });
+      hCv.addEventListener("pointermove", ev => {
+        if (!dragging) return;
+        const z = clampDisc(toDisc(ev));
+        if (Math.abs(z[0] - last[0]) + Math.abs(z[1] - last[1]) < 1e-6) return;
+        if (!paused) { pausedAt = clock(); paused = true; }
+        Muser = mobMul(mobMul(mobFrom0(z[0], z[1]), mobTo0(last[0], last[1])), Muser);
+        last = z; kick();
+      });
+      const endDrag = () => { dragging = false; };
+      hCv.addEventListener("pointerup", endDrag);
+      hCv.addEventListener("pointercancel", endDrag);
+      hCv.addEventListener("dblclick", ev => {
+        ev.preventDefault(); Muser = MOB_ID;
+        if (paused) { t0 = performance.now() - pausedAt * 1000; paused = false; }
+        kick();
+      });
+
+      // ================= Sierpinski carpet =================
+      const MAXL = 5;
+      const CEN = [[[0.5, 0.5]]];                  // CEN[l-1]: centres of the squares left after level l-1 (unit square)
+      for (let l = 1; l < MAXL; l++) {
+        const prev = CEN[l - 1], s3 = 1 / Math.pow(3, l), next = [];
+        for (const [cx, cy] of prev)
+          for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++)
+            if (i || j) next.push([cx + i * s3, cy + j * s3]);
+        CEN.push(next);
+      }
+      window.__carpet = { CEN };
+
+      function glow(ctx, path, k, core) {
+        ctx.lineJoin = "round"; ctx.lineCap = "round";
+        ctx.strokeStyle = "rgba(227,38,47,.10)"; ctx.lineWidth = 9 * k; ctx.stroke(path);
+        ctx.strokeStyle = "rgba(255,90,31,.28)"; ctx.lineWidth = 4 * k; ctx.stroke(path);
+        ctx.strokeStyle = core; ctx.lineWidth = 1.3 * k; ctx.stroke(path);
+      }
+
+      const cCv = document.getElementById("fxCarpet"), cCtx = cCv.getContext("2d");
+      const cCap = document.getElementById("fxCarpetCap"), cHud = document.getElementById("fxCarpetHud");
+      const cMeta = document.getElementById("fxCarpetMeta");
+      let lev = 1, prevLev = 1, tChange = -10;         // tChange in slide-clock seconds
+      const T_CUT = reduce ? 0 : 0.9, T_COOL = reduce ? 0 : 1.8;
+
+      function carpetText() {
+        let holes = 0, area = 1;
+        for (let l = 1; l <= lev; l++) { holes += CEN[l - 1].length; area -= CEN[l - 1].length / Math.pow(9, l); }
+        cMeta.textContent = `level ${lev} of ${MAXL}`;
+        cCap.innerHTML = lev === 0
+          ? "A full square. Click to cut out its middle ninth."
+          : lev < MAXL ? "Click: cut the middle ninth out of every square that is left."
+            : "Level 5: one more click closes every hole again.";
+        cHud.innerHTML =
+          `<span class="m">n</span> = <b>${lev}</b> &middot; holes <b>${fmt(holes)}</b> = (8<sup><span class="m">n</span></sup> &minus; 1)/7` +
+          ` &middot; area left <b>${(area * 100).toFixed(1)} %</b> = (8/9)<sup><span class="m">n</span></sup><br>` +
+          `<span class="m">N</span> = 8 copies at scale 1/3 &rarr; <span class="m">D</span> = log 8 / log 3 &asymp; 1.893`;
+      }
+
+      function drawCarpet(t) {
+        const { w, h } = fit(cCv, cCtx);
+        const top = 58, bot = 66;
+        const S = Math.min(w * 0.84, (h - top - bot) * 0.94);
+        const X0 = (w - S) / 2, Y0 = top + (h - top - bot - S) / 2;
+        const closing = lev === 0 && prevLev > 0;
+        const g = smooth((t - tChange) / (closing ? 1.2 : T_CUT || 1e-9));
+        const cool = smooth((t - tChange - T_CUT) / (T_COOL || 1e-9));
+
+        const grd = cCtx.createLinearGradient(X0, Y0, X0 + S, Y0 + S);
+        grd.addColorStop(0, "#4a1a57"); grd.addColorStop(1, "#2a1036");
+        cCtx.fillStyle = grd; cCtx.fillRect(X0, Y0, S, S);
+        cCtx.strokeStyle = "rgba(179,165,201,.45)"; cCtx.lineWidth = 1; cCtx.strokeRect(X0 + 0.5, Y0 + 0.5, S - 1, S - 1);
+
+        const shown = closing ? prevLev : lev;
+        const older = new Path2D(), newest = new Path2D();
+        for (let l = 1; l <= shown; l++) {
+          const isNew = closing || l === lev;
+          const f = closing ? 1 - g : (isNew ? g : 1);
+          if (f <= 0) continue;
+          const side = (S / Math.pow(3, l)) * f;
+          const Pth = isNew ? newest : older;
+          for (const [cx, cy] of CEN[l - 1]) Pth.rect(X0 + cx * S - side / 2, Y0 + cy * S - side / 2, side, side);
+        }
+        cCtx.fillStyle = "#0b0612"; cCtx.fill(older); cCtx.fill(newest);
+        cCtx.strokeStyle = "rgba(179,165,201,.28)"; cCtx.lineWidth = 0.6; cCtx.stroke(older);
+        if (!closing && lev > 0) {
+          const kk = Math.max(0.25, Math.min(1, S / Math.pow(3, lev) / 20)) * (1 - 0.8 * cool);
+          cCtx.globalAlpha = 1 - 0.55 * cool;
+          glow(cCtx, newest, kk, "rgba(255,241,224,.95)");
+          cCtx.globalAlpha = 1;
+        }
+        return t - tChange < Math.max(T_CUT, 1.2) + T_COOL;
+      }
+
+      cCv.addEventListener("click", () => {
+        prevLev = lev;
+        lev = lev >= MAXL ? 0 : lev + 1;
+        tChange = cclock();
+        carpetText();
+        kick();
+      });
+
+      // ================= clocks and loop (only while this slide is shown) =================
+      // the disc waits paused at generation 0 until the first double-click
+      let t0 = performance.now(), paused = true, pausedAt = 0, raf = 0;
+      const cT0 = performance.now();
+      const clock = () => (paused ? pausedAt : (performance.now() - t0) / 1000);
+      const cclock = () => (performance.now() - cT0) / 1000;      // carpet clock never pauses
+      const qT = parseFloat(new URLSearchParams(location.search).get("t"));   // ?t= freezes the disc at that time
+      function frame() {
+        raf = 0;
+        if (!sec.classList.contains("on")) return;
+        const t = Number.isFinite(qT) ? qT : reduce ? STILL_T : (clock() * SPEED) % DURATION;
+        hypText(drawDisc(t));
+        const busy = drawCarpet(cclock());
+        if ((!paused && !reduce && !Number.isFinite(qT)) || busy) raf = requestAnimationFrame(frame);
+      }
+      function kick() { if (!raf) raf = requestAnimationFrame(frame); }
+
+      new MutationObserver(() => {
+        if (sec.classList.contains("on")) { paused = true; pausedAt = 0; Muser = MOB_ID; hLastKey = ""; kick(); }
+        else vid.pause();
+      }).observe(sec, { attributes: true, attributeFilter: ["class"] });
+      window.addEventListener("resize", kick);
+      carpetText();
+      kick();
+    }
+  </script>
+
 </body>
 
 </html>
