@@ -1,6 +1,6 @@
 # Figures & Presentation Resource Pack — Many-Body Intelligence 2026
 
-Everything you need for the **14:00–15:00 Figures & Presentation phase** using **Claude Code** (preparing figures for your 2-page note and the **15:45 lightning talk**).
+Everything you need for the **13:45–14:45 Figures & Presentation phase** using **Claude Code** (preparing figures for your 2-page note and the **15:30 lightning talk**).
 
 > **Core idea — Principles vs. Aesthetics:** Good scientific figures rely on objective *design principles* (readable font sizes for a paper or projector, colour maps that match your data's symmetry and work for colour-blind readers, honest axes, and checking the rendered image). Hand those principles to Claude Code as skills — freeing you to focus on physics clarity and your own *aesthetic* choices.
 

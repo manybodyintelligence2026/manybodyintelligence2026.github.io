@@ -10,8 +10,8 @@
   var DURATION = 12, FPS = 10;
   // the day's phases (EVENT_PLAN.md), in hours after 09:00
   var PHASES = [["Scope", 0.25], ["First attempt", 1.25], ["First result", 2.25], ["Lunch", 3.25], ["Check", 4],
-    ["Make figures", 5], ["Write", 6], ["Talks", 6.75], ["Review", 7.5]];
-  var FIKA = [1, 6];                         // fika at 10:00 and 15:00, on their own row
+    ["Make figures", 4.75], ["Write", 5.75], ["Talks", 6.5], ["Review", 7], ["Close", 7.5]];
+  var FIKA = [1, 5.75];                      // fika at 10:00 and 14:45, on their own row
 
 
   function mod(a, n) { return ((a % n) + n) % n; }

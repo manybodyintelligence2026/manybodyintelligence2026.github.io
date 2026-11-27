@@ -1,6 +1,6 @@
 # MBI 2026 Figure & Presentation Skills
 
-Five numbered Claude Code skills plus one bonus skill (with tested starter templates) for the **Figures & Presentation** phase (Monday 30 November 2026, 14:00–15:00), in the exact order covered in the talk and `resources.html`.
+Five numbered Claude Code skills plus one bonus skill (with tested starter templates) for the **Figures & Presentation** phase (Monday 30 November 2026, 13:45–14:45), in the exact order covered in the talk and `resources.html`.
 
 **Core idea — Principles vs. Aesthetics:** Objective *design principles* (readable font sizes for a paper or projector, colour maps that match your data's symmetry and work for colour-blind readers, honest axes, and checking the rendered image) can be handed to Claude Code as skills — leaving you free to focus on the physics and your own *aesthetic* choices.
 

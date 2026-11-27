@@ -1,6 +1,6 @@
 # MBI 2026 Write Skills
 
-Two Claude Code skills for the **Write** phase (Monday 30 November 2026, 15:00–15:45): check what you
+Two Claude Code skills for the **Write** phase (Monday 30 November 2026, 14:45–15:30): check what you
 are about to claim, then write the two-page note.
 
 | Skill | What it does |
