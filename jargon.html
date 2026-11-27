@@ -1,641 +1,1029 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Common jargon · Many-Body Intelligence</title>
-<meta name="description" content="Searchable cheatsheet of AI, Git, terminal, Python, TeX, visualisation, and hackathon terms for Many-Body Intelligence 2026.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css">
-<style>
-  code {
-    font-family: var(--mono); background: var(--paper-deep);
-    border: 1px solid var(--rule); padding: 0.04em 0.32em; font-size: 0.9em; border-radius: 2px;
-  }
-  .search-wrap {
-    position: sticky; top: 0; z-index: 10;
-    background: var(--paper); padding: 0.85rem 0 0.7rem;
-    border-bottom: 1px solid var(--rule); margin: 1.1rem 0 0.8rem;
-  }
-  .search-row {
-    display: flex; align-items: stretch; gap: 0.45rem;
-  }
-  .search-input {
-    flex: 1 1 auto; width: 100%;
-    font: 0.92rem/1.4 var(--mono); color: var(--ink);
-    background: var(--paper-deep); border: 1.5px solid var(--ink);
-    padding: 0.6rem 0.85rem; outline: none; border-radius: 0;
-  }
-  .search-input:focus { border-color: var(--mark); }
-  .search-input::placeholder { color: var(--faded); }
-  .clear-btn {
-    font: 600 0.78rem var(--mono); letter-spacing: 0.06em; text-transform: uppercase;
-    background: var(--paper-deep); color: var(--ink); border: 1.5px solid var(--rule);
-    padding: 0 0.85rem; cursor: pointer; display: none;
-  }
-  .clear-btn.show { display: inline-block; }
-  .clear-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
-  .search-meta {
-    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
-    gap: 0.4rem 1rem; margin-top: 0.45rem; font-size: 0.78rem; color: var(--faded);
-  }
-  .cat-bar {
-    display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.65rem 0 0.1rem;
-  }
-  .cat-btn {
-    font: 500 0.74rem var(--mono); letter-spacing: 0.04em;
-    background: transparent; color: var(--faded);
-    border: 1px solid var(--rule); padding: 0.28em 0.65em; cursor: pointer;
-  }
-  .cat-btn:hover { color: var(--ink); border-color: var(--ink); }
-  .cat-btn.on {
-    background: var(--tape); color: var(--tape-text); border-color: var(--tape); font-weight: 600;
-  }
-  .j-sec.hidden { display: none; }
-  .j-list {
-    margin: 0.9rem 0 0; padding: 0; list-style: none;
-    border-top: 1px solid var(--rule);
-  }
-  .j-item {
-    border-bottom: 1px solid var(--rule); padding: 0.78rem 0;
-  }
-  .j-item.hidden { display: none; }
-  .j-item.err-item {
-    border-left: 3px solid var(--mark); padding-left: 0.85rem;
-    background: var(--paper-deep); margin: 0.55rem 0;
-    border-top: 1px solid var(--rule); border-right: 1px solid var(--rule);
-  }
-  .j-item.err-item code { background: var(--paper); }
-  .j-term {
-    font-weight: 600; font-size: 0.96rem; color: var(--ink);
-    display: block; margin-bottom: 0.22rem;
-  }
-  .j-cat-tag {
-    display: none; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.06em;
-    text-transform: uppercase; color: var(--faded); margin-left: 0.5rem;
-    vertical-align: 0.08em;
-  }
-  .search-results {
-    display: none; margin: 0.9rem 0 0; padding: 0; list-style: none;
-    border-top: 1px solid var(--rule);
-  }
-  .search-results.show { display: block; }
-  .search-results .j-cat-tag { display: inline; }
-  .j-def {
-    margin: 0; font-size: 0.89rem; line-height: 1.6; color: var(--ink);
-  }
-  .j-def mark {
-    background: rgba(212, 80, 108, 0.24); color: inherit; padding: 0 0.12em;
-  }
-  @media (prefers-color-scheme: dark) {
-    .j-def mark, .j-term mark { background: rgba(224, 120, 144, 0.34); color: inherit; }
-  }
-  .j-term mark { background: rgba(212, 80, 108, 0.24); color: inherit; padding: 0 0.12em; }
-  .empty-state {
-    display: none; margin: 2rem 0; padding: 1.1rem 1.2rem;
-    background: var(--paper-deep); border: 1px dashed var(--ink); font-size: 0.9rem;
-  }
-  .empty-state.show { display: block; }
-  @media print {
-    .bar, .search-wrap, footer { display: none !important; }
-    body { background: #fff !important; color: #000 !important; font-size: 10.5pt; }
-    main { max-width: none; padding: 0; }
-    .j-item { break-inside: avoid; padding: 0.38rem 0; }
-    h2 { margin-top: 1.3rem; break-after: avoid; }
-  }
-</style>
-</head>
-<body>
-<div class="bar">
-  <a href="index.html">Many-Body Intelligence</a>
-  <nav>
-    <a href="faq.html">FAQ</a>
-    <a href="code-of-conduct.html">Code of conduct</a>
-    <a href="resources.html">Resources</a>
-    <a href="jargon.html" aria-current="page">Common jargon</a>
-  </nav>
-</div>
-
-<main>
-  <h1 class="tape">Common jargon</h1>
-  <p class="lede">Plain-English cheatsheet for the AI, Git, terminal, Python, TeX, visualisation, and hackathon terms that come up on <strong>Monday 30 November</strong>. Ordinary physics jargon is left out.</p>
-
-  <div class="search-wrap">
-    <div class="search-row">
-      <input id="q" class="search-input" type="search" autocomplete="off" spellcheck="false"
-        placeholder="Search a term, tool, or error (e.g. skill, TeX, rebase, Blender)..." aria-label="Search common jargon">
-      <button id="clearBtn" class="clear-btn" type="button">Clear</button>
-    </div>
-    <div class="search-meta">
-      <span id="countText"></span>
-      <span>Tip: press <code>/</code> to search &middot; link any search with <code>?q=word</code></span>
-    </div>
-    <div class="cat-bar" id="catBar">
-      <button class="cat-btn on" type="button" data-cat="all">All</button>
-      <button class="cat-btn" type="button" data-cat="claude">Claude &amp; AI</button>
-      <button class="cat-btn" type="button" data-cat="terminal">Terminal &amp; files</button>
-      <button class="cat-btn" type="button" data-cat="git">Git &amp; GitHub</button>
-      <button class="cat-btn" type="button" data-cat="python">Python &amp; editors</button>
-      <button class="cat-btn" type="button" data-cat="figures">Figures &amp; TeX</button>
-      <button class="cat-btn" type="button" data-cat="publishing">Publishing</button>
-      <button class="cat-btn" type="button" data-cat="event">Hackathon terms</button>
-      <button class="cat-btn" type="button" data-cat="errors">Common errors</button>
-    </div>
-  </div>
-
-  <div id="emptyState" class="empty-state">
-    No matching term found. Ask in <code>#technical-help</code> on Discord or flag an organiser in Å4002 &mdash; we're happy to explain anything on the spot.
-  </div>
-  <ul id="searchResults" class="search-results" aria-live="polite"></ul>
-
-  <!-- 1. CLAUDE & AI -->
-  <section class="j-sec" data-cat="claude">
-    <h2>1 &middot; Claude &amp; AI</h2>
-    <ul class="j-list">
-      <li class="j-item" id="claude-code" data-tags="browser web desktop app vs code extension">
-        <span class="j-term">Claude (browser) vs. Claude desktop app vs. Claude Code</span>
-        <p class="j-def">The browser version of Claude can only chat. <strong>Claude Code</strong> (inside the Claude desktop app, the VS Code extension, or a terminal) can read files on your laptop, edit code, run Python/git commands, and open images &mdash; always asking your permission first. The free Claude plan does not include Claude Code.</p>
-      </li>
-      <li class="j-item" id="chat-vs-code" data-tags="switch icon speech bubble angle brackets">
-        <span class="j-term">Chat mode vs. Code mode (<code>&lt;/&gt;</code>)</span>
-        <p class="j-def">The Claude app opens in two modes: the speech bubble is ordinary Chat, and <code>&lt;/&gt;</code> is <strong>Claude Code</strong>. You're in Code mode when Claude shows or asks for a folder on your laptop.</p>
-      </li>
-      <li class="j-item" id="session-context" data-tags="prompt context window compact clear memory token limit">
-        <span class="j-term">Session, prompt, context window, <code>/compact</code> &amp; <code>/clear</code></span>
-        <p class="j-def">A <strong>prompt</strong> is one message you send; a <strong>session</strong> is one conversation thread. Everything in a session sits in Claude's working memory (the <strong>context window</strong>). Long sessions get slower or lose track of earlier details: type <code>/compact</code> to summarise and free space, or <code>/clear</code> (or start a fresh session) when moving to a new subtask.</p>
-      </li>
-      <li class="j-item" id="rate-limit" data-tags="usage limit quota cooldown window plan">
-        <span class="j-term">Usage / rate limits</span>
-        <p class="j-def">Claude plans cap how many heavy messages you can send in a rolling few-hour window. If you hit a limit during the day, let an organiser know &mdash; we can switch you to a lighter model, share a teammate's session, or use a fallback.</p>
-      </li>
-      <li class="j-item" id="models" data-tags="opus sonnet haiku model choice">
-        <span class="j-term">Models: Opus, Sonnet, Haiku</span>
-        <p class="j-def">Three sizes of Claude. <strong>Opus</strong> is the strongest (best for tricky derivations, planning, or hard debugging, but uses more of your usage limit); <strong>Sonnet</strong> is the fast everyday workhorse; <strong>Haiku</strong> is the lightest and quickest for simple tasks.</p>
-      </li>
-      <li class="j-item" id="skill" data-tags="SKILL.md slash command install custom instruction">
-        <span class="j-term">Skill, <code>SKILL.md</code> &amp; slash command (<code>/log-entry</code>, <code>/figure-style</code>, &hellip;)</span>
-        <p class="j-def">A <strong>skill</strong> is a folder containing a plain-text instruction file (<code>SKILL.md</code>) plus optional templates. It teaches Claude a repeatable workflow (like styling journal plots or logging a task). You trigger a skill by typing its <strong>slash command</strong> (e.g. <code>/scope-to-one-day</code>) or naming it in a prompt.</p>
-      </li>
-      <li class="j-item" id="personal-vs-repo-skills" data-tags="~/.claude/skills .claude/skills restart new session">
-        <span class="j-term">Personal skills (<code>~/.claude/skills/</code>) vs. repo skills (<code>.claude/skills/</code>)</span>
-        <p class="j-def">Your team repo's <code>.claude/skills/</code> holds the shared bookkeeping skills (<code>/log-entry</code>, <code>/log-check</code>, <code>/stage</code>) &mdash; <strong>never edit that folder</strong>. Optional skills you download from Resources go in your personal <code>~/.claude/skills/</code> folder. Always <strong>start a new Claude Code session after installing</strong> a skill so Claude loads it.</p>
-      </li>
-      <li class="j-item" id="claude-md" data-tags="CLAUDE.md CLAUDE.local.md rules standing instructions">
-        <span class="j-term"><code>CLAUDE.md</code> &amp; <code>CLAUDE.local.md</code></span>
-        <p class="j-def">Standing instructions Claude automatically reads at the start of every session in a folder. Your team repo's <code>CLAUDE.md</code> holds the shared hackathon rules (don't edit it). Put personal preferences (coding style, favourite tools) in <code>CLAUDE.local.md</code>, which stays private and is never pushed to GitHub.</p>
-      </li>
-      <li class="j-item" id="permissions" data-tags="allow trust this folder approval safety">
-        <span class="j-term">Permission prompt &amp; &ldquo;Trust this folder&rdquo;</span>
-        <p class="j-def">Claude Code asks before editing files or running shell commands. Read what it wants to do; if unsure, say no and ask why. Accepting <strong>&ldquo;Trust this folder&rdquo;</strong> when opening your team repo is required so the hackathon's logging hooks run.</p>
-      </li>
-      <li class="j-item" id="artifact" data-tags="dont make an artifact preview panel">
-        <span class="j-term">Artifact (&ldquo;Don't make an artifact&rdquo;)</span>
-        <p class="j-def">In Claude's chat UI, an <strong>artifact</strong> is a preview card shown only inside the app rather than saved as a real file in your folder. Saying <em>&ldquo;don't make an artifact&rdquo;</em> tells Claude to write an actual file in your team repo instead.</p>
-      </li>
-      <li class="j-item" id="subagent-mcp" data-tags="agent subagent model context protocol blendermcp tool server">
-        <span class="j-term">Subagent &amp; MCP (Model Context Protocol)</span>
-        <p class="j-def">A <strong>subagent</strong> is a temporary helper session Claude spawns to search files or run an independent task in the background. <strong>MCP</strong> is a standard plug-in protocol that lets Claude talk directly to external apps (such as <strong>BlenderMCP</strong> for driving Blender live).</p>
-      </li>
-      <li class="j-item" id="hooks-transcripts" data-tags="mbi-transcripts recording unrecorded MBI_NO_RECORD skip privacy">
-        <span class="j-term">Hooks, transcripts &amp; working unrecorded</span>
-        <p class="j-def"><strong>Hooks</strong> are small scripts triggered automatically by Claude Code (here, showing your status block at session start and uploading your session <strong>transcript</strong> when it ends if you opted in). Need an unrecorded session? Run <code>MBI_NO_RECORD=1 claude</code> or <code>sh scripts/mbi skip &lt;session&gt;</code>.</p>
-      </li>
-      <li class="j-item" id="parallel-second-ai" data-tags="independent check fresh session second ai">
-        <span class="j-term">Parallel sessions &amp; &ldquo;second AI&rdquo; check</span>
-        <p class="j-def">You can open more than one Claude Code session on different subtasks at once. Asking the <em>same</em> session to check its own answer is not independent (it anchors on its previous reasoning); a <strong>second-AI check</strong> means opening a fresh session with no shared history and asking it to attack or re-derive the result.</p>
-      </li>
-      <li class="j-item" id="hallucination" data-tags="hallucinated references fake citations doi arxiv">
-        <span class="j-term">Hallucinated references</span>
-        <p class="j-def">AI models sometimes invent plausible-sounding paper titles, authors, or page numbers from memory. That's why our rules insist on a real <strong>DOI</strong> or <strong>arXiv ID</strong> (and checking the paper yourself) before citing anything.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 2. TERMINAL, FILES & OS -->
-  <section class="j-sec" data-cat="terminal">
-    <h2>2 &middot; Terminal, files &amp; OS</h2>
-    <ul class="j-list">
-      <li class="j-item" id="terminal-shell" data-tags="powershell bash git bash wsl command line cli">
-        <span class="j-term">Terminal / shell (PowerShell, bash, Git Bash, WSL)</span>
-        <p class="j-def">A text window where you type commands for your computer. macOS and Linux use <strong>bash</strong>/zsh; Windows has <strong>PowerShell</strong> by default, plus <strong>Git Bash</strong> (installed with Git) or <strong>WSL</strong> (Windows Subsystem for Linux, a full Linux shell inside Windows) for running <code>sh scripts/...</code> commands.</p>
-      </li>
-      <li class="j-item" id="command-flag" data-tags="option argument --pid --transcripts">
-        <span class="j-term">Command &amp; flag (<code>--pid</code>, <code>--transcripts</code>)</span>
-        <p class="j-def">A <strong>command</strong> is the program you run (e.g. <code>sh scripts/setup</code>); a <strong>flag</strong> starts with <code>-</code> or <code>--</code> and passes an option to it (e.g. <code>--pid P14 --transcripts no</code>).</p>
-      </li>
-      <li class="j-item" id="path-env" data-tags="PATH environment variable command not found">
-        <span class="j-term"><code>PATH</code></span>
-        <p class="j-def">The list of folders your computer searches when you type a program name like <code>python</code> or <code>git</code>. If a program is installed but not on <code>PATH</code>, the terminal reports <em>&ldquo;command not found&rdquo;</em>.</p>
-      </li>
-      <li class="j-item" id="paths-dots" data-tags="file path home folder tilde ~ hidden dot folder current working directory">
-        <span class="j-term">File path, home folder (<code>~</code>), dot-folders &amp; current folder</span>
-        <p class="j-def">A <strong>path</strong> is a file's address (e.g. <code>code/fig_gap.py</code>). <code>~</code> is shorthand for your personal home folder (<code>C:\Users\you</code> on Windows, <code>/Users/you</code> on Mac). Folders starting with a dot (like <code>.claude/</code> or <code>.git/</code>) are hidden by default. Always open Claude Code in the <strong>top folder of your team repo</strong> (<code>MBI-2026/teamN</code>), not a subfolder.</p>
-      </li>
-      <li class="j-item" id="scripts" data-tags=".sh .ps1 shell script powershell script">
-        <span class="j-term">Scripts (<code>.sh</code>, <code>.ps1</code>)</span>
-        <p class="j-def">Plain-text files containing terminal commands to run in sequence: <code>.sh</code> is a bash/shell script (macOS, Linux, Git Bash), and <code>.ps1</code> is a Windows PowerShell script.</p>
-      </li>
-      <li class="j-item" id="markdown-json" data-tags="md json file format text data">
-        <span class="j-term">Markdown (<code>.md</code>) &amp; JSON (<code>.json</code>)</span>
-        <p class="j-def"><strong>Markdown</strong> is plain text with light formatting (<code>#</code> headings, <code>**bold**</code>, tables) &mdash; used for <code>README.md</code>, <code>plan.md</code>, logs, and <code>note/note.md</code>. <strong>JSON</strong> is structured key-value data (used for <code>event.json</code> and saved calculation outputs).</p>
-      </li>
-      <li class="j-item" id="admin-rights" data-tags="software centre package manager install university laptop">
-        <span class="j-term">Admin rights, Software Centre &amp; package manager</span>
-        <p class="j-def"><strong>Admin rights</strong> let you install programs system-wide. On managed Uppsala University Windows laptops without admin rights, install approved software (VS Code, Git, Python) from the <strong>Software Centre</strong>. On Linux/Mac, a <strong>package manager</strong> (<code>apt</code>, <code>brew</code>) installs tools from the terminal.</p>
-      </li>
-      <li class="j-item" id="localhost" data-tags="http.server 127.0.0.1 local server cors file://">
-        <span class="j-term"><code>localhost</code> / <code>python -m http.server</code></span>
-        <p class="j-def"><code>localhost</code> (or <code>127.0.0.1</code>) is your own laptop pretending to be a web server. Running <code>python -m http.server 8000</code> lets you preview HTML/3D demos at <code>http://127.0.0.1:8000</code> when double-clicking a <code>file://</code> page is blocked by browser security rules.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 3. GIT & GITHUB -->
-  <section class="j-sec" data-cat="git">
-    <h2>3 &middot; Git &amp; GitHub</h2>
-    <ul class="j-list">
-      <li class="j-item" id="git-vs-github" data-tags="version control repo repository organisation">
-        <span class="j-term"><code>git</code> vs. GitHub, repository (repo) &amp; organisation</span>
-        <p class="j-def"><strong>git</strong> is the version-control program on your laptop that tracks changes to a folder. <strong>GitHub</strong> is the website hosting the shared copy of that folder (a <strong>repository</strong>, or <strong>repo</strong>). All team repos (<code>team1</code>&ndash;<code>team5</code>) live privately inside the <code>manybodyintelligence2026</code> GitHub <strong>organisation</strong>.</p>
-      </li>
-      <li class="j-item" id="git-workflow" data-tags="clone edit commit pull push local remote save">
-        <span class="j-term">Local vs. remote: <code>clone</code> &rarr; edit &rarr; <code>commit</code> &rarr; <code>pull</code> &rarr; <code>push</code></span>
-        <p class="j-def"><strong>Clone</strong> downloads the repo once to your laptop. Saving a file only changes your laptop (<em>local</em>). <strong>Commit</strong> records a labelled snapshot locally; <strong>pull</strong> fetches teammates' latest commits from GitHub (<em>remote</em>); <strong>push</strong> uploads yours so your team can see them.</p>
-      </li>
-      <li class="j-item" id="pull-rebase" data-tags="git pull --rebase sync history">
-        <span class="j-term"><code>git pull --rebase</code></span>
-        <p class="j-def">Downloads your teammates' new commits and neatly replays your local commits on top of them, avoiding messy merge commits. Our setup script configures this automatically; always pull before you push.</p>
-      </li>
-      <li class="j-item" id="branch" data-tags="main mbi-transcripts parallel line">
-        <span class="j-term">Branch (<code>main</code> vs. <code>mbi-transcripts/P##</code>)</span>
-        <p class="j-def">A parallel version of a repo's history. Everyone on your team works and pushes on the default <code>main</code> branch; automated transcript uploads go quietly to separate <code>mbi-transcripts/P##</code> branches (leave those alone).</p>
-      </li>
-      <li class="j-item" id="merge-conflict" data-tags="conflict collision same line">
-        <span class="j-term">Merge conflict</span>
-        <p class="j-def">Happens when two teammates edit the exact same lines of a file (e.g. <code>README.md</code>) before pulling. Git pauses and marks both versions in the file; you (or Claude) pick the combined text, commit, and push. Keeping work-in-progress in your own <code>&lt;name&gt;/</code> folder prevents most conflicts.</p>
-      </li>
-      <li class="j-item" id="force-push" data-tags="git push --force rewrite history never">
-        <span class="j-term">Force-push (never do this!)</span>
-        <p class="j-def"><code>git push --force</code> overwrites GitHub's history with yours and can erase teammates' commits. Our commit history is part of the hackathon record &mdash; never force-push or allow Claude to do so.</p>
-      </li>
-      <li class="j-item" id="pat" data-tags="personal access token fine-grained credential manager password">
-        <span class="j-term">Personal access token (PAT) &amp; git credential manager</span>
-        <p class="j-def">A <strong>fine-grained token</strong> is a temporary, limited-scope password for programs so Claude/git can push to your team repo without your main GitHub password. The <strong>git credential manager</strong> stores it securely once so you don't re-enter it. Never paste a token inside your repo or Discord.</p>
-      </li>
-      <li class="j-item" id="github-extras" data-tags="README .gitignore GitHub Pages GitHub Actions bookkeeping.yml red x">
-        <span class="j-term"><code>README.md</code>, <code>.gitignore</code>, GitHub Pages &amp; GitHub Actions</span>
-        <p class="j-def"><code>README.md</code> is the front page of your repo. <code>.gitignore</code> lists files git should never upload (like temporary cache files). <strong>GitHub Pages</strong> turns a repo into a website (how this event site is hosted). <strong>GitHub Actions</strong> runs automated checks on every push &mdash; your team repo runs <code>bookkeeping.yml</code>, so a red <code>&times;</code> next to a commit just means a bookkeeping item isn't filled in yet (not that your code broke).</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 4. PYTHON & EDITORS -->
-  <section class="j-sec" data-cat="python">
-    <h2>4 &middot; Python &amp; editors</h2>
-    <ul class="j-list">
-      <li class="j-item" id="python-pip" data-tags="python 3.8 package library pip install cmcrameri">
-        <span class="j-term">Python 3.8+, package / library &amp; <code>pip</code></span>
-        <p class="j-def"><strong>Python</strong> is the scripting language used for both the bookkeeping scripts and most plots/calculations. A <strong>package</strong> (or library) is reusable code like <code>numpy</code>, <code>matplotlib</code>, or <code>cmcrameri</code>; <strong><code>pip</code></strong> is Python's installer (e.g. <code>pip install cmcrameri</code>).</p>
-      </li>
-      <li class="j-item" id="venv-conda" data-tags="virtual environment venv conda isolated python">
-        <span class="j-term">Virtual environment (<code>venv</code> / <code>conda</code>)</span>
-        <p class="j-def">A self-contained folder holding a specific Python version and set of packages so installing something for the hackathon doesn't break other research code on your laptop. Never commit a <code>venv/</code> folder to git.</p>
-      </li>
-      <li class="j-item" id="matplotlib-mplstyle" data-tags="matplotlib style file mbi.mplstyle team.mplstyle plot">
-        <span class="j-term">Matplotlib &amp; <code>.mplstyle</code> files</span>
-        <p class="j-def"><strong>Matplotlib</strong> is Python's standard plotting library. An <strong><code>.mplstyle</code></strong> file (like our bundled <code>mbi.mplstyle</code>) sets fonts, tick widths, and colour defaults in one place so every figure made by your team looks consistent.</p>
-      </li>
-      <li class="j-item" id="vscode" data-tags="visual studio code extension restricted mode editor ide">
-        <span class="j-term">VS Code, extension &amp; Restricted Mode</span>
-        <p class="j-def"><strong>VS Code</strong> is a free code editor where you can edit files and run the official Anthropic Claude Code <strong>extension</strong> (add-on). When opening a new folder, VS Code may start in <strong>Restricted Mode</strong> for safety &mdash; click <em>&ldquo;Yes, I trust the authors&rdquo;</em> or Claude Code won't run.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 5. FIGURES, TEX & VISUALISATION -->
-  <section class="j-sec" data-cat="figures">
-    <h2>5 &middot; Figures, TeX &amp; visualisation</h2>
-    <ul class="j-list">
-      <li class="j-item" id="vector-raster" data-tags="pdf svg png webp dpi resolution scalable">
-        <span class="j-term">Vector (PDF, SVG) vs. raster (PNG, WebP) &amp; DPI</span>
-        <p class="j-def"><strong>Vector</strong> graphics store mathematical paths and text &mdash; they stay razor-sharp at any zoom (use <strong>PDF</strong> for papers, <strong>SVG</strong> for editable schematics). <strong>Raster</strong> images store a pixel grid (<strong>PNG</strong> for crisp stills, <strong>WebP</strong> for compact animations). <strong>DPI</strong> (dots per inch) sets raster sharpness: use &ge; 300 DPI for print.</p>
-      </li>
-      <li class="j-item" id="colourmaps" data-tags="crameri batlow vik cork bam jet rainbow perceptually uniform sequential diverging cyclic colour-blind paul tol scienceplots">
-        <span class="j-term">Colour maps: perceptually uniform, Crameri, Paul Tol, SciencePlots &amp; why not <code>jet</code></span>
-        <p class="j-def">Rainbow maps like <code>jet</code> create fake sharp edges where the data is smooth and break for colour-blind readers. <strong>Perceptually uniform</strong> maps (like <strong>Crameri</strong>'s <code>batlow</code>, <code>vik</code>, <code>cork</code>, <code>bam</code>) keep brightness honest: use <strong>sequential</strong> maps for 0&rarr;max quantities, <strong>diverging</strong> maps centred at 0 for signed data (&plusmn;), and <strong>cyclic</strong> maps for phases/angles. <strong>Paul Tol</strong> offers clean discrete line palettes; <strong>SciencePlots</strong> provides journal Matplotlib presets.</p>
-      </li>
-      <li class="j-item" id="tex-distribution" data-tags="latex tex live miktex mactex overleaf compiler">
-        <span class="j-term">LaTeX, TeX distribution (TeX Live, MiKTeX, MacTeX) &amp; Overleaf</span>
-        <p class="j-def"><strong>LaTeX</strong> is the typesetting language for physics papers. To compile <code>.tex</code> files into PDF on your laptop, you need a <strong>TeX distribution</strong> &mdash; the bundle of LaTeX engine + fonts + packages (<strong>TeX Live</strong> on Linux/Windows, <strong>MiKTeX</strong> on Windows, <strong>MacTeX</strong> on macOS). <strong>Overleaf</strong> compiles LaTeX in the browser so you don't need a local install.</p>
-      </li>
-      <li class="j-item" id="mathtext-cm" data-tags="computer modern matplotlib mathtext no tex installation needed">
-        <span class="j-term">Computer Modern &amp; Matplotlib <code>mathtext</code></span>
-        <p class="j-def"><strong>Computer Modern</strong> is LaTeX's classic math font. Matplotlib's built-in <strong><code>mathtext</code></strong> engine renders Computer Modern equations (<code>$E - E_F$</code>) directly inside Python with <em>no TeX distribution installed</em> &mdash; our <code>mbi.mplstyle</code> enables this automatically.</p>
-      </li>
-      <li class="j-item" id="tikz" data-tags="latex vector diagram schematic pgf">
-        <span class="j-term">TikZ</span>
-        <p class="j-def">A LaTeX package for drawing vector schematics and diagrams purely in code, matching your paper's exact fonts and math symbols.</p>
-      </li>
-      <li class="j-item" id="blender" data-tags="cycles eevee ray tracing headless blender -b 3d render">
-        <span class="j-term">Blender, Cycles vs. EEVEE, ray tracing &amp; headless rendering</span>
-        <p class="j-def"><strong>Blender</strong> is a free, open-source 3D studio controllable from Python. <strong>EEVEE</strong> is its fast real-time renderer (good for previews); <strong>Cycles</strong> uses physically based <strong>ray tracing</strong> (simulating real light bounces, glass refraction, and soft shadows). <strong>Headless rendering</strong> (<code>blender -b -P scene.py</code>) runs Blender invisibly from the terminal &mdash; no clicking menus needed.</p>
-      </li>
-      <li class="j-item" id="manim" data-tags="3blue1brown python math animation video">
-        <span class="j-term">Manim</span>
-        <p class="j-def">An open-source Python animation library (created for 3Blue1Brown) for scripted mathematical equations, transforms, and explainer videos.</p>
-      </li>
-      <li class="j-item" id="vesta-ovito-matterviz" data-tags="crystal structure molecular dynamics brillouin zone fermi surface 3d">
-        <span class="j-term">VESTA, OVITO &amp; MatterViz</span>
-        <p class="j-def">Domain-specific 3D visualisers: <strong>VESTA</strong> renders crystal structures and charge densities; <strong>OVITO</strong> visualises large atomic/molecular dynamics trajectories; <strong>MatterViz</strong> is a web/interactive toolkit for crystals, 3D Brillouin zones, and Fermi surfaces.</p>
-      </li>
-      <li class="j-item" id="html-animation" data-tags="offline html canvas2d webgl three.js interactive slide">
-        <span class="j-term">Offline HTML animation, Canvas2D, WebGL &amp; Three.js</span>
-        <p class="j-def">A single self-contained <code>.html</code> file that opens in any browser with no internet and runs smoothly at 60 fps &mdash; tiny (~10 kB vs. 50 MB video) and interactive during Q&amp;A. <strong>Canvas2D</strong> draws fast 2D plots/lattices; <strong>WebGL</strong> uses your GPU for 3D; <strong>Three.js</strong> is the standard JavaScript 3D library built on WebGL.</p>
-      </li>
-      <li class="j-item" id="shaders-fps-query" data-tags="shader smoothstep.io fps frames per second ?t= url parameter ffmpeg">
-        <span class="j-term">Shaders (<code>smoothstep.io</code>), fps, URL parameter (<code>?t=2.5</code>) &amp; <code>ffmpeg</code></span>
-        <p class="j-def"><strong>Shaders</strong> are tiny GPU programs for smooth real-time wave/field animations (e.g. via <code>smoothstep.io</code>). <strong>fps</strong> is frames per second (60 fps = silky smooth). Adding a <strong>URL query parameter</strong> like <code>anim.html?t=2.5</code> freezes an HTML animation at 2.5 s so Claude can screenshot and inspect it. <strong><code>ffmpeg</code></strong> is a command-line tool that converts frames into <code>.mp4</code> or <code>.gif</code> if you need a video file.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 6. PUBLISHING & EVENT RULES -->
-  <section class="j-sec" data-cat="publishing">
-    <h2>6 &middot; Publishing &amp; event rules</h2>
-    <ul class="j-list">
-      <li class="j-item" id="event-vs-project-paper" data-tags="authorship co-author write-up ownership">
-        <span class="j-term">Event paper vs. project paper</span>
-        <p class="j-def">The <strong>event paper</strong> is a short paper the organisers write about how the hackathon went (opt-in co-authorship for all participants; never gives away publishable team details). A <strong>project paper</strong> is any follow-up physics paper your team decides to write from its own results.</p>
-      </li>
-      <li class="j-item" id="credit-roles" data-tags="credit taxonomy contributions authorship">
-        <span class="j-term">CRediT roles</span>
-        <p class="j-def">The standard Contributor Roles Taxonomy (Conceptualization, Software, Validation, Writing, etc.) used in <code>CONTRIBUTIONS.md</code> to record who did what cleanly and fairly.</p>
-      </li>
-      <li class="j-item" id="zenodo-ccby" data-tags="zenodo archive doi cc by 4.0 license open">
-        <span class="j-term">Zenodo &amp; CC BY 4.0</span>
-        <p class="j-def"><strong>Zenodo</strong> is CERN's open research archive that assigns a permanent DOI to datasets, code, and notes. <strong>CC BY 4.0</strong> is an open Creative Commons license letting anyone reuse figures or materials as long as they credit the authors.</p>
-      </li>
-      <li class="j-item" id="aps-widths" data-tags="aps prb prl single column double column 86mm 178mm lightning talk">
-        <span class="j-term">APS / PRB column widths &amp; lightning talk</span>
-        <p class="j-def">Standard Physical Review figure widths: <strong>86 mm</strong> (3.375 in) for a single-column figure, <strong>178 mm</strong> (7.0 in) for double-column &mdash; drawing at the exact final width keeps fonts readable without shrinking. A <strong>lightning talk</strong> is your team's tight 5-minute summary talk at 15:30.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 7. HACKATHON-SPECIFIC TERMS -->
-  <section class="j-sec" data-cat="event">
-    <h2>7 &middot; Hackathon-specific names &amp; commands</h2>
-    <ul class="j-list">
-      <li class="j-item" id="discord" data-tags="welcome team-selection technical-help chat">
-        <span class="j-term">Discord channels (<code>#welcome</code>, <code>#team-selection</code>, <code>#technical-help</code>)</span>
-        <p class="j-def">Our event chat server: introduce yourself in <code>#welcome</code>, pick your team in <code>#team-selection</code> to unlock your private team channel, and post screenshots in <code>#technical-help</code> if stuck for more than 10 minutes.</p>
-      </li>
-      <li class="j-item" id="ids" data-tags="participant id P## team id T## T01">
-        <span class="j-term">Participant ID (<code>P##</code>) &amp; Team ID (<code>T##</code>)</span>
-        <p class="j-def">Short codes (like <code>P14</code> and <code>T01</code>) used by the bookkeeping tools to name your log file (<code>log/P14.md</code>), log entries (<code>T01-P14-E01</code>), and transcript branches. Real names are fine everywhere in prose.</p>
-      </li>
-      <li class="j-item" id="our-idea-question" data-tags="our-idea Q0 Q1 Q2 question history done today confidence">
-        <span class="j-term"><code>our-idea/</code>, question history (<code>Q0, Q1, Q2</code>) &amp; Confidence (1&ndash;5)</span>
-        <p class="j-def"><code>our-idea/</code> holds each teammate's bio and 2&ndash;3 papers. <code>Q0</code> is your starting question in <code>README.md</code>; if your team sharpens or narrows it during the day, record <code>Q1</code>, <code>Q2</code> with the time and reason, plus your team's honest <strong>Confidence (1&ndash;5)</strong> rating.</p>
-      </li>
-      <li class="j-item" id="plan-files" data-tags="plan.md plan-ai.md tracks fallbacks scope-to-one-day">
-        <span class="j-term"><code>plan.md</code> vs. <code>plan-ai.md</code>, tracks &amp; fallbacks</span>
-        <p class="j-def">Created by <code>/scope-to-one-day</code> in Phase 1: <strong><code>plan.md</code></strong> is a one-screen summary for your team; <strong><code>plan-ai.md</code></strong> has the full arithmetic, references, and per-person <strong>tracks</strong> (so each teammate can start a session with <em>&ldquo;Read plan-ai.md, I'm on track B&rdquo;</em>) plus pre-agreed <strong>fallbacks</strong> if a calculation stalls.</p>
-      </li>
-      <li class="j-item" id="repo-folders" data-tags="checks.md note.md CONTRIBUTIONS.md talk review photos codebook">
-        <span class="j-term">Key team repo files (<code>checks/</code>, <code>note/</code>, <code>talk/</code>, <code>review/</code>, <code>photos/</code>)</span>
-        <p class="j-def"><code>checks/checks.md</code> records independent checks (using method names from <code>log/CODEBOOK.md</code>); <code>note/note.md</code> is the 2-page note; <code>talk/</code> holds slides; <code>review/</code> holds referee reports; <code>photos/</code> holds phone snaps of whiteboards/paper derivations; <code>CONTRIBUTIONS.md</code> records CRediT roles.</p>
-      </li>
-      <li class="j-item" id="bookkeeping-cmds" data-tags="/log-entry no-ai chat /log-check /stage mbi doctor status">
-        <span class="j-term">Bookkeeping commands (<code>/log-entry</code>, <code>/log-check</code>, <code>/stage</code>, <code>sh scripts/mbi</code>)</span>
-        <p class="j-def">Type <code>/log-entry</code> after each task (~2 min; use <code>/log-entry no-ai</code> for 15+ min paper/whiteboard work or <code>/log-entry chat</code> for browser-AI work). Use <code>/stage</code> when your team moves to the next phase, <code>/log-check</code> before Write ends to catch unlogged sessions, and <code>sh scripts/mbi doctor</code> / <code>status</code> to check setup or what's still missing.</p>
-      </li>
-      <li class="j-item" id="day-skills" data-tags="scope-to-one-day board-to-latex figure-style schematic render-and-look html-animation html-fractal blender-scene check-results write-note">
-        <span class="j-term">Downloadable phase skills (Scope, First attempt, Figures &amp; Write)</span>
-        <p class="j-def">Phase 1: <code>/scope-to-one-day</code> (one-day research plan). Phase 2: <code>/board-to-latex</code> (whiteboard/paper photos to LaTeX). Phase 4: <code>/figure-style</code>, <code>/schematic</code>, <code>/render-and-look</code>, <code>/html-animation</code>, <code>/html-fractal</code>, and <code>/blender-scene</code>. Phase 5: <code>/check-results</code> and <code>/write-note</code> (PRL-style 2-page PDF).</p>
-      </li>
-      <li class="j-item" id="phases-fika" data-tags="scope first attempt first result check make figures write talks peer review close fika coffee">
-        <span class="j-term">The phases &amp; Fika</span>
-        <p class="j-def"><strong>Scope</strong> (09:15) &rarr; <strong>First attempt &amp; First result</strong> (10:15) &rarr; <strong>Check</strong> (13:00) &rarr; <strong>Make figures</strong> (13:45) &rarr; <strong>Write</strong> (14:45) &rarr; <strong>Lightning talks</strong> (15:30) &rarr; <strong>Peer review</strong> (16:00) &rarr; <strong>Close</strong> (16:30&ndash;17:00). <strong>Fika</strong> (10:00 and 15:00) is the essential Swedish coffee-and-pastry break &mdash; plus pizza at 12:15.</p>
-      </li>
-    </ul>
-  </section>
-
-  <!-- 8. COMMON ERRORS -->
-  <section class="j-sec" data-cat="errors">
-    <h2>8 &middot; Common errors &amp; quick fixes</h2>
-    <ul class="j-list">
-      <li class="j-item err-item" id="err-dubious" data-tags="dubious ownership safe.directory windows d drive external">
-        <span class="j-term"><code>fatal: detected dubious ownership in repository</code></span>
-        <p class="j-def">Common on Windows when a repo sits on a second drive (e.g. <code>D:</code>) or shared partition. Run the exact <code>git config --global --add safe.directory ...</code> line printed in the error message (or ask Claude to run it).</p>
-      </li>
-      <li class="j-item err-item" id="err-auth" data-tags="authentication failed permission denied publickey ssh token expired 403">
-        <span class="j-term"><code>Authentication failed</code> or <code>Permission denied (publickey)</code></span>
-        <p class="j-def">Your GitHub token is wrong/expired, or git tried SSH instead of HTTPS. Re-check that you cloned with the <code>https://github.com/...</code> URL and saved a valid fine-grained token with <em>Contents: Read and write</em>.</p>
-      </li>
-      <li class="j-item err-item" id="err-rejected" data-tags="rejected fetch first non-fast-forward push failed">
-        <span class="j-term"><code>! [rejected] main -&gt; main (fetch first)</code></span>
-        <p class="j-def">Totally normal &mdash; a teammate pushed while you were working. Run <code>git pull --rebase</code> first, then <code>git push</code> again. Never force-push.</p>
-      </li>
-      <li class="j-item err-item" id="err-not-found" data-tags="command not found not recognized path python git">
-        <span class="j-term"><code>command not found</code> / <code>is not recognized</code></span>
-        <p class="j-def">The program isn't installed yet, isn't on your <code>PATH</code>, or you need to close and reopen your terminal / VS Code after installing it. Ask Claude to check which path it's installed at.</p>
-      </li>
-      <li class="j-item err-item" id="err-skill" data-tags="skill not found slash command missing reload restart session">
-        <span class="j-term">Installed a skill, but <code>/skill-name</code> doesn't show up</span>
-        <p class="j-def">Claude Code only scans skills when a session starts. Check that <code>~/.claude/skills/&lt;skill-name&gt;/SKILL.md</code> exists (not nested inside an extra folder), then <strong>start a new Claude Code session</strong>.</p>
-      </li>
-      <li class="j-item err-item" id="err-red-x" data-tags="red x github actions bookkeeping failed commit check">
-        <span class="j-term">Red <code>&times;</code> next to your commit on GitHub</span>
-        <p class="j-def">That's the automated bookkeeping checker (<code>bookkeeping.yml</code>), not a code failure. Run <code>sh scripts/mbi status</code> in your repo to see which checklist item is still open.</p>
-      </li>
-      <li class="j-item err-item" id="err-blank-html" data-tags="blank white page three.js file:// cors module http.server">
-        <span class="j-term">Local HTML / 3D animation opens as a blank page</span>
-        <p class="j-def">Browsers block some scripts when opened directly via <code>file://</code>. Start a local server in that folder (<code>python -m http.server 8000</code>) and open <code>http://127.0.0.1:8000/</code> instead.</p>
-      </li>
-    </ul>
-  </section>
-</main>
-
-<footer>
-  <p>Organisers: <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-1226">Konstantinos Sourounis</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-2276">Pramodh Senarath Yapa</a>,
-  <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N23-2515">Aksel Kobiałka</a> and <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N18-2312">Alena Vishina</a></p>
-  <p>Materials Theory · Department of Physics and Astronomy · Uppsala University</p>
-</footer>
-<script src="assets/site.js"></script>
-<script>
-(function () {
-  "use strict";
-  const input = document.getElementById("q");
-  const clearBtn = document.getElementById("clearBtn");
-  const countText = document.getElementById("countText");
-  const emptyState = document.getElementById("emptyState");
-  const searchResults = document.getElementById("searchResults");
-  const catBtns = Array.from(document.querySelectorAll(".cat-btn"));
-  const sections = Array.from(document.querySelectorAll(".j-sec"));
-  const catNames = {
-    claude: "Claude & AI", terminal: "Terminal & files", git: "Git & GitHub",
-    python: "Python & editors", figures: "Figures & TeX", publishing: "Publishing",
-    event: "Hackathon terms", errors: "Common errors"
-  };
-  const items = Array.from(document.querySelectorAll(".j-item")).map(el => {
-    const termEl = el.querySelector(".j-term");
-    const defEl = el.querySelector(".j-def");
-    const cat = el.closest(".j-sec").dataset.cat;
-    const termText = termEl.textContent.toLowerCase();
-    const defText = defEl.textContent.toLowerCase();
-    const tagsText = (el.dataset.tags || "").toLowerCase();
-    return {
-      el, cat, termEl, defEl,
-      origTerm: termEl.innerHTML,
-      origDef: defEl.innerHTML,
-      termText, defText, tagsText,
-      haystack: termText + " " + defText + " " + tagsText
-    };
-  });
-
-  let activeCat = "all";
-
-  function escapeRegExp(s) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  }
-
-  function highlightNode(root, tokens) {
-    if (!tokens.length) return;
-    const re = new RegExp("(" + tokens.map(escapeRegExp).join("|") + ")", "gi");
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    const nodes = [];
-    while (walker.nextNode()) nodes.push(walker.currentNode);
-    nodes.forEach(node => {
-      const text = node.nodeValue;
-      if (!re.test(text)) return;
-      re.lastIndex = 0;
-      const frag = document.createDocumentFragment();
-      let last = 0, m;
-      while ((m = re.exec(text)) !== null) {
-        if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
-        const mk = document.createElement("mark");
-        mk.textContent = m[0];
-        frag.appendChild(mk);
-        last = m.index + m[0].length;
-      }
-      if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
-      node.parentNode.replaceChild(frag, node);
-    });
-  }
-
-  function scoreItem(it, tokens) {
-    let score = 0;
-    for (const tok of tokens) {
-      const wb = new RegExp("\\b" + escapeRegExp(tok) + "\\b");
-      const ws = new RegExp("\\b" + escapeRegExp(tok));
-      if (wb.test(it.termText)) score += 100;
-      else if (ws.test(it.termText)) score += 60;
-      else if (it.termText.includes(tok)) score += 35;
-      if (wb.test(it.tagsText)) score += 45;
-      else if (ws.test(it.tagsText)) score += 25;
-      else if (it.tagsText.includes(tok)) score += 15;
-      if (wb.test(it.defText)) score += 18;
-      else if (ws.test(it.defText)) score += 8;
-      else if (it.defText.includes(tok)) score += 2;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Common jargon · Many-Body Intelligence</title>
+  <meta name="description"
+    content="Searchable cheatsheet of AI, Git, terminal, Python, TeX, visualisation, and hackathon terms for Many-Body Intelligence 2026.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    code {
+      font-family: var(--mono);
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.04em 0.32em;
+      font-size: 0.9em;
+      border-radius: 2px;
     }
-    return score;
-  }
 
-  function applyFilter() {
-    const raw = input.value.trim();
-    const tokens = raw.toLowerCase().split(/\s+/).filter(Boolean);
-    clearBtn.classList.toggle("show", raw.length > 0);
+    .search-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--paper);
+      padding: 0.85rem 0 0.7rem;
+      border-bottom: 1px solid var(--rule);
+      margin: 1.1rem 0 0.8rem;
+    }
 
-    if (tokens.length) {
-      sections.forEach(sec => sec.classList.add("hidden"));
-      searchResults.innerHTML = "";
-      const matched = items
-        .filter(it => (activeCat === "all" || it.cat === activeCat) && tokens.every(tok => it.haystack.includes(tok)))
-        .map(it => ({ it, score: scoreItem(it, tokens) }))
-        .sort((a, b) => b.score - a.score);
+    .search-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.45rem;
+    }
 
-      matched.forEach(({ it }) => {
-        const clone = it.el.cloneNode(true);
-        clone.classList.remove("hidden");
-        clone.removeAttribute("id");
-        const tEl = clone.querySelector(".j-term");
-        const dEl = clone.querySelector(".j-def");
-        tEl.innerHTML = it.origTerm;
-        dEl.innerHTML = it.origDef;
-        highlightNode(tEl, tokens);
-        highlightNode(dEl, tokens);
-        const badge = document.createElement("span");
-        badge.className = "j-cat-tag";
-        badge.textContent = "[" + catNames[it.cat] + "]";
-        tEl.appendChild(badge);
-        searchResults.appendChild(clone);
+    .search-input {
+      flex: 1 1 auto;
+      width: 100%;
+      font: 0.92rem/1.4 var(--mono);
+      color: var(--ink);
+      background: var(--paper-deep);
+      border: 1.5px solid var(--ink);
+      padding: 0.6rem 0.85rem;
+      outline: none;
+      border-radius: 0;
+    }
+
+    .search-input:focus {
+      border-color: var(--mark);
+    }
+
+    .search-input::placeholder {
+      color: var(--faded);
+    }
+
+    .clear-btn {
+      font: 600 0.78rem var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--paper-deep);
+      color: var(--ink);
+      border: 1.5px solid var(--rule);
+      padding: 0 0.85rem;
+      cursor: pointer;
+      display: none;
+    }
+
+    .clear-btn.show {
+      display: inline-block;
+    }
+
+    .clear-btn:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    .search-meta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.4rem 1rem;
+      margin-top: 0.45rem;
+      font-size: 0.78rem;
+      color: var(--faded);
+    }
+
+    .cat-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.65rem 0 0.1rem;
+    }
+
+    .cat-btn {
+      font: 500 0.74rem var(--mono);
+      letter-spacing: 0.04em;
+      background: transparent;
+      color: var(--faded);
+      border: 1px solid var(--rule);
+      padding: 0.28em 0.65em;
+      cursor: pointer;
+    }
+
+    .cat-btn:hover {
+      color: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .cat-btn.on {
+      background: var(--tape);
+      color: var(--tape-text);
+      border-color: var(--tape);
+      font-weight: 600;
+    }
+
+    .j-sec.hidden {
+      display: none;
+    }
+
+    .j-list {
+      margin: 0.9rem 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--rule);
+    }
+
+    .j-item {
+      border-bottom: 1px solid var(--rule);
+      padding: 0.78rem 0;
+    }
+
+    .j-item.hidden {
+      display: none;
+    }
+
+    .j-item.err-item {
+      border-left: 3px solid var(--mark);
+      padding-left: 0.85rem;
+      background: var(--paper-deep);
+      margin: 0.55rem 0;
+      border-top: 1px solid var(--rule);
+      border-right: 1px solid var(--rule);
+    }
+
+    .j-item.err-item code {
+      background: var(--paper);
+    }
+
+    .j-term {
+      font-weight: 600;
+      font-size: 0.96rem;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 0.22rem;
+    }
+
+    .j-cat-tag {
+      display: none;
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--faded);
+      margin-left: 0.5rem;
+      vertical-align: 0.08em;
+    }
+
+    .search-results {
+      display: none;
+      margin: 0.9rem 0 0;
+      padding: 0;
+      list-style: none;
+      border-top: 1px solid var(--rule);
+    }
+
+    .search-results.show {
+      display: block;
+    }
+
+    .search-results .j-cat-tag {
+      display: inline;
+    }
+
+    .j-def {
+      margin: 0;
+      font-size: 0.89rem;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .j-def mark {
+      background: rgba(212, 80, 108, 0.24);
+      color: inherit;
+      padding: 0 0.12em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+
+      .j-def mark,
+      .j-term mark {
+        background: rgba(224, 120, 144, 0.34);
+        color: inherit;
+      }
+    }
+
+    .j-term mark {
+      background: rgba(212, 80, 108, 0.24);
+      color: inherit;
+      padding: 0 0.12em;
+    }
+
+    .empty-state {
+      display: none;
+      margin: 2rem 0;
+      padding: 1.1rem 1.2rem;
+      background: var(--paper-deep);
+      border: 1px dashed var(--ink);
+      font-size: 0.9rem;
+    }
+
+    .empty-state.show {
+      display: block;
+    }
+
+    @media print {
+
+      .bar,
+      .search-wrap,
+      footer {
+        display: none !important;
+      }
+
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 10.5pt;
+      }
+
+      main {
+        max-width: none;
+        padding: 0;
+      }
+
+      .j-item {
+        break-inside: avoid;
+        padding: 0.38rem 0;
+      }
+
+      h2 {
+        margin-top: 1.3rem;
+        break-after: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <a href="index.html">Many-Body Intelligence</a>
+    <nav>
+      <a href="faq.html">FAQ</a>
+      <a href="code-of-conduct.html">Code of conduct</a>
+      <a href="resources.html">Resources</a>
+      <a href="jargon.html" aria-current="page">Common jargon</a>
+    </nav>
+  </div>
+
+  <main>
+    <h1 class="tape">Common jargon</h1>
+    <p class="lede">Plain-English cheatsheet for the AI, Git, terminal, Python, TeX, visualisation, and hackathon terms
+      that come up on <strong>Monday 30 November</strong>. Ordinary physics jargon is left out.</p>
+
+    <div class="search-wrap">
+      <div class="search-row">
+        <input id="q" class="search-input" type="search" autocomplete="off" spellcheck="false"
+          placeholder="Search a term, tool, or error (e.g. skill, TeX, rebase, Blender)..."
+          aria-label="Search common jargon">
+        <button id="clearBtn" class="clear-btn" type="button">Clear</button>
+      </div>
+      <div class="search-meta">
+        <span id="countText"></span>
+        <span>Tip: press <code>/</code> to search &middot; link any search with <code>?q=word</code></span>
+      </div>
+      <div class="cat-bar" id="catBar">
+        <button class="cat-btn on" type="button" data-cat="all">All</button>
+        <button class="cat-btn" type="button" data-cat="claude">Claude &amp; AI</button>
+        <button class="cat-btn" type="button" data-cat="terminal">Terminal &amp; files</button>
+        <button class="cat-btn" type="button" data-cat="git">Git &amp; GitHub</button>
+        <button class="cat-btn" type="button" data-cat="python">Python &amp; editors</button>
+        <button class="cat-btn" type="button" data-cat="figures">Figures &amp; TeX</button>
+        <button class="cat-btn" type="button" data-cat="publishing">Publishing</button>
+        <button class="cat-btn" type="button" data-cat="event">Hackathon terms</button>
+        <button class="cat-btn" type="button" data-cat="errors">Common errors</button>
+      </div>
+    </div>
+
+    <div id="emptyState" class="empty-state">
+      No matching term found. Ask in <code>#technical-help</code> on Discord or flag an organiser in Å4002 &mdash; we're
+      happy to explain anything on the spot.
+    </div>
+    <ul id="searchResults" class="search-results" aria-live="polite"></ul>
+
+    <!-- 1. CLAUDE & AI -->
+    <section class="j-sec" data-cat="claude">
+      <h2>1 &middot; Claude &amp; AI</h2>
+      <ul class="j-list">
+        <li class="j-item" id="claude-code" data-tags="browser web desktop app vs code extension">
+          <span class="j-term">Claude (browser) vs. Claude desktop app vs. Claude Code</span>
+          <p class="j-def">The browser version of Claude can only chat. <strong>Claude Code</strong> (inside the Claude
+            desktop app, the VS Code extension, or a terminal) can read files on your laptop, edit code, run Python/git
+            commands, and open images &mdash; always asking your permission first. The free Claude plan does not include
+            Claude Code.</p>
+        </li>
+        <li class="j-item" id="chat-vs-code" data-tags="switch icon speech bubble angle brackets">
+          <span class="j-term">Chat mode vs. Code mode (<code>&lt;/&gt;</code>)</span>
+          <p class="j-def">The Claude app opens in two modes: the speech bubble is ordinary Chat, and
+            <code>&lt;/&gt;</code> is <strong>Claude Code</strong>. You're in Code mode when Claude shows or asks for a
+            folder on your laptop.
+          </p>
+        </li>
+        <li class="j-item" id="session-context" data-tags="prompt context window compact clear memory token limit">
+          <span class="j-term">Session, prompt, context window, <code>/compact</code> &amp; <code>/clear</code></span>
+          <p class="j-def">A <strong>prompt</strong> is one message you send; a <strong>session</strong> is one
+            conversation thread. Everything in a session sits in Claude's working memory (the <strong>context
+              window</strong>). Long sessions get slower or lose track of earlier details: type <code>/compact</code> to
+            summarise and free space, or <code>/clear</code> (or start a fresh session) when moving to a new subtask.
+          </p>
+        </li>
+        <li class="j-item" id="rate-limit" data-tags="usage limit quota cooldown 5 hour reset window plan">
+          <span class="j-term">Usage / rate limits (5-hour reset)</span>
+          <p class="j-def">Claude plans enforce a rolling <strong>5-hour usage cap</strong> that organisers cannot
+            extend on the day. Check your usage periodically, use <strong>Sonnet</strong> for routine tasks (save Opus
+            for hard steps), and pace your prompts so you do not run out before the afternoon.</p>
+        </li>
+        <li class="j-item" id="models" data-tags="opus sonnet haiku model choice">
+          <span class="j-term">Models: Opus, Sonnet, Haiku</span>
+          <p class="j-def">Three sizes of Claude. <strong>Opus</strong> is the strongest (best for tricky derivations,
+            planning, or hard debugging, but uses more of your usage limit); <strong>Sonnet</strong> is the fast
+            everyday workhorse; <strong>Haiku</strong> is the lightest and quickest for simple tasks.</p>
+        </li>
+        <li class="j-item" id="skill" data-tags="SKILL.md slash command install custom instruction">
+          <span class="j-term">Skill, <code>SKILL.md</code> &amp; slash command (<code>/log-entry</code>,
+            <code>/figure-style</code>, &hellip;)</span>
+          <p class="j-def">A <strong>skill</strong> is a folder containing a plain-text instruction file
+            (<code>SKILL.md</code>) plus optional templates. It teaches Claude a repeatable workflow (like styling
+            journal plots or logging a task). You trigger a skill by typing its <strong>slash command</strong> (e.g.
+            <code>/scope-to-one-day</code>) or naming it in a prompt.
+          </p>
+        </li>
+        <li class="j-item" id="personal-vs-repo-skills" data-tags="~/.claude/skills .claude/skills restart new session">
+          <span class="j-term">Personal skills (<code>~/.claude/skills/</code>) vs. repo skills
+            (<code>.claude/skills/</code>)</span>
+          <p class="j-def">Your team repo's <code>.claude/skills/</code> holds the shared bookkeeping skills
+            (<code>/log-entry</code>, <code>/log-check</code>, <code>/stage</code>) &mdash; <strong>never edit that
+              folder</strong>. Optional skills you download from Resources go in your personal
+            <code>~/.claude/skills/</code> folder. Always <strong>start a new Claude Code session after
+              installing</strong> a skill so Claude loads it.
+          </p>
+        </li>
+        <li class="j-item" id="claude-md" data-tags="CLAUDE.md CLAUDE.local.md rules standing instructions">
+          <span class="j-term"><code>CLAUDE.md</code> &amp; <code>CLAUDE.local.md</code></span>
+          <p class="j-def">Standing instructions Claude automatically reads at the start of every session in a folder.
+            Your team repo's <code>CLAUDE.md</code> holds the shared hackathon rules (don't edit it). Put personal
+            preferences (coding style, favourite tools) in <code>CLAUDE.local.md</code>, which stays private and is
+            never pushed to GitHub.</p>
+        </li>
+        <li class="j-item" id="permissions" data-tags="allow trust this folder approval safety">
+          <span class="j-term">Permission prompt &amp; &ldquo;Trust this folder&rdquo;</span>
+          <p class="j-def">Claude Code asks before editing files or running shell commands. Read what it wants to do; if
+            unsure, say no and ask why. Accepting <strong>&ldquo;Trust this folder&rdquo;</strong> when opening your
+            team repo is required so the hackathon's logging hooks run.</p>
+        </li>
+        <li class="j-item" id="artifact" data-tags="dont make an artifact preview panel">
+          <span class="j-term">Artifact (&ldquo;Don't make an artifact&rdquo;)</span>
+          <p class="j-def">In Claude's chat UI, an <strong>artifact</strong> is a preview card shown only inside the app
+            rather than saved as a real file in your folder. Saying <em>&ldquo;don't make an artifact&rdquo;</em> tells
+            Claude to write an actual file in your team repo instead.</p>
+        </li>
+        <li class="j-item" id="subagent-mcp" data-tags="agent subagent model context protocol blendermcp tool server">
+          <span class="j-term">Subagent &amp; MCP (Model Context Protocol)</span>
+          <p class="j-def">A <strong>subagent</strong> is a temporary helper session Claude spawns to search files or
+            run an independent task in the background. <strong>MCP</strong> is a standard plug-in protocol that lets
+            Claude talk directly to external apps (such as <strong>BlenderMCP</strong> for driving Blender live).</p>
+        </li>
+        <li class="j-item" id="hooks-transcripts"
+          data-tags="mbi-transcripts recording unrecorded MBI_NO_RECORD skip privacy">
+          <span class="j-term">Hooks, transcripts &amp; working unrecorded</span>
+          <p class="j-def"><strong>Hooks</strong> are small scripts triggered automatically by Claude Code (here,
+            showing your status block at session start and uploading your session <strong>transcript</strong> when it
+            ends if you opted in). Need an unrecorded session? Run <code>MBI_NO_RECORD=1 claude</code> or
+            <code>sh scripts/mbi skip &lt;session&gt;</code>.
+          </p>
+        </li>
+        <li class="j-item" id="parallel-second-ai" data-tags="independent check fresh session second ai">
+          <span class="j-term">Parallel sessions &amp; &ldquo;second AI&rdquo; check</span>
+          <p class="j-def">You can open more than one Claude Code session on different subtasks at once. Asking the
+            <em>same</em> session to check its own answer is not independent (it anchors on its previous reasoning); a
+            <strong>second-AI check</strong> means opening a fresh session with no shared history and asking it to
+            attack or re-derive the result.
+          </p>
+        </li>
+        <li class="j-item" id="hallucination" data-tags="hallucinated references fake citations doi arxiv">
+          <span class="j-term">Hallucinated references</span>
+          <p class="j-def">AI models sometimes invent plausible-sounding paper titles, authors, or page numbers from
+            memory. That's why our rules insist on a real <strong>DOI</strong> or <strong>arXiv ID</strong> (and
+            checking the paper yourself) before citing anything.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 2. TERMINAL, FILES & OS -->
+    <section class="j-sec" data-cat="terminal">
+      <h2>2 &middot; Terminal, files &amp; OS</h2>
+      <ul class="j-list">
+        <li class="j-item" id="terminal-shell" data-tags="powershell bash git bash wsl command line cli">
+          <span class="j-term">Terminal / shell (PowerShell, bash, Git Bash, WSL)</span>
+          <p class="j-def">A text window where you type commands for your computer. macOS and Linux use
+            <strong>bash</strong>/zsh; Windows has <strong>PowerShell</strong> by default, plus <strong>Git
+              Bash</strong> (installed with Git) or <strong>WSL</strong> (Windows Subsystem for Linux, a full Linux
+            shell inside Windows) for running <code>sh scripts/...</code> commands.
+          </p>
+        </li>
+        <li class="j-item" id="command-flag" data-tags="option argument --pid --transcripts">
+          <span class="j-term">Command &amp; flag (<code>--pid</code>, <code>--transcripts</code>)</span>
+          <p class="j-def">A <strong>command</strong> is the program you run (e.g. <code>sh scripts/setup</code>); a
+            <strong>flag</strong> starts with <code>-</code> or <code>--</code> and passes an option to it (e.g.
+            <code>--pid P14 --transcripts no</code>).
+          </p>
+        </li>
+        <li class="j-item" id="path-env" data-tags="PATH environment variable command not found">
+          <span class="j-term"><code>PATH</code></span>
+          <p class="j-def">The list of folders your computer searches when you type a program name like
+            <code>python</code> or <code>git</code>. If a program is installed but not on <code>PATH</code>, the
+            terminal reports <em>&ldquo;command not found&rdquo;</em>.
+          </p>
+        </li>
+        <li class="j-item" id="paths-dots"
+          data-tags="file path home folder tilde ~ hidden dot folder current working directory">
+          <span class="j-term">File path, home folder (<code>~</code>), dot-folders &amp; current folder</span>
+          <p class="j-def">A <strong>path</strong> is a file's address (e.g. <code>code/fig_gap.py</code>).
+            <code>~</code> is shorthand for your personal home folder (<code>C:\Users\you</code> on Windows,
+            <code>/Users/you</code> on Mac). Folders starting with a dot (like <code>.claude/</code> or
+            <code>.git/</code>) are hidden by default. Always open Claude Code in the <strong>top folder of your team
+              repo</strong> (<code>MBI-2026/teamN</code>), not a subfolder.
+          </p>
+        </li>
+        <li class="j-item" id="scripts" data-tags=".sh .ps1 shell script powershell script">
+          <span class="j-term">Scripts (<code>.sh</code>, <code>.ps1</code>)</span>
+          <p class="j-def">Plain-text files containing terminal commands to run in sequence: <code>.sh</code> is a
+            bash/shell script (macOS, Linux, Git Bash), and <code>.ps1</code> is a Windows PowerShell script.</p>
+        </li>
+        <li class="j-item" id="markdown-json" data-tags="md json file format text data">
+          <span class="j-term">Markdown (<code>.md</code>) &amp; JSON (<code>.json</code>)</span>
+          <p class="j-def"><strong>Markdown</strong> is plain text with light formatting (<code>#</code> headings,
+            <code>**bold**</code>, tables) &mdash; used for <code>README.md</code>, <code>plan.md</code>, logs, and
+            <code>note/note.md</code>. <strong>JSON</strong> is structured key-value data (used for
+            <code>event.json</code> and saved calculation outputs).
+          </p>
+        </li>
+        <li class="j-item" id="admin-rights" data-tags="software centre package manager install university laptop">
+          <span class="j-term">Admin rights, Software Centre &amp; package manager</span>
+          <p class="j-def"><strong>Admin rights</strong> let you install programs system-wide. On managed Uppsala
+            University Windows laptops without admin rights, install approved software (VS Code, Git, Python) from the
+            <strong>Software Centre</strong>. On Linux/Mac, a <strong>package manager</strong> (<code>apt</code>,
+            <code>brew</code>) installs tools from the terminal.
+          </p>
+        </li>
+        <li class="j-item" id="localhost" data-tags="http.server 127.0.0.1 local server cors file://">
+          <span class="j-term"><code>localhost</code> / <code>python -m http.server</code></span>
+          <p class="j-def"><code>localhost</code> (or <code>127.0.0.1</code>) is your own laptop pretending to be a web
+            server. Running <code>python -m http.server 8000</code> lets you preview HTML/3D demos at
+            <code>http://127.0.0.1:8000</code> when double-clicking a <code>file://</code> page is blocked by browser
+            security rules.
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 3. GIT & GITHUB -->
+    <section class="j-sec" data-cat="git">
+      <h2>3 &middot; Git &amp; GitHub</h2>
+      <ul class="j-list">
+        <li class="j-item" id="git-vs-github" data-tags="version control repo repository organisation">
+          <span class="j-term"><code>git</code> vs. GitHub, repository (repo) &amp; organisation</span>
+          <p class="j-def"><strong>git</strong> is the version-control program on your laptop that tracks changes to a
+            folder. <strong>GitHub</strong> is the website hosting the shared copy of that folder (a
+            <strong>repository</strong>, or <strong>repo</strong>). All team repos
+            (<code>team1</code>&ndash;<code>team5</code>) live privately inside the
+            <code>manybodyintelligence2026</code> GitHub <strong>organisation</strong>.
+          </p>
+        </li>
+        <li class="j-item" id="git-workflow" data-tags="clone edit commit pull push local remote save">
+          <span class="j-term">Local vs. remote: <code>clone</code> &rarr; edit &rarr; <code>commit</code> &rarr;
+            <code>pull</code> &rarr; <code>push</code></span>
+          <p class="j-def"><strong>Clone</strong> downloads the repo once to your laptop. Saving a file only changes
+            your laptop (<em>local</em>). <strong>Commit</strong> records a labelled snapshot locally;
+            <strong>pull</strong> fetches teammates' latest commits from GitHub (<em>remote</em>); <strong>push</strong>
+            uploads yours so your team can see them.
+          </p>
+        </li>
+        <li class="j-item" id="pull-rebase" data-tags="git pull --rebase sync history">
+          <span class="j-term"><code>git pull --rebase</code></span>
+          <p class="j-def">Downloads your teammates' new commits and neatly replays your local commits on top of them,
+            avoiding messy merge commits. Our setup script configures this automatically; always pull before you push.
+          </p>
+        </li>
+        <li class="j-item" id="branch" data-tags="main mbi-transcripts parallel line">
+          <span class="j-term">Branch (<code>main</code> vs. <code>mbi-transcripts/P##</code>)</span>
+          <p class="j-def">A parallel version of a repo's history. Everyone on your team works and pushes on the default
+            <code>main</code> branch; automated transcript uploads go quietly to separate
+            <code>mbi-transcripts/P##</code> branches (leave those alone).
+          </p>
+        </li>
+        <li class="j-item" id="merge-conflict" data-tags="conflict collision same line">
+          <span class="j-term">Merge conflict</span>
+          <p class="j-def">Happens when two teammates edit the exact same lines of a file (e.g. <code>README.md</code>)
+            before pulling. Git pauses and marks both versions in the file; you (or Claude) pick the combined text,
+            commit, and push. Keeping work-in-progress in your own <code>&lt;name&gt;/</code> folder prevents most
+            conflicts.</p>
+        </li>
+        <li class="j-item" id="force-push" data-tags="git push --force rewrite history never">
+          <span class="j-term">Force-push (never do this!)</span>
+          <p class="j-def"><code>git push --force</code> overwrites GitHub's history with yours and can erase teammates'
+            commits. Our commit history is part of the hackathon record &mdash; never force-push or allow Claude to do
+            so.</p>
+        </li>
+        <li class="j-item" id="pat" data-tags="personal access token fine-grained credential manager password">
+          <span class="j-term">Personal access token (PAT) &amp; git credential manager</span>
+          <p class="j-def">A <strong>fine-grained token</strong> is a temporary, limited-scope password for programs so
+            Claude/git can push to your team repo without your main GitHub password. The <strong>git credential
+              manager</strong> stores it securely once so you don't re-enter it. Never paste a token inside your repo or
+            Discord.</p>
+        </li>
+        <li class="j-item" id="github-extras"
+          data-tags="README .gitignore GitHub Pages GitHub Actions bookkeeping.yml red x">
+          <span class="j-term"><code>README.md</code>, <code>.gitignore</code>, GitHub Pages &amp; GitHub Actions</span>
+          <p class="j-def"><code>README.md</code> is the front page of your repo. <code>.gitignore</code> lists files
+            git should never upload (like temporary cache files). <strong>GitHub Pages</strong> turns a repo into a
+            website (how this event site is hosted). <strong>GitHub Actions</strong> runs automated checks on every push
+            &mdash; your team repo runs <code>bookkeeping.yml</code>, so a red <code>&times;</code> next to a commit
+            just means a bookkeeping item isn't filled in yet (not that your code broke).</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 4. PYTHON & EDITORS -->
+    <section class="j-sec" data-cat="python">
+      <h2>4 &middot; Python &amp; editors</h2>
+      <ul class="j-list">
+        <li class="j-item" id="python-pip" data-tags="python 3.8 package library pip install cmcrameri">
+          <span class="j-term">Python 3.8+, package / library &amp; <code>pip</code></span>
+          <p class="j-def"><strong>Python</strong> is the scripting language used for both the bookkeeping scripts and
+            most plots/calculations. A <strong>package</strong> (or library) is reusable code like <code>numpy</code>,
+            <code>matplotlib</code>, or <code>cmcrameri</code>; <strong><code>pip</code></strong> is Python's installer
+            (e.g. <code>pip install cmcrameri</code>).
+          </p>
+        </li>
+        <li class="j-item" id="venv-conda" data-tags="virtual environment venv conda isolated python">
+          <span class="j-term">Virtual environment (<code>venv</code> / <code>conda</code>)</span>
+          <p class="j-def">A self-contained folder holding a specific Python version and set of packages so installing
+            something for the hackathon doesn't break other research code on your laptop. Never commit a
+            <code>venv/</code> folder to git.
+          </p>
+        </li>
+        <li class="j-item" id="matplotlib-mplstyle" data-tags="matplotlib style file mbi.mplstyle team.mplstyle plot">
+          <span class="j-term">Matplotlib &amp; <code>.mplstyle</code> files</span>
+          <p class="j-def"><strong>Matplotlib</strong> is Python's standard plotting library. An
+            <strong><code>.mplstyle</code></strong> file (like our bundled <code>mbi.mplstyle</code>) sets fonts, tick
+            widths, and colour defaults in one place so every figure made by your team looks consistent.
+          </p>
+        </li>
+        <li class="j-item" id="vscode" data-tags="visual studio code extension restricted mode editor ide">
+          <span class="j-term">VS Code, extension &amp; Restricted Mode</span>
+          <p class="j-def"><strong>VS Code</strong> is a free code editor where you can edit files and run the official
+            Anthropic Claude Code <strong>extension</strong> (add-on). When opening a new folder, VS Code may start in
+            <strong>Restricted Mode</strong> for safety &mdash; click <em>&ldquo;Yes, I trust the authors&rdquo;</em> or
+            Claude Code won't run.
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 5. FIGURES, TEX & VISUALISATION -->
+    <section class="j-sec" data-cat="figures">
+      <h2>5 &middot; Figures, TeX &amp; visualisation</h2>
+      <ul class="j-list">
+        <li class="j-item" id="vector-raster" data-tags="pdf svg png webp dpi resolution scalable">
+          <span class="j-term">Vector (PDF, SVG) vs. raster (PNG, WebP) &amp; DPI</span>
+          <p class="j-def"><strong>Vector</strong> graphics store mathematical paths and text &mdash; they stay
+            razor-sharp at any zoom (use <strong>PDF</strong> for papers, <strong>SVG</strong> for editable schematics).
+            <strong>Raster</strong> images store a pixel grid (<strong>PNG</strong> for crisp stills,
+            <strong>WebP</strong> for compact animations). <strong>DPI</strong> (dots per inch) sets raster sharpness:
+            use &ge; 300 DPI for print.
+          </p>
+        </li>
+        <li class="j-item" id="colourmaps"
+          data-tags="crameri batlow vik cork bam jet rainbow perceptually uniform sequential diverging cyclic colour-blind paul tol scienceplots">
+          <span class="j-term">Colour maps: perceptually uniform, Crameri, Paul Tol, SciencePlots &amp; why not
+            <code>jet</code></span>
+          <p class="j-def">Rainbow maps like <code>jet</code> create fake sharp edges where the data is smooth and break
+            for colour-blind readers. <strong>Perceptually uniform</strong> maps (like <strong>Crameri</strong>'s
+            <code>batlow</code>, <code>vik</code>, <code>cork</code>, <code>bam</code>) keep brightness honest: use
+            <strong>sequential</strong> maps for 0&rarr;max quantities, <strong>diverging</strong> maps centred at 0 for
+            signed data (&plusmn;), and <strong>cyclic</strong> maps for phases/angles. <strong>Paul Tol</strong> offers
+            clean discrete line palettes; <strong>SciencePlots</strong> provides journal Matplotlib presets.
+          </p>
+        </li>
+        <li class="j-item" id="tex-distribution" data-tags="latex tex live miktex mactex overleaf compiler">
+          <span class="j-term">LaTeX, TeX distribution (TeX Live, MiKTeX, MacTeX) &amp; Overleaf</span>
+          <p class="j-def"><strong>LaTeX</strong> is the typesetting language for physics papers. To compile
+            <code>.tex</code> files into PDF on your laptop, you need a <strong>TeX distribution</strong> &mdash; the
+            bundle of LaTeX engine + fonts + packages (<strong>TeX Live</strong> on Linux/Windows,
+            <strong>MiKTeX</strong> on Windows, <strong>MacTeX</strong> on macOS). <strong>Overleaf</strong> compiles
+            LaTeX in the browser so you don't need a local install.
+          </p>
+        </li>
+        <li class="j-item" id="mathtext-cm" data-tags="computer modern matplotlib mathtext no tex installation needed">
+          <span class="j-term">Computer Modern &amp; Matplotlib <code>mathtext</code></span>
+          <p class="j-def"><strong>Computer Modern</strong> is LaTeX's classic math font. Matplotlib's built-in
+            <strong><code>mathtext</code></strong> engine renders Computer Modern equations (<code>$E - E_F$</code>)
+            directly inside Python with <em>no TeX distribution installed</em> &mdash; our <code>mbi.mplstyle</code>
+            enables this automatically.
+          </p>
+        </li>
+        <li class="j-item" id="tikz" data-tags="latex vector diagram schematic pgf">
+          <span class="j-term">TikZ</span>
+          <p class="j-def">A LaTeX package for drawing vector schematics and diagrams purely in code, matching your
+            paper's exact fonts and math symbols.</p>
+        </li>
+        <li class="j-item" id="blender" data-tags="cycles eevee ray tracing headless blender -b 3d render">
+          <span class="j-term">Blender, Cycles vs. EEVEE, ray tracing &amp; headless rendering</span>
+          <p class="j-def"><strong>Blender</strong> is a free, open-source 3D studio controllable from Python.
+            <strong>EEVEE</strong> is its fast real-time renderer (good for previews); <strong>Cycles</strong> uses
+            physically based <strong>ray tracing</strong> (simulating real light bounces, glass refraction, and soft
+            shadows). <strong>Headless rendering</strong> (<code>blender -b -P scene.py</code>) runs Blender invisibly
+            from the terminal &mdash; no clicking menus needed.
+          </p>
+        </li>
+        <li class="j-item" id="manim" data-tags="3blue1brown python math animation video">
+          <span class="j-term">Manim</span>
+          <p class="j-def">An open-source Python animation library (created for 3Blue1Brown) for scripted mathematical
+            equations, transforms, and explainer videos.</p>
+        </li>
+        <li class="j-item" id="vesta-ovito-matterviz"
+          data-tags="crystal structure molecular dynamics brillouin zone fermi surface 3d">
+          <span class="j-term">VESTA, OVITO &amp; MatterViz</span>
+          <p class="j-def">Domain-specific 3D visualisers: <strong>VESTA</strong> renders crystal structures and charge
+            densities; <strong>OVITO</strong> visualises large atomic/molecular dynamics trajectories;
+            <strong>MatterViz</strong> is a web/interactive toolkit for crystals, 3D Brillouin zones, and Fermi
+            surfaces.
+          </p>
+        </li>
+        <li class="j-item" id="html-animation" data-tags="offline html canvas2d webgl three.js interactive slide">
+          <span class="j-term">Offline HTML animation, Canvas2D, WebGL &amp; Three.js</span>
+          <p class="j-def">A single self-contained <code>.html</code> file that opens in any browser with no internet
+            and runs smoothly at 60 fps &mdash; tiny (~10 kB vs. 50 MB video) and interactive during Q&amp;A.
+            <strong>Canvas2D</strong> draws fast 2D plots/lattices; <strong>WebGL</strong> uses your GPU for 3D;
+            <strong>Three.js</strong> is the standard JavaScript 3D library built on WebGL.
+          </p>
+        </li>
+        <li class="j-item" id="shaders-fps-query"
+          data-tags="shader smoothstep.io fps frames per second ?t= url parameter ffmpeg">
+          <span class="j-term">Shaders (<code>smoothstep.io</code>), fps, URL parameter (<code>?t=2.5</code>) &amp;
+            <code>ffmpeg</code></span>
+          <p class="j-def"><strong>Shaders</strong> are tiny GPU programs for smooth real-time wave/field animations
+            (e.g. via <code>smoothstep.io</code>). <strong>fps</strong> is frames per second (60 fps = silky smooth).
+            Adding a <strong>URL query parameter</strong> like <code>anim.html?t=2.5</code> freezes an HTML animation at
+            2.5 s so Claude can screenshot and inspect it. <strong><code>ffmpeg</code></strong> is a command-line tool
+            that converts frames into <code>.mp4</code> or <code>.gif</code> if you need a video file.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 6. PUBLISHING & EVENT RULES -->
+    <section class="j-sec" data-cat="publishing">
+      <h2>6 &middot; Publishing &amp; event rules</h2>
+      <ul class="j-list">
+        <li class="j-item" id="event-vs-project-paper" data-tags="authorship co-author write-up ownership">
+          <span class="j-term">Event paper vs. project paper</span>
+          <p class="j-def">The <strong>event paper</strong> is a short paper the organisers write about how the
+            hackathon went (opt-in co-authorship for all participants; never gives away publishable team details). A
+            <strong>project paper</strong> is any follow-up physics paper your team decides to write from its own
+            results.
+          </p>
+        </li>
+        <li class="j-item" id="credit-roles" data-tags="credit taxonomy contributions authorship">
+          <span class="j-term">CRediT roles</span>
+          <p class="j-def">The standard Contributor Roles Taxonomy (Conceptualization, Software, Validation, Writing,
+            etc.) used in <code>CONTRIBUTIONS.md</code> to record who did what cleanly and fairly.</p>
+        </li>
+        <li class="j-item" id="zenodo-ccby" data-tags="zenodo archive doi cc by 4.0 license open">
+          <span class="j-term">Zenodo &amp; CC BY 4.0</span>
+          <p class="j-def"><strong>Zenodo</strong> is CERN's open research archive that assigns a permanent DOI to
+            datasets, code, and notes. <strong>CC BY 4.0</strong> is an open Creative Commons license letting anyone
+            reuse figures or materials as long as they credit the authors.</p>
+        </li>
+        <li class="j-item" id="aps-widths"
+          data-tags="aps prb prl single column double column 86mm 178mm lightning talk">
+          <span class="j-term">APS / PRB column widths &amp; lightning talk</span>
+          <p class="j-def">Standard Physical Review figure widths: <strong>86 mm</strong> (3.375 in) for a single-column
+            figure, <strong>178 mm</strong> (7.0 in) for double-column &mdash; drawing at the exact final width keeps
+            fonts readable without shrinking. A <strong>lightning talk</strong> is your team's tight 5-minute summary
+            talk at 15:30.</p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 7. HACKATHON-SPECIFIC TERMS -->
+    <section class="j-sec" data-cat="event">
+      <h2>7 &middot; Hackathon-specific names &amp; commands</h2>
+      <ul class="j-list">
+        <li class="j-item" id="discord" data-tags="welcome team-selection technical-help chat">
+          <span class="j-term">Discord channels (<code>#welcome</code>, <code>#team-selection</code>,
+            <code>#technical-help</code>)</span>
+          <p class="j-def">Our event chat server: introduce yourself in <code>#welcome</code>, pick your team in
+            <code>#team-selection</code> to unlock your private team channel, and post screenshots in
+            <code>#technical-help</code> if stuck for more than 10 minutes.
+          </p>
+        </li>
+        <li class="j-item" id="ids" data-tags="participant id P## team id T## T01">
+          <span class="j-term">Participant ID (<code>P##</code>) &amp; Team ID (<code>T##</code>)</span>
+          <p class="j-def">Short codes (like <code>P14</code> and <code>T01</code>) used by the bookkeeping tools to
+            name your log file (<code>log/P14.md</code>), log entries (<code>T01-P14-E01</code>), and transcript
+            branches. Real names are fine everywhere in prose.</p>
+        </li>
+        <li class="j-item" id="our-idea-question" data-tags="our-idea Q0 Q1 Q2 question history done today confidence">
+          <span class="j-term"><code>our-idea/</code>, question history (<code>Q0, Q1, Q2</code>) &amp; Confidence
+            (1&ndash;5)</span>
+          <p class="j-def"><code>our-idea/</code> holds each teammate's bio and 2&ndash;3 papers. <code>Q0</code> is
+            your starting question in <code>README.md</code>; if your team sharpens or narrows it during the day, record
+            <code>Q1</code>, <code>Q2</code> with the time and reason, plus your team's honest <strong>Confidence
+              (1&ndash;5)</strong> rating.
+          </p>
+        </li>
+        <li class="j-item" id="plan-files" data-tags="plan.md plan-ai.md tracks fallbacks scope-to-one-day">
+          <span class="j-term"><code>plan.md</code> vs. <code>plan-ai.md</code>, tracks &amp; fallbacks</span>
+          <p class="j-def">Created by <code>/scope-to-one-day</code> in Phase 1: <strong><code>plan.md</code></strong>
+            is a one-screen summary for your team; <strong><code>plan-ai.md</code></strong> has the full arithmetic,
+            references, and per-person <strong>tracks</strong> (so each teammate can start a session with
+            <em>&ldquo;Read plan-ai.md, I'm on track B&rdquo;</em>) plus pre-agreed <strong>fallbacks</strong> if a
+            calculation stalls.
+          </p>
+        </li>
+        <li class="j-item" id="repo-folders" data-tags="checks.md note.md CONTRIBUTIONS.md talk review photos codebook">
+          <span class="j-term">Key team repo files (<code>checks/</code>, <code>note/</code>, <code>talk/</code>,
+            <code>review/</code>, <code>photos/</code>)</span>
+          <p class="j-def"><code>checks/checks.md</code> records independent checks (using method names from
+            <code>log/CODEBOOK.md</code>); <code>note/note.md</code> is the 2-page note; <code>talk/</code> holds
+            slides; <code>review/</code> holds referee reports; <code>photos/</code> holds phone snaps of
+            whiteboards/paper derivations; <code>CONTRIBUTIONS.md</code> records CRediT roles.
+          </p>
+        </li>
+        <li class="j-item" id="bookkeeping-cmds" data-tags="/log-entry no-ai chat /log-check /stage mbi doctor status">
+          <span class="j-term">Bookkeeping commands (<code>/log-entry</code>, <code>/log-check</code>,
+            <code>/stage</code>, <code>sh scripts/mbi</code>)</span>
+          <p class="j-def">Type <code>/log-entry</code> after each task (~2 min; use <code>/log-entry no-ai</code> for
+            15+ min paper/whiteboard work or <code>/log-entry chat</code> for browser-AI work). Use <code>/stage</code>
+            when your team moves to the next phase, <code>/log-check</code> before Write ends to catch unlogged
+            sessions, and <code>sh scripts/mbi doctor</code> / <code>status</code> to check setup or what's still
+            missing.</p>
+        </li>
+        <li class="j-item" id="day-skills"
+          data-tags="scope-to-one-day board-to-latex figure-style schematic render-and-look html-animation html-fractal blender-scene check-results write-note">
+          <span class="j-term">Downloadable phase skills (Scope, First attempt, Figures &amp; Write)</span>
+          <p class="j-def">Phase 1: <code>/scope-to-one-day</code> (one-day research plan). Phase 2:
+            <code>/board-to-latex</code> (whiteboard/paper photos to LaTeX). Phase 4: <code>/figure-style</code>,
+            <code>/schematic</code>, <code>/render-and-look</code>, <code>/html-animation</code>,
+            <code>/html-fractal</code>, and <code>/blender-scene</code>. Phase 5: <code>/check-results</code> and
+            <code>/write-note</code> (PRL-style 2-page PDF).
+          </p>
+        </li>
+        <li class="j-item" id="phases-fika"
+          data-tags="scope first attempt first result check make figures write talks peer review close fika coffee">
+          <span class="j-term">The phases &amp; Fika</span>
+          <p class="j-def"><strong>Scope</strong> (09:15) &rarr; <strong>First attempt &amp; First result</strong>
+            (10:15) &rarr; <strong>Check</strong> (13:00) &rarr; <strong>Make figures</strong> (13:45) &rarr;
+            <strong>Write</strong> (14:45) &rarr; <strong>Lightning talks</strong> (15:30) &rarr; <strong>Peer
+              review</strong> (16:00) &rarr; <strong>Close</strong> (16:30&ndash;17:00). <strong>Fika</strong> (10:00
+            and 15:00) is the essential Swedish coffee-and-pastry break &mdash; plus pizza at 12:15.
+          </p>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 8. COMMON ERRORS -->
+    <section class="j-sec" data-cat="errors">
+      <h2>8 &middot; Common errors &amp; quick fixes</h2>
+      <ul class="j-list">
+        <li class="j-item err-item" id="err-dubious"
+          data-tags="dubious ownership safe.directory windows d drive external">
+          <span class="j-term"><code>fatal: detected dubious ownership in repository</code></span>
+          <p class="j-def">Common on Windows when a repo sits on a second drive (e.g. <code>D:</code>) or shared
+            partition. Run the exact <code>git config --global --add safe.directory ...</code> line printed in the error
+            message (or ask Claude to run it).</p>
+        </li>
+        <li class="j-item err-item" id="err-auth"
+          data-tags="authentication failed permission denied publickey ssh token expired 403">
+          <span class="j-term"><code>Authentication failed</code> or <code>Permission denied (publickey)</code></span>
+          <p class="j-def">Your GitHub token is wrong/expired, or git tried SSH instead of HTTPS. Re-check that you
+            cloned with the <code>https://github.com/...</code> URL and saved a valid fine-grained token with
+            <em>Contents: Read and write</em>.
+          </p>
+        </li>
+        <li class="j-item err-item" id="err-rejected" data-tags="rejected fetch first non-fast-forward push failed">
+          <span class="j-term"><code>! [rejected] main -&gt; main (fetch first)</code></span>
+          <p class="j-def">Totally normal &mdash; a teammate pushed while you were working. Run
+            <code>git pull --rebase</code> first, then <code>git push</code> again. Never force-push.
+          </p>
+        </li>
+        <li class="j-item err-item" id="err-not-found" data-tags="command not found not recognized path python git">
+          <span class="j-term"><code>command not found</code> / <code>is not recognized</code></span>
+          <p class="j-def">The program isn't installed yet, isn't on your <code>PATH</code>, or you need to close and
+            reopen your terminal / VS Code after installing it. Ask Claude to check which path it's installed at.</p>
+        </li>
+        <li class="j-item err-item" id="err-skill"
+          data-tags="skill not found slash command missing reload restart session">
+          <span class="j-term">Installed a skill, but <code>/skill-name</code> doesn't show up</span>
+          <p class="j-def">Claude Code only scans skills when a session starts. Check that
+            <code>~/.claude/skills/&lt;skill-name&gt;/SKILL.md</code> exists (not nested inside an extra folder), then
+            <strong>start a new Claude Code session</strong>.
+          </p>
+        </li>
+        <li class="j-item err-item" id="err-red-x" data-tags="red x github actions bookkeeping failed commit check">
+          <span class="j-term">Red <code>&times;</code> next to your commit on GitHub</span>
+          <p class="j-def">That's the automated bookkeeping checker (<code>bookkeeping.yml</code>), not a code failure.
+            Run <code>sh scripts/mbi status</code> in your repo to see which checklist item is still open.</p>
+        </li>
+        <li class="j-item err-item" id="err-blank-html"
+          data-tags="blank white page three.js file:// cors module http.server">
+          <span class="j-term">Local HTML / 3D animation opens as a blank page</span>
+          <p class="j-def">Browsers block some scripts when opened directly via <code>file://</code>. Start a local
+            server in that folder (<code>python -m http.server 8000</code>) and open <code>http://127.0.0.1:8000/</code>
+            instead.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    <p>Organisers: <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-1226">Konstantinos
+        Sourounis</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-2276">Pramodh Senarath
+        Yapa</a>,
+      <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N23-2515">Aksel Kobiałka</a> and <a
+        href="https://www.uu.se/en/contact-and-organisation/staff?query=N18-2312">Alena Vishina</a>
+    </p>
+    <p>Materials Theory · Department of Physics and Astronomy · Uppsala University</p>
+  </footer>
+  <script src="assets/site.js"></script>
+  <script>
+    (function () {
+      "use strict";
+      const input = document.getElementById("q");
+      const clearBtn = document.getElementById("clearBtn");
+      const countText = document.getElementById("countText");
+      const emptyState = document.getElementById("emptyState");
+      const searchResults = document.getElementById("searchResults");
+      const catBtns = Array.from(document.querySelectorAll(".cat-btn"));
+      const sections = Array.from(document.querySelectorAll(".j-sec"));
+      const catNames = {
+        claude: "Claude & AI", terminal: "Terminal & files", git: "Git & GitHub",
+        python: "Python & editors", figures: "Figures & TeX", publishing: "Publishing",
+        event: "Hackathon terms", errors: "Common errors"
+      };
+      const items = Array.from(document.querySelectorAll(".j-item")).map(el => {
+        const termEl = el.querySelector(".j-term");
+        const defEl = el.querySelector(".j-def");
+        const cat = el.closest(".j-sec").dataset.cat;
+        const termText = termEl.textContent.toLowerCase();
+        const defText = defEl.textContent.toLowerCase();
+        const tagsText = (el.dataset.tags || "").toLowerCase();
+        return {
+          el, cat, termEl, defEl,
+          origTerm: termEl.innerHTML,
+          origDef: defEl.innerHTML,
+          termText, defText, tagsText,
+          haystack: termText + " " + defText + " " + tagsText
+        };
       });
 
-      searchResults.classList.toggle("show", matched.length > 0);
-      emptyState.classList.toggle("show", matched.length === 0);
-      countText.textContent = matched.length + (matched.length === 1 ? " match" : " matches") + ' for "' + raw + '" (best matches first)';
-      return;
-    }
+      let activeCat = "all";
 
-    searchResults.classList.remove("show");
-    searchResults.innerHTML = "";
+      function escapeRegExp(s) {
+        return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      }
 
-    let shown = 0;
-    items.forEach(it => {
-      const vis = activeCat === "all" || it.cat === activeCat;
-      it.el.classList.toggle("hidden", !vis);
-      it.termEl.innerHTML = it.origTerm;
-      it.defEl.innerHTML = it.origDef;
-      if (vis) shown++;
-    });
+      function highlightNode(root, tokens) {
+        if (!tokens.length) return;
+        const re = new RegExp("(" + tokens.map(escapeRegExp).join("|") + ")", "gi");
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(node => {
+          const text = node.nodeValue;
+          if (!re.test(text)) return;
+          re.lastIndex = 0;
+          const frag = document.createDocumentFragment();
+          let last = 0, m;
+          while ((m = re.exec(text)) !== null) {
+            if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+            const mk = document.createElement("mark");
+            mk.textContent = m[0];
+            frag.appendChild(mk);
+            last = m.index + m[0].length;
+          }
+          if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+          node.parentNode.replaceChild(frag, node);
+        });
+      }
 
-    sections.forEach(sec => {
-      const hasAny = sec.querySelector(".j-item:not(.hidden)") !== null;
-      sec.classList.toggle("hidden", !hasAny);
-    });
+      function scoreItem(it, tokens) {
+        let score = 0;
+        for (const tok of tokens) {
+          const wb = new RegExp("\\b" + escapeRegExp(tok) + "\\b");
+          const ws = new RegExp("\\b" + escapeRegExp(tok));
+          if (wb.test(it.termText)) score += 100;
+          else if (ws.test(it.termText)) score += 60;
+          else if (it.termText.includes(tok)) score += 35;
+          if (wb.test(it.tagsText)) score += 45;
+          else if (ws.test(it.tagsText)) score += 25;
+          else if (it.tagsText.includes(tok)) score += 15;
+          if (wb.test(it.defText)) score += 18;
+          else if (ws.test(it.defText)) score += 8;
+          else if (it.defText.includes(tok)) score += 2;
+        }
+        return score;
+      }
 
-    emptyState.classList.toggle("show", shown === 0);
-    if (activeCat !== "all") {
-      countText.textContent = "Showing " + shown + " of " + items.length + " terms";
-    } else {
-      countText.textContent = items.length + " terms across 8 sections";
-    }
-  }
+      function applyFilter() {
+        const raw = input.value.trim();
+        const tokens = raw.toLowerCase().split(/\s+/).filter(Boolean);
+        clearBtn.classList.toggle("show", raw.length > 0);
 
-  input.addEventListener("input", applyFilter);
-  clearBtn.addEventListener("click", () => {
-    input.value = "";
-    applyFilter();
-    input.focus();
-  });
+        if (tokens.length) {
+          sections.forEach(sec => sec.classList.add("hidden"));
+          searchResults.innerHTML = "";
+          const matched = items
+            .filter(it => (activeCat === "all" || it.cat === activeCat) && tokens.every(tok => it.haystack.includes(tok)))
+            .map(it => ({ it, score: scoreItem(it, tokens) }))
+            .sort((a, b) => b.score - a.score);
 
-  catBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-      activeCat = btn.dataset.cat;
-      catBtns.forEach(b => b.classList.toggle("on", b === btn));
+          matched.forEach(({ it }) => {
+            const clone = it.el.cloneNode(true);
+            clone.classList.remove("hidden");
+            clone.removeAttribute("id");
+            const tEl = clone.querySelector(".j-term");
+            const dEl = clone.querySelector(".j-def");
+            tEl.innerHTML = it.origTerm;
+            dEl.innerHTML = it.origDef;
+            highlightNode(tEl, tokens);
+            highlightNode(dEl, tokens);
+            const badge = document.createElement("span");
+            badge.className = "j-cat-tag";
+            badge.textContent = "[" + catNames[it.cat] + "]";
+            tEl.appendChild(badge);
+            searchResults.appendChild(clone);
+          });
+
+          searchResults.classList.toggle("show", matched.length > 0);
+          emptyState.classList.toggle("show", matched.length === 0);
+          countText.textContent = matched.length + (matched.length === 1 ? " match" : " matches") + ' for "' + raw + '" (best matches first)';
+          return;
+        }
+
+        searchResults.classList.remove("show");
+        searchResults.innerHTML = "";
+
+        let shown = 0;
+        items.forEach(it => {
+          const vis = activeCat === "all" || it.cat === activeCat;
+          it.el.classList.toggle("hidden", !vis);
+          it.termEl.innerHTML = it.origTerm;
+          it.defEl.innerHTML = it.origDef;
+          if (vis) shown++;
+        });
+
+        sections.forEach(sec => {
+          const hasAny = sec.querySelector(".j-item:not(.hidden)") !== null;
+          sec.classList.toggle("hidden", !hasAny);
+        });
+
+        emptyState.classList.toggle("show", shown === 0);
+        if (activeCat !== "all") {
+          countText.textContent = "Showing " + shown + " of " + items.length + " terms";
+        } else {
+          countText.textContent = items.length + " terms across 8 sections";
+        }
+      }
+
+      input.addEventListener("input", applyFilter);
+      clearBtn.addEventListener("click", () => {
+        input.value = "";
+        applyFilter();
+        input.focus();
+      });
+
+      catBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          activeCat = btn.dataset.cat;
+          catBtns.forEach(b => b.classList.toggle("on", b === btn));
+          applyFilter();
+        });
+      });
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "/" && document.activeElement !== input && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          e.preventDefault();
+          input.focus();
+          input.select();
+        } else if (e.key === "Escape" && document.activeElement === input) {
+          input.value = "";
+          applyFilter();
+          input.blur();
+        }
+      });
+
+      const params = new URLSearchParams(location.search);
+      if (params.get("q")) input.value = params.get("q");
       applyFilter();
-    });
-  });
-
-  document.addEventListener("keydown", e => {
-    if (e.key === "/" && document.activeElement !== input && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      e.preventDefault();
-      input.focus();
-      input.select();
-    } else if (e.key === "Escape" && document.activeElement === input) {
-      input.value = "";
-      applyFilter();
-      input.blur();
-    }
-  });
-
-  const params = new URLSearchParams(location.search);
-  if (params.get("q")) input.value = params.get("q");
-  applyFilter();
-})();
-</script>
+    })();
+  </script>
 </body>
+
 </html>
