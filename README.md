@@ -10,6 +10,7 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 | `resources.html` | Phase-by-phase resources hub for the day |
 | `jargon.html` | Searchable cheatsheet of AI, Git, terminal, Python, TeX, visualisation, and hackathon terms + common errors |
 | `scope/` | Phase 1 (09:15–10:15) Scope subpage and the downloadable `/scope-to-one-day` skill (`scope/mbi2026-scope-skill.zip`, built from `scope/skills/`) |
+| `first-attempt/` | Phase 2 (10:15–12:15) First attempt & First result subpage and the downloadable `/board-to-latex` skill (`first-attempt/mbi2026-board-skill.zip`, built from `first-attempt/skills/`) |
 | `write/` | Phase 5 (15:00–15:45) Write subpage and the downloadable `/check-results` and `/write-note` skills (`write/mbi2026-write-skills.zip`, built from `write/skills/`) |
 | `figures/` | Phase 4 (14:00–15:00) Figures & presentation subpage, 13-slide deck (`figures/slides/`), downloadable Claude Code skills (`figures/mbi2026-figure-skills.zip`), and live demos |
 | `assets/style.css` | Paper-and-ink styles, light and dark |

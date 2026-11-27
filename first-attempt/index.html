@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>First attempt &amp; First result · Resources · Many-Body Intelligence</title>
+  <meta name="description"
+    content="The /board-to-latex Claude Code skill: photos of whiteboard and paper derivations into faithful LaTeX, with Calculate this!, Check this! and Feynman! board commands.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .prompt-card {
+      position: relative;
+      margin: 1rem 0 1.8rem;
+      background: var(--tape);
+      color: var(--tape-text);
+      padding: 1rem 5.4rem 1rem 1.2rem;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .prompt-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 0.7rem;
+      top: 0.65rem;
+      font: 600 0.72rem var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--mark);
+      color: #fff;
+      border: 0;
+      padding: 0.35em 0.75em;
+      cursor: pointer;
+    }
+
+    .callout {
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 1rem 1.2rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .callout.principles {
+      border-left: 4px solid #1d5e57;
+    }
+
+    .callout.action {
+      border-left: 4px solid #a85513;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .callout.principles {
+        border-left-color: #3da598;
+      }
+
+      .callout.action {
+        border-left-color: #d98a3c;
+      }
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.95rem;
+    }
+
+    .dl-btn {
+      display: inline-block;
+      font: 600 0.82rem var(--mono);
+      text-decoration: none;
+      background: #1d5e57;
+      color: #fff !important;
+      padding: 0.55em 1.05em;
+      border: 1px solid #1d5e57;
+    }
+
+    .dl-btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    .dl-btn.sec {
+      background: transparent;
+      color: var(--ink) !important;
+      border: 1px solid var(--ink);
+    }
+
+    .dl-btn.sec:hover {
+      background: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.04em 0.32em;
+      font-size: 0.9em;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .callout code {
+      background: var(--paper);
+    }
+
+    table td:first-child {
+      width: 13rem;
+    }
+
+    @media (max-width: 36rem) {
+      table td:first-child {
+        width: 7rem;
+      }
+    }
+
+    .steps-mini {
+      margin: 0.6rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .steps-mini li {
+      margin: 0.45rem 0;
+    }
+
+    .plan-shape {
+      margin: 1rem 0 1.4rem;
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.9rem 1.1rem;
+      font: 0.8rem/1.55 var(--mono);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .crumb { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faded); margin: 0 0 0.85rem; }
+    .crumb a { color: inherit; }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <a href="../index.html">Many-Body Intelligence</a>
+    <nav>
+      <a href="../faq.html">FAQ</a>
+      <a href="../code-of-conduct.html">Code of conduct</a>
+      <a href="../resources.html" aria-current="page">Resources</a>
+      <a href="../jargon.html">Common jargon</a>
+    </nav>
+  </div>
+
+  <main>
+    <p class="crumb"><a href="../resources.html">&larr; Resources</a> &middot; Phase 2 (10:15&ndash;12:15)</p>
+    <h1 class="tape">First attempt &amp; First result</h1>
+    <p class="lede">One Claude Code skill for the hours of building: <code>/board-to-latex</code> turns a photo of a
+      whiteboard, blackboard or paper derivation into faithful, compilable LaTeX, and acts on the commands you write
+      next to it on the board: <em>Calculate this!</em>, <em>Check this!</em> and <em>Feynman!</em></p>
+
+    <div class="callout principles">
+      <strong>Core idea &mdash; ask, never guess.</strong><br>
+      Clean typeset LaTeX looks authoritative, so a silently guessed index, sign or factor of 2 becomes almost
+      invisible and can corrupt a whole derivation. The skill transcribes exactly what is written, marks anything it
+      cannot read with a red <code>?n</code> and asks you, and never corrects your physics inside the transcription:
+      possible errors go into a separate note.
+    </div>
+
+    <div class="callout action">
+      <strong>Getting started (3 steps):</strong>
+      <ol class="steps-mini">
+        <li><strong>Download &amp; let Claude install (30 seconds):</strong> click <strong>Download the skill
+            (.zip)</strong> below, then paste the install prompt right under it into Claude Code &mdash; it goes into
+          your personal <code>~/.claude/skills/</code> folder. <strong>Never edit your team repo's
+            <code>.claude/</code> folder.</strong></li>
+        <li><strong>Photograph the board into <code>photos/</code>:</strong> derivations on paper or a whiteboard are
+          part of the day's record. To have something calculated, checked or drawn, circle it and write the command
+          next to it before you take the photo.</li>
+        <li><strong>Transcribe:</strong> in Claude Code, ask <code>/board-to-latex</code> to transcribe the photo and
+          save the <code>.tex</code> in your own folder. Answer its questions about the red <code>?n</code> markers;
+          it then carries out the commands and gives you the updated LaTeX (and a PDF when it drew a diagram).</li>
+      </ol>
+      <div class="action-row">
+        <a class="dl-btn" href="mbi2026-board-skill.zip" download>Download the skill (.zip)</a>
+        <a class="dl-btn sec" href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/first-attempt/skills/board-to-latex/SKILL.md">Read the skill &rarr;</a>
+      </div>
+    </div>
+    <div class="prompt-card" style="margin-top:-0.4rem;">
+      <button class="copy-btn">Copy</button>
+      <pre>Unzip ~/Downloads/mbi2026-board-skill.zip (or wherever I saved it) and install the board-to-latex skill into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.</pre>
+    </div>
+    <p class="quiet">Prefer running a script yourself? Unzip and run <code>bash install-skill.sh</code> on macOS or
+      Linux, or <code>.\install-skill.ps1</code> on Windows. Start a new Claude Code session after installing.</p>
+
+    <h2>Board commands</h2>
+    <p>Circle the expression, derivation or diagram and write the command next to it (any capitalisation). A circle
+      or box without a command is only a highlight.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Write on the board</th>
+            <th>What the skill does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><em>Calculate this!</em></td>
+            <td>Evaluates the circled expression numerically in Python (CODATA constants from SciPy), states the values
+              and units it used, and sanity-checks dimensions, limits and order of magnitude. Missing values or units
+              are asked for, not assumed.</td>
+          </tr>
+          <tr>
+            <td><em>Check this!</em></td>
+            <td>Verifies the circled derivation step by step, symbolically with SymPy where it can and by numerical
+              spot checks where it cannot, and gives each step a verdict: &check; follows, &cross; does not follow
+              (with where the discrepancy appears), or ? cannot verify.</td>
+          </tr>
+          <tr>
+            <td><em>Feynman!</em></td>
+            <td>Draws the circled Feynman diagram with tikz-feynman exactly as you drew it (your topology, line types,
+              arrows and labels only), compiles it and compares the picture with the photo.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>A <em>Check this!</em> verdict on a derivation a person made is an independent check: it can go into
+      <code>checks/checks.md</code> with method <code>re-derivation</code> and done by <code>second-AI</code>. Log the
+      transcription with <code>/log-entry</code> like any other task.</p>
+
+    <h2>What it will not do</h2>
+    <ul>
+      <li>Guess a symbol it cannot read, or which of two readings you meant (&nu; or v, a prime or a smudge): it asks.</li>
+      <li>Correct your physics inside the transcription. A suspected sign error is transcribed as written and
+        mentioned in the notes.</li>
+      <li>Calculate or check anything that still contains an unread symbol.</li>
+      <li>Draw a diagram, plot or sketch you did not ask for: it leaves a placeholder and asks.</li>
+    </ul>
+    <p><strong>For the PDF</strong> you need LaTeX with the <code>physics</code>, <code>slashed</code> and
+      <code>tikz-feynman</code> packages (all in TeX Live, MacTeX and MiKTeX). Without LaTeX, paste the
+      <code>.tex</code> into <a href="https://www.overleaf.com/">Overleaf</a>.</p>
+
+    <h2>Starter prompts</h2>
+    <p>One photo:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /board-to-latex on photos/[board-1.jpg]. Save the .tex in my folder.</pre>
+    </div>
+    <p>A board in several photos:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /board-to-latex on photos/[board-left.jpg] and photos/[board-right.jpg]: they are the left and right halves of one board.</pre>
+    </div>
+    <p>After its questions:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Answers: 1 is &nu;, 2 is a prime, 3 is a lower index. Update the .tex and carry out the commands that were waiting.</pre>
+    </div>
+  </main>
+
+  <footer>
+    <p>Organisers: <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-1226">Konstantinos Sourounis</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-2276">Pramodh Senarath Yapa</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N23-2515">Aksel Kobiałka</a> and <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N18-2312">Alena Vishina</a></p>
+    <p>Materials Theory · Department of Physics and Astronomy · Uppsala University</p>
+  </footer>
+  <script src="../assets/site.js"></script>
+  <script>
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const txt = btn.parentNode.querySelector("pre").innerText;
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => {
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+        }, () => {
+          btn.textContent = "Ctrl+C";
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
