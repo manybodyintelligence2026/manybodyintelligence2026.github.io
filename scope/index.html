@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Scope · Resources · Many-Body Intelligence</title>
+  <meta name="description"
+    content="The /scope-to-one-day Claude Code skill: turn your team's idea into a plan that fits the hackathon day.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/style.css">
+  <style>
+    .prompt-card {
+      position: relative;
+      margin: 1rem 0 1.8rem;
+      background: var(--tape);
+      color: var(--tape-text);
+      padding: 1rem 5.4rem 1rem 1.2rem;
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    .prompt-card pre {
+      margin: 0;
+      white-space: pre-wrap;
+      font-family: var(--mono);
+    }
+
+    .copy-btn {
+      position: absolute;
+      right: 0.7rem;
+      top: 0.65rem;
+      font: 600 0.72rem var(--mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--mark);
+      color: #fff;
+      border: 0;
+      padding: 0.35em 0.75em;
+      cursor: pointer;
+    }
+
+    .callout {
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 1rem 1.2rem;
+      margin: 1.25rem 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .callout.principles {
+      border-left: 4px solid #1d5e57;
+    }
+
+    .callout.action {
+      border-left: 4px solid #a85513;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .callout.principles {
+        border-left-color: #3da598;
+      }
+
+      .callout.action {
+        border-left-color: #d98a3c;
+      }
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.95rem;
+    }
+
+    .dl-btn {
+      display: inline-block;
+      font: 600 0.82rem var(--mono);
+      text-decoration: none;
+      background: #1d5e57;
+      color: #fff !important;
+      padding: 0.55em 1.05em;
+      border: 1px solid #1d5e57;
+    }
+
+    .dl-btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    .dl-btn.sec {
+      background: transparent;
+      color: var(--ink) !important;
+      border: 1px solid var(--ink);
+    }
+
+    .dl-btn.sec:hover {
+      background: var(--ink);
+      color: var(--paper) !important;
+    }
+
+    code {
+      font-family: var(--mono);
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.04em 0.32em;
+      font-size: 0.9em;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .callout code {
+      background: var(--paper);
+    }
+
+    table td:first-child {
+      width: 13rem;
+    }
+
+    @media (max-width: 36rem) {
+      table td:first-child {
+        width: 7rem;
+      }
+    }
+
+    .steps-mini {
+      margin: 0.6rem 0 0;
+      padding-left: 1.25rem;
+    }
+
+    .steps-mini li {
+      margin: 0.45rem 0;
+    }
+
+    .plan-shape {
+      margin: 1rem 0 1.4rem;
+      background: var(--paper-deep);
+      border: 1px solid var(--rule);
+      padding: 0.9rem 1.1rem;
+      font: 0.8rem/1.55 var(--mono);
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .crumb { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faded); margin: 0 0 0.85rem; }
+    .crumb a { color: inherit; }
+  </style>
+</head>
+
+<body>
+  <div class="bar">
+    <a href="../index.html">Many-Body Intelligence</a>
+    <nav>
+      <a href="../faq.html">FAQ</a>
+      <a href="../code-of-conduct.html">Code of conduct</a>
+      <a href="../resources.html" aria-current="page">Resources</a>
+    </nav>
+  </div>
+
+  <main>
+    <p class="crumb"><a href="../resources.html">&larr; Resources</a> &middot; Phase 1 (09:15&ndash;10:15)</p>
+    <h1 class="tape">Scope</h1>
+    <p class="lede">One Claude Code skill for the first hour of the day: <code>/scope-to-one-day</code> turns your
+      team's idea into <code>plan.md</code>, a plan that fits the day, so that the hour goes on talking physics with
+      each other rather than on writing the plan.</p>
+
+    <div class="callout principles">
+      <strong>Core idea &mdash; an honest plan beats an ambitious one.</strong><br>
+      The most common way to lose a hackathon day is to start three heavy calculations and finish none. The skill
+      makes the options and their costs clear, pushes back when something will not fit in about three hours of
+      building, and writes the result down. Your team makes the scientific decisions.
+    </div>
+
+    <div class="callout action">
+      <strong>Getting started at 09:15 (3 steps):</strong>
+      <ol class="steps-mini">
+        <li><strong>Download &amp; let Claude install (30 seconds):</strong> click <strong>Download the skill
+            (.zip)</strong> below, then paste the install prompt right under it into Claude Code &mdash; Claude
+          unzips it into your personal <code>~/.claude/skills/</code> folder. <strong>Never edit your team repo's
+            <code>.claude/</code> folder</strong> (that holds the hackathon's <code>/log-entry</code> and
+          <code>/log-check</code> tools).</li>
+        <li><strong>Run it in your team repository:</strong> <code>git pull</code> so you see everything your
+          teammates put in <code>our-idea/</code>, start a new Claude Code session there and type
+          <code>/scope-to-one-day</code>. One person runs it, with the team around the screen.</li>
+        <li><strong>Decide together:</strong> answer its questions, choose the question and who takes which track,
+          confirm the lines it proposes for <code>README.md</code> and give your own Confidence. It commits
+          <code>plan.md</code>; everyone else runs <code>git pull</code>.</li>
+      </ol>
+      <div class="action-row">
+        <a class="dl-btn" href="mbi2026-scope-skill.zip" download>Download the skill (.zip)</a>
+        <a class="dl-btn sec"
+          href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/scope/skills/scope-to-one-day/SKILL.md">Read
+          the skill &rarr;</a>
+      </div>
+    </div>
+    <div class="prompt-card" style="margin-top:-0.4rem;">
+      <button class="copy-btn">Copy</button>
+      <pre>Unzip ~/Downloads/mbi2026-scope-skill.zip (or wherever I saved it) and install the scope-to-one-day skill into my personal ~/.claude/skills/ folder. Do not modify this repo's .claude/ folder.</pre>
+    </div>
+    <p class="quiet">Prefer running a script yourself? Unzip and run <code>bash install-skill.sh</code> on macOS or
+      Linux, or <code>.\install-skill.ps1</code> on Windows. Start a new Claude Code session after installing.</p>
+
+    <h2>What it does</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Step</th>
+            <th>What happens</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1 &middot; Find the idea</td>
+            <td>Reads the Q0 line in <code>README.md</code>, <code>our-idea/</code> and the names of your papers.
+              Several candidates and no decision: compares the strongest two or three, recommends one and asks you to
+              choose. No idea yet: says so and offers two or three.</td>
+          </tr>
+          <tr>
+            <td>2 &middot; Restate the question</td>
+            <td>One sentence naming the system or model, what is varied and what is computed. Checks it against the
+              event's rules: about a Master's project, new to everyone on the team, free to share, laptop-sized, a
+              first result possible by the end of the day.</td>
+          </tr>
+          <tr>
+            <td>3 &middot; Feasibility audit</td>
+            <td>Rough numbers for the core calculation (matrix size, k-points, parameter points, time per point)
+              against about three hours of building. A chain of heavy steps is cut to one core step, with the others
+              taken from published values or a simpler model. Verdict: fits / fits if narrowed / does not fit.</td>
+          </tr>
+          <tr>
+            <td>4 &middot; Literature check</td>
+            <td>Suggests one person runs it in parallel: has the question been answered, the closest results, one
+              known result to reproduce first as a benchmark. Cites only what it can identify by DOI or arXiv
+              number.</td>
+          </tr>
+          <tr>
+            <td>5 &middot; &ldquo;Done&rdquo; at three levels</td>
+            <td>Minimum (end of First result), Target (before Check), Stretch (only after Check): each a figure or an
+              equation you could put on a slide.</td>
+          </tr>
+          <tr>
+            <td>6 &middot; Fallbacks</td>
+            <td>Two or three narrower questions, each with a trigger tied to a stage of the day, so that nobody has to
+              re-scope under pressure.</td>
+          </tr>
+          <tr>
+            <td>7 &middot; Checks, chosen now</td>
+            <td>The checks for the Check phase, chosen before any result exists, each with its expected outcome; at
+              least one done by a person.</td>
+          </tr>
+          <tr>
+            <td>8 &middot; Split the work</td>
+            <td>One track per person with an output and a hand-over point. Tracks that share equations agree on
+              conventions first, in the Conventions section of <code>README.md</code>.</td>
+          </tr>
+          <tr>
+            <td>9 &middot; Write <code>plan.md</code></td>
+            <td>One page, committed. It shows you the lines for the question history in <code>README.md</code> (Q1,
+              &ldquo;Done today means&rdquo;, &ldquo;Expected&rdquo;) and writes them only once you agree.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>What it will not do</h2>
+    <ul>
+      <li>Choose your question or decide who does what: it recommends, you decide.</li>
+      <li>Fill in &ldquo;Confidence (1&ndash;5)&rdquo; in <code>README.md</code>: that is your team's judgement.</li>
+      <li>Invent a project when <code>our-idea/</code> is empty, or cite a paper it cannot identify.</li>
+    </ul>
+
+    <h2>What <code>plan.md</code> looks like</h2>
+<pre class="plan-shape"># &lt;title&gt;: plan for the day
+
+Question: &lt;one sentence&gt;
+Verdict: &lt;fits / fits if narrowed / does not fit&gt;. Cost: &lt;the numbers&gt;.
+
+## Done           Minimum &middot; Target &middot; Stretch
+## Fallbacks      If &lt;trigger tied to a stage&gt; &rarr; &lt;narrower question&gt;
+## Benchmark      the known result to reproduce first
+## Literature     references with DOI or arXiv number
+## Checks         check &middot; expected outcome &middot; method &middot; done by
+## Tracks         track &middot; who &middot; output &middot; hand-over
+## Conventions    units, Hamiltonian, lattice, Fourier convention
+## Assumptions and open questions</pre>
+
+    <h2>Starter prompts</h2>
+    <p>Typing <code>/scope-to-one-day</code> is enough. Telling it who is here and what you can run saves a round of
+      questions:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /scope-to-one-day. Today we are [names]. [Name] knows [code or method], [name] knows [...].
+We have laptops only.</pre>
+    </div>
+    <p>If you have several ideas and have not chosen:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Use /scope-to-one-day. We have several candidate ideas in our-idea/ and have not chosen yet.
+Compare the strongest two or three and recommend one.</pre>
+    </div>
+    <p>Later in the day, when things do not go to plan:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>We are at the end of First result and nothing works yet. Re-read plan.md,
+apply the matching fallback and update the plan with what changed and why.</pre>
+    </div>
+  </main>
+
+  <footer>
+    <p>Organisers: <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-1226">Konstantinos Sourounis</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N25-2276">Pramodh Senarath Yapa</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N23-2515">Aksel Kobiałka</a> and <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N18-2312">Alena Vishina</a></p>
+    <p>Materials Theory · Department of Physics and Astronomy · Uppsala University</p>
+  </footer>
+  <script src="../assets/site.js"></script>
+  <script>
+    document.querySelectorAll(".copy-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const txt = btn.parentNode.querySelector("pre").innerText;
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => {
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = "Copy"; }, 1500);
+        }, () => {
+          btn.textContent = "Ctrl+C";
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -8,6 +8,7 @@ A static site (plain HTML, CSS and a little JavaScript, with no build step) for 
 | `faq.html` | Questions and answers |
 | `code-of-conduct.html` | Working together, AI use, logs and data, authorship, ownership |
 | `resources.html` | Phase-by-phase resources hub for the day |
+| `scope/` | Phase 1 (09:15–10:15) Scope subpage and the downloadable `/scope-to-one-day` skill (`scope/mbi2026-scope-skill.zip`, built from `scope/skills/`) |
 | `figures/` | Phase 4 (14:00–15:00) Figures & presentation subpage, 13-slide deck (`figures/slides/`), downloadable Claude Code skills (`figures/mbi2026-figure-skills.zip`), and live demos |
 | `assets/style.css` | Paper-and-ink styles, light and dark |
 | `assets/wordart.js` | Word-art engine: shapes filled with repeated words, animated at ~10 fps (pauses off screen; static for reduced motion); PNG export |
