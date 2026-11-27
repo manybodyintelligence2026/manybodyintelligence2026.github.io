@@ -85,15 +85,25 @@ def main():
         gaps.append(e[1] - e[0])
     print(f"gap at K and K' for M = 3 sqrt(3) t2, phi = pi/2: {gaps[0]:.2e}, {gaps[1]:.3f} t1")
     if "--figure" in sys.argv:
+        import matplotlib
+        matplotlib.use("Agg")
         import matplotlib.pyplot as plt
-        fig, ax = plt.subplots(figsize=(3.4, 2.6))
-        ax.pcolormesh(phis / np.pi, ms, c.T, cmap="RdBu", vmin=-1.5, vmax=1.5, shading="nearest")
+        plt.rcParams.update({"font.size": 8, "axes.labelsize": 9, "mathtext.fontset": "cm"})
+        fig, ax = plt.subplots(figsize=(3.39, 2.3))          # one PRL column: 8.6 cm
+        ax.pcolormesh(phis / np.pi, ms, c.T, cmap="RdBu", vmin=-1.6, vmax=1.6, shading="nearest",
+                      rasterized=True)
         x = np.linspace(-1, 1, 400)
-        ax.plot(x, 3 * np.sqrt(3) * np.sin(np.pi * x), "k--", lw=1)
-        ax.plot(x, -3 * np.sqrt(3) * np.sin(np.pi * x), "k--", lw=1)
+        for s in (1, -1):
+            ax.plot(x, s * 3 * np.sqrt(3) * np.sin(np.pi * x), "k--", lw=0.9)
+        for (px, py, text) in ((0.5, 0.0, r"$C=-1$"), (-0.5, 0.0, r"$C=+1$"), (0.0, 4.4, r"$C=0$")):
+            ax.text(px, py, text, ha="center", va="center", fontsize=8)
         ax.set_xlabel(r"$\phi/\pi$")
         ax.set_ylabel(r"$M/t_2$")
-        fig.subplots_adjust(left=0.17, bottom=0.18, right=0.97, top=0.96)
+        ax.set_xlim(-1, 1)
+        ax.set_ylim(-6, 6)
+        ax.set_xticks([-1, -0.5, 0, 0.5, 1])
+        ax.set_yticks([-6, -3, 0, 3, 6])
+        fig.subplots_adjust(left=0.14, bottom=0.19, right=0.97, top=0.96)
         fig.savefig("phase.pdf")
         fig.savefig("phase.png", dpi=200)
 

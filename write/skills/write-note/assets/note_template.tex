@@ -1,68 +1,119 @@
-% Two-page team note in LaTeX, for teams that prefer it to note/note.md.
-% Keep the eight headings and their order: each team's note becomes one section of the joint paper.
-% Two pages, not counting the AI log appendix. Compile from note/: pdflatex note.tex
-\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2.2cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
-\usepackage{amsmath,amssymb}
+% Two-page team note as a PRL-style letter (revtex4-2), for /write-note.
+% Keep the eight run-in heads and their wording: each team's note becomes one section of the joint
+% paper. Two pages including everything except the AI logs, which stay in log/ in the repository.
+% Build: python3 <skill-dir>/scripts/note_check.py note/note.tex --build  (writes note/note.pdf)
+\documentclass[reprint,aps,prl,superscriptaddress,amsmath,amssymb,floatfix]{revtex4-2}
 \usepackage{graphicx}
-\usepackage{booktabs}
-\usepackage[hidelinks]{hyperref}
-\graphicspath{{../figures/}}
-\setlength{\parskip}{0.3em}
+\usepackage{newunicodechar}
+\graphicspath{{../figures/}{figures/}{./}}
+
+% Unicode symbols that often appear in text copied from README.md or checks.md
+\newunicodechar{′}{\ensuremath{'}}
+\newunicodechar{″}{\ensuremath{''}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{±}{\ensuremath{\pm}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{≠}{\ensuremath{\neq}}
+\newunicodechar{∥}{\ensuremath{\parallel}}
+\newunicodechar{⊥}{\ensuremath{\perp}}
+\newunicodechar{→}{\ensuremath{\to}}
+\newunicodechar{√}{\ensuremath{\surd}}
+\newunicodechar{∞}{\ensuremath{\infty}}
+\newunicodechar{°}{\ensuremath{^\circ}}
+\newunicodechar{₀}{\ensuremath{_0}}\newunicodechar{₁}{\ensuremath{_1}}\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{₃}{\ensuremath{_3}}\newunicodechar{₄}{\ensuremath{_4}}\newunicodechar{₅}{\ensuremath{_5}}
+\newunicodechar{⁰}{\ensuremath{^0}}\newunicodechar{¹}{\ensuremath{^1}}\newunicodechar{²}{\ensuremath{^2}}
+\newunicodechar{³}{\ensuremath{^3}}\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{α}{\ensuremath{\alpha}}\newunicodechar{β}{\ensuremath{\beta}}
+\newunicodechar{γ}{\ensuremath{\gamma}}\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{κ}{\ensuremath{\kappa}}\newunicodechar{λ}{\ensuremath{\lambda}}
+\newunicodechar{μ}{\ensuremath{\mu}}\newunicodechar{ν}{\ensuremath{\nu}}
+\newunicodechar{π}{\ensuremath{\pi}}\newunicodechar{ρ}{\ensuremath{\rho}}
+\newunicodechar{σ}{\ensuremath{\sigma}}\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{φ}{\ensuremath{\phi}}\newunicodechar{χ}{\ensuremath{\chi}}
+\newunicodechar{ψ}{\ensuremath{\psi}}\newunicodechar{ω}{\ensuremath{\omega}}
+\newunicodechar{Γ}{\ensuremath{\Gamma}}\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{Φ}{\ensuremath{\Phi}}\newunicodechar{Ω}{\ensuremath{\Omega}}
 
 \begin{document}
 
-\section*{<<Title: the result as a claim>>}
+\title{<<The result as a claim, one line>>}
 
-\section*{1. Title, team ID, members}
-<<Title>> \quad Team <<T0n>> \quad <<Member names>>
+% One \author per member, as the team writes their names; affiliations as they give them.
+\author{<<Name>>}
+\author{<<Name>>}
+\affiliation{<<Affiliation>>}
+\collaboration{Team <<T0n>>, Many-Body Intelligence 2026}
+\date{30 November 2026}
 
-\section*{2. Question history}
-% Copy the lines Q0 to Final from README.md, unchanged.
-\begin{itemize}\setlength{\itemsep}{0pt}
+\begin{abstract}
+<<At most 600 characters: the question, the main result, how it was checked. No symbols that need
+definitions, no citations.>>
+\end{abstract}
+
+\maketitle
+
+\textit{1. Title, team ID, members.}---<<Title above; team T0n: names.>>
+
+\textit{2. Question history.}---Copied from \texttt{README.md}:
+\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}
   \item Q0 (proposal): ...
   \item Q1 (sharpened, end of Scope): ...
+  \item Done today means: ...
+  \item Expected at the end of the day: ...
+  \item Confidence (1–5): ...
   \item Q2 (narrowed, time + reason): ...
   \item Final (as stated in the note): ...
 \end{itemize}
 
-\section*{3. Approach and methods}
+\textit{3. Approach and methods.}---<<Model, method, codes, parameters with sources~\cite{ref1},
+conventions in one line, shortcuts taken.>>
 
-\section*{4. Main result}
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.6\textwidth]{<<name>>.pdf}
-  \caption{<<What is plotted; parameters.>>}
+\begin{figure}[t]
+  \includegraphics[width=\columnwidth]{<<name>>.pdf}
+  \caption{<<What is plotted, one phrase per panel; parameters last.>>}
+  \label{fig:1}
 \end{figure}
-% Say which parts of the result were checked and which were not.
 
-\section*{5. Checks table}
-% Copy the table from checks/checks.md unchanged.
-\begin{tabular}{p{3cm}p{3.5cm}p{2cm}p{1.6cm}p{1.6cm}p{3cm}}
-\toprule
-Result & Check & Method & Done by & Outcome & What changed \\
-\midrule
- & & & & & \\
-\bottomrule
-\end{tabular}
+\textit{4. Main result.}---<<The result in one sentence [Fig.~\ref{fig:1}], one or two numbers,
+what it means physically. Then: which parts were checked (Table~\ref{tab:checks}) and which not.>>
 
-\section*{6. How AI was used}
-% 3--5 bullets: what the AI did, what it got wrong, what people did.
-\begin{itemize}
-  \item
+\textit{5. Checks table.}---Table~\ref{tab:checks} lists the checks of the results, copied
+unchanged from \texttt{checks/checks.md}.
+
+\begin{table*}[t]
+  \caption{Checks of the results (copied unchanged from \texttt{checks/checks.md}).}
+  \label{tab:checks}
+  \begin{ruledtabular}
+  \begin{tabular}{p{2.6cm}p{4.0cm}lllp{3.8cm}}
+    Result & Check & Method & Done by & Outcome & What changed \\
+    \hline
+     & & & & & \\
+  \end{tabular}
+  \end{ruledtabular}
+\end{table*}
+
+\textit{6. How AI was used.}---From the log entries in \texttt{log/}:
+\begin{itemize}\setlength{\itemsep}{0pt}
+  \item <<What the AI did.>>
+  \item <<What it got wrong, and who caught it.>>
+  \item <<What people did.>>
 \end{itemize}
 
-\section*{7. What would come next}
+\textit{7. What would come next.}---<<Two to four sentences.>>
 
-\section*{8. Requested treatment in the joint paper}
-% "Full section" or "brief summary" (same answer as in CONTRIBUTIONS.md).
+\textit{8. Requested treatment in the joint paper.}---<<Copied from CONTRIBUTIONS.md.>>
 
-\section*{References}
-% DOI or arXiv number for every reference.
+\textit{Appendix: AI log.}---The log files \texttt{log/P\#\#.md} are attached in the repository as
+they are; they do not count toward the two pages.
 
-\section*{Appendix: AI log}
-The log files \texttt{log/P\#\#.md} are attached as they are. They do not count toward the two pages.
+\begin{thebibliography}{9}
+  \bibitem{ref1} <<Authors, Journal \textbf{Vol}, page (year), doi:...  or arXiv:....>>
+\end{thebibliography}
 
 \end{document}

@@ -1,7 +1,7 @@
 <!-- Example for /write-note, made up for illustration: the team and its files are fictional; the
      numbers are real and come from fig_phase.example.py in this folder. -->
 
-# Provenance of the numbers in note.md
+# Provenance of the numbers in note.tex
 
 Every number and claim in the note, where it comes from, and how it was checked. "Re-run" means the
 script was run again on a copy during Write and gave the same value.

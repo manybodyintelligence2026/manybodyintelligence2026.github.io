@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Write · Resources · Many-Body Intelligence</title>
   <meta name="description"
-    content="Two Claude Code skills for the Write phase: /check-results checks what you will claim, /write-note drafts the two-page note.">
+    content="Two Claude Code skills for the Write phase: /check-results checks what you will claim, /write-note writes the two-page note as a PRL-style PDF.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -167,8 +167,8 @@
     <p class="crumb"><a href="../resources.html">&larr; Resources</a> &middot; Phase 5 (15:00&ndash;15:45)</p>
     <h1 class="tape">Write</h1>
     <p class="lede">Two Claude Code skills for the last stage before the talks: <code>/check-results</code> checks
-      what you are about to claim, and <code>/write-note</code> turns your repository into the two-page note under
-      its eight headings.</p>
+      what you are about to claim, and <code>/write-note</code> turns your repository into the two-page note: a
+      PRL-style letter, built as a PDF, under the note's eight headings.</p>
 
     <div class="callout principles">
       <strong>Core idea &mdash; check, then write.</strong><br>
@@ -188,9 +188,10 @@
           checks count as independent (<code>second-AI</code>). It re-runs your scripts on copies, compares every
           number with the code and the papers, and writes <code>note/results.md</code>. Add the check rows you agree
           with to <code>checks/checks.md</code>.</li>
-        <li><strong>Write:</strong> run <code>/write-note</code>. It drafts <code>note/note.md</code> and
-          <code>note/provenance.md</code>; you edit. Fill in the question-history lines, section 8 and
-          <code>CONTRIBUTIONS.md</code> yourselves, then everyone runs <code>/log-check</code>.</li>
+        <li><strong>Write:</strong> run <code>/write-note</code>. It writes <code>note/note.tex</code>, builds the
+          two-page <code>note/note.pdf</code> and traces every number in <code>note/provenance.md</code>; you edit.
+          Fill in the question-history lines, section 8 and <code>CONTRIBUTIONS.md</code> yourselves, then everyone
+          runs <code>/log-check</code>.</li>
       </ol>
       <div class="action-row">
         <a class="dl-btn" href="mbi2026-write-skills.zip" download>Download both skills (.zip)</a>
@@ -226,11 +227,12 @@
           </tr>
           <tr>
             <td><code>/write-note</code></td>
-            <td>Drafts <code>note/note.md</code> (or <code>note.tex</code>) under the eight headings from what the
+            <td>Writes the note as a two-page PRL-style letter (revtex4-2, two columns: title, abstract, one figure,
+              the checks table as Table I, references), with the eight headings as its run-in heads, from what the
               repository holds: the question history from <code>README.md</code>, the checked results, the checks
-              table, your AI logs and <code>CONTRIBUTIONS.md</code>. One figure, every number traced in
-              <code>note/provenance.md</code>, and a check that sections 2, 5 and 8 match their sources and that the
-              note fits two pages (about 1,000 words plus one figure).</td>
+              table, your AI logs and <code>CONTRIBUTIONS.md</code>. It builds <code>note/note.pdf</code>, checks that
+              sections 2, 5 and 8 match their sources and that the letter fits two pages, and traces every number in
+              <code>note/provenance.md</code>.</td>
           </tr>
         </tbody>
       </table>
@@ -256,20 +258,26 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>1 &middot; Title, team ID, members</td><td>The main result as a claim; <code>event.json</code>, your names</td></tr>
+          <tr><td>Title and abstract</td><td>The main result as a claim; the abstract in at most 600 characters</td></tr>
+          <tr><td>1 &middot; Title, team ID, members</td><td>Your names; the team ID from <code>event.json</code></td></tr>
           <tr><td>2 &middot; Question history</td><td>Copied unchanged from <code>README.md</code></td></tr>
           <tr><td>3 &middot; Approach and methods</td><td>Your code, parameters with their sources, conventions</td></tr>
           <tr><td>4 &middot; Main result</td><td><code>note/results.md</code>; one figure; what was checked and what not</td></tr>
-          <tr><td>5 &middot; Checks table</td><td>Copied unchanged from <code>checks/checks.md</code></td></tr>
+          <tr><td>5 &middot; Checks table</td><td>Table I, copied unchanged from <code>checks/checks.md</code></td></tr>
           <tr><td>6 &middot; How AI was used</td><td>Your log entries in <code>log/P##.md</code>, and only those</td></tr>
           <tr><td>7 &middot; What would come next</td><td>The stretch goal, the fallback not taken, the open question</td></tr>
           <tr><td>8 &middot; Requested treatment</td><td>Copied from <code>CONTRIBUTIONS.md</code></td></tr>
         </tbody>
       </table>
     </div>
-    <p>A complete <a href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/write/skills/write-note/examples/note.example.md">example note</a> shows the style: a made-up team,
-      with real numbers from a one-second calculation on the Haldane model, and its
-      <a href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/write/skills/write-note/examples/provenance.example.md">provenance file</a>.</p>
+    <p>A complete <a href="skills/write-note/examples/note.example.pdf">example note (PDF)</a> shows the result: a
+      made-up team, with real numbers from a one-second calculation on the Haldane model. Its
+      <a href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/write/skills/write-note/examples/note.example.tex">LaTeX source</a> and
+      <a href="https://github.com/manybodyintelligence2026/manybodyintelligence2026.github.io/blob/main/write/skills/write-note/examples/provenance.example.md">provenance file</a> are in the skill.</p>
+    <p><strong>You need LaTeX with revtex4-2</strong> (TeX Live, MacTeX or MiKTeX) to build the PDF on your laptop.
+      Without it, <code>/write-note</code> still writes <code>note/note.tex</code>: upload it with the figure PDF to a
+      new <a href="https://www.overleaf.com/">Overleaf</a> project, compile there and save the PDF as
+      <code>note/note.pdf</code>.</p>
 
     <h2>Starter prompts</h2>
     <p>Check the result the note will rest on first:</p>
@@ -287,10 +295,10 @@
       <button class="copy-btn">Copy</button>
       <pre>Shorten the note to two pages. Keep sections 2, 5 and 8 exactly as they are, and keep what was and was not checked.</pre>
     </div>
-    <p>If your team prefers LaTeX:</p>
+    <p>No LaTeX on your laptop:</p>
     <div class="prompt-card">
       <button class="copy-btn">Copy</button>
-      <pre>Use /write-note and write note/note.tex instead of note.md, with the same eight headings.</pre>
+      <pre>Use /write-note. We have no LaTeX installed: write note/note.tex and tell us how to build the PDF on Overleaf.</pre>
     </div>
   </main>
 
