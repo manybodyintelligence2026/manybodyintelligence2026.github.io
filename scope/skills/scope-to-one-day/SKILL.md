@@ -1,6 +1,6 @@
 ---
 name: scope-to-one-day
-description: "Plan the Many-Body Intelligence 2026 hackathon day from the team's idea: in the team's hackathon repository, turn the research idea (the Q0 line in README.md and the files in our-idea/) into a plan that fits one day: a sharpened question, a feasibility check with numbers, what \"done\" means at three levels, fallbacks tied to the stages of the day, checks chosen in advance and a split of the work, written to plan.md. Use it at the start of the hackathon day, and whenever a team in its hackathon repository asks for a plan, a schedule, how to split the work, whether their idea fits in a day, or says \"let's start\" or \"what do we do today\", even if they do not name the skill."
+description: "Plan the Many-Body Intelligence 2026 hackathon day from the team's idea: in the team's hackathon repository, turn the research idea (the Q0 line in README.md and the files in our-idea/) into a plan that fits one day: a sharpened question, a feasibility check with numbers, what \"done\" means at three levels, fallbacks tied to the stages of the day, checks chosen in advance and a split of the work, written as plan.md (short, for the team) and plan-ai.md (the full reasoning, for the AI sessions). Use it at the start of the hackathon day, and whenever a team in its hackathon repository asks for a plan, a schedule, how to split the work, whether their idea fits in a day, or says \"let's start\" or \"what do we do today\", even if they do not name the skill."
 ---
 
 # Scope to one day
@@ -20,6 +20,20 @@ Q0 line and an `our-idea/` folder. If the current folder has none of these, say 
 this skill plans the hackathon day in the team's repository, and ask whether to go on anyway
 before doing anything else.
 
+## Two readers
+
+What you write has one of two readers, and they need different things.
+
+- **People** read your replies and `plan.md` on a shared screen while they talk. Keep each reply
+  under about 200 words and `plan.md` under about 300, lead with what needs a decision, and leave
+  the reasoning out unless they ask for it.
+- **AI sessions** read `plan-ai.md`: this session later in the day, and the session each teammate
+  starts for their own track. Put all the reasoning, numbers and references there, written so that
+  a session that has read nothing else can act on it.
+
+When in doubt, move detail out of the reply and into `plan-ai.md`. Neither reader gets clock
+times: the times in `event.json` are approximate, so always name the stage instead.
+
 ## The day
 
 Read the stages and their milestones from `event.json` (`phases`, and `team_stages` if present).
@@ -36,8 +50,9 @@ in `our-idea/papers/`. Open a paper only if the plan depends on something in it.
 
 - **One agreed idea** (Q0 is filled in, or the person names it): go on to step 2.
 - **Several candidates and no decision:** do not plan all of them. In one short message, compare
-  the two or three strongest, using what the team already wrote (interest, who can do which part,
-  time estimates), recommend one with a reason, and ask the team to choose. Plan once they have.
+  the two or three strongest in a small table (idea, fits the day?, main risk, who would lead),
+  using what the team already wrote (interest, who can do which part, time estimates), recommend
+  one with a reason, and ask the team to choose. Plan once they have.
 - **No idea at all:** say so plainly and do not invent a project for them. Offer to propose two or
   three ideas that fit the rules below and draw on the people in `team.md`, and let them pick.
 
@@ -138,55 +153,64 @@ go into the note move to `code/` and `figures/`.
 You may say who looks like a natural fit for a track, from `team.md`, but the team decides who
 takes what.
 
-## 9. Write plan.md and propose the README lines
+## 9. Write the plan twice: plan-ai.md for the AI sessions, plan.md for the people
 
-Write `plan.md` in the repository root, one page, in this shape:
+Both files go in the repository root and must agree with each other.
+
+**`plan-ai.md` first**, because that is where the thinking goes. Write it for a reader who has
+seen nothing else: a teammate's fresh session that has to pick up a track, or this session later
+in the day when a fallback is needed. It holds everything from steps 2–8: the question and why it
+was narrowed, the cost estimate with its arithmetic, where each input comes from, tools, the parts
+done analytically, known traps, the benchmark and the literature (DOI or arXiv number; say which
+you have not opened), the three levels of done, each fallback with its trigger and the reason for
+it, the checks with method (names from `log/CODEBOOK.md`) and expected outcome, the conventions,
+the assumptions, and one brief per track: inputs, first step, output file, hand-over point, and
+what to check before handing over. Use one heading per track so that a session can jump to its
+own. No padding, and no length limit.
+
+**`plan.md`** is what the team looks at on the shared screen: decisions only, at most about 300
+words, no reasoning, arithmetic or references (they are in `plan-ai.md`). In this shape:
 
 ```markdown
 # <title>: plan for the day
 
 **Question:** <one sentence>
-
-**Verdict:** <fits / fits if narrowed: how / does not fit: what instead>. Cost: <the numbers>.
+**Verdict:** <fits / fits if narrowed: how / does not fit: what instead>
 
 ## Done
-- Minimum (end of First result): <figure or equation>
-- Target (before Check): <...>
-- Stretch (only after Check): <...>
+- Minimum (end of First result): <one line>
+- Target (before Check): <one line>
+- Stretch (only after Check): <one line>
 
-## Fallbacks
-- If <trigger tied to a stage> → <narrower question>
-
-## Benchmark
-<the known result to reproduce first, with its reference>
-
-## Literature
-- <reference with DOI or arXiv number>: <one line; say if not opened>
-
-## Checks for the Check stage
-| Check | Expected outcome | Method | Done by (person / second AI / both) |
+## If it goes wrong
+- <trigger tied to a stage> → <narrower question>
 
 ## Tracks
 | Track | Who | Output | Hand-over |
+|-|-|-|-|
 
-## Conventions
-<units, Hamiltonian, lattice, Fourier convention; also copied to README.md>
+To start your track, tell your own Claude: "Read plan-ai.md, I'm on track <letter>."
 
-## Assumptions and open questions
-- ...
+## Checks for the Check stage
+- <check>: expect <outcome> (<person / second AI>)
+
+## Still open
+- <only what the team still has to decide; leave the section out if nothing is open>
 ```
 
-Then show the team the lines this gives for the question history in `README.md`, for them to
-confirm or reword: Q1 (the sharpened question), "Done today means" and "Expected at the end of the
-day", plus one task-split row per person. "Confidence (1–5)" is the team's own judgement: ask for
-it, do not fill it in. Write these lines into the README only once the team agrees. Commit
-`plan.md` (and the README once agreed), and offer `/log-entry` once: scoping is a task like any
+Then reply to the team in about 200 words, without repeating the plan: the verdict in one line,
+and the lines this gives for the question history in `README.md`, for them to confirm or reword:
+Q1 (the sharpened question), "Done today means" and "Expected at the end of the day", plus one
+task-split row per person. "Confidence (1–5)" is the team's own judgement: ask for it, do not fill
+it in. Write these lines into the README only once the team agrees. Commit `plan.md` and
+`plan-ai.md` (and the README once agreed), and offer `/log-entry` once: scoping is a task like any
 other.
 
 ## During the day
 
 If the team comes back later ("we're at the end of First result and have nothing"), re-read
-`plan.md`, apply the matching fallback, and update the file with what changed and why. If the
+`plan-ai.md`, apply the matching fallback, and update both files: `plan-ai.md` with what changed
+and why, `plan.md` with the new decision. If the
 question narrows, the README needs a Q2 line with the time and the reason, worded by the team. Do
 not enlarge the scope quietly: if the team wants to add something, check it against the time left
 first.

@@ -166,8 +166,9 @@
     <p class="crumb"><a href="../resources.html">&larr; Resources</a> &middot; Phase 1 (09:15&ndash;10:15)</p>
     <h1 class="tape">Scope</h1>
     <p class="lede">One Claude Code skill for the first hour of the day: <code>/scope-to-one-day</code> turns your
-      team's idea into <code>plan.md</code>, a plan that fits the day, so that the hour goes on talking physics with
-      each other rather than on writing the plan.</p>
+      team's idea into a plan that fits the day, written twice: a one-screen <code>plan.md</code> for you and a
+      detailed <code>plan-ai.md</code> for your AI sessions. The hour goes on talking physics with each other rather
+      than on writing the plan.</p>
 
     <div class="callout principles">
       <strong>Core idea &mdash; an honest plan beats an ambitious one.</strong><br>
@@ -189,7 +190,8 @@
           <code>/scope-to-one-day</code>. One person runs it, with the team around the screen.</li>
         <li><strong>Decide together:</strong> answer its questions, choose the question and who takes which track,
           confirm the lines it proposes for <code>README.md</code> and give your own Confidence. It commits
-          <code>plan.md</code>; everyone else runs <code>git pull</code>.</li>
+          <code>plan.md</code> and <code>plan-ai.md</code>; everyone else runs <code>git pull</code> and starts their
+          track by telling their own Claude: <em>&ldquo;Read plan-ai.md, I'm on track B.&rdquo;</em></li>
       </ol>
       <div class="action-row">
         <a class="dl-btn" href="mbi2026-scope-skill.zip" download>Download the skill (.zip)</a>
@@ -260,9 +262,11 @@
               conventions first, in the Conventions section of <code>README.md</code>.</td>
           </tr>
           <tr>
-            <td>9 &middot; Write <code>plan.md</code></td>
-            <td>One page, committed. It shows you the lines for the question history in <code>README.md</code> (Q1,
-              &ldquo;Done today means&rdquo;, &ldquo;Expected&rdquo;) and writes them only once you agree.</td>
+            <td>9 &middot; Write the plan twice</td>
+            <td><code>plan.md</code> for you: decisions only, one screen. <code>plan-ai.md</code> for the AI sessions:
+              all the reasoning, numbers and references, with one brief per track. Its reply proposes the lines for
+              the question history in <code>README.md</code> (Q1, &ldquo;Done today means&rdquo;,
+              &ldquo;Expected&rdquo;) and writes them only once you agree.</td>
           </tr>
         </tbody>
       </table>
@@ -275,20 +279,26 @@
       <li>Invent a project when <code>our-idea/</code> is empty, or cite a paper it cannot identify.</li>
     </ul>
 
-    <h2>What <code>plan.md</code> looks like</h2>
+    <h2>Two files: one for you, one for Claude</h2>
+    <p>People need the decisions on one screen; the AI sessions need the reasoning behind them. So the plan is written
+      twice, and the two files always agree.</p>
+    <p><strong><code>plan.md</code></strong>, for the team (about 300 words, no reasoning or references):</p>
 <pre class="plan-shape"># &lt;title&gt;: plan for the day
 
 Question: &lt;one sentence&gt;
-Verdict: &lt;fits / fits if narrowed / does not fit&gt;. Cost: &lt;the numbers&gt;.
+Verdict:  &lt;fits / fits if narrowed / does not fit&gt;
 
-## Done           Minimum &middot; Target &middot; Stretch
-## Fallbacks      If &lt;trigger tied to a stage&gt; &rarr; &lt;narrower question&gt;
-## Benchmark      the known result to reproduce first
-## Literature     references with DOI or arXiv number
-## Checks         check &middot; expected outcome &middot; method &middot; done by
-## Tracks         track &middot; who &middot; output &middot; hand-over
-## Conventions    units, Hamiltonian, lattice, Fourier convention
-## Assumptions and open questions</pre>
+## Done              Minimum &middot; Target &middot; Stretch, one line each
+## If it goes wrong  &lt;trigger tied to a stage&gt; &rarr; &lt;narrower question&gt;
+## Tracks            track &middot; who &middot; output &middot; hand-over
+                     start: "Read plan-ai.md, I'm on track B."
+## Checks            check: expect &lt;outcome&gt; (person / second AI)
+## Still open        only what the team still has to decide</pre>
+    <p><strong><code>plan-ai.md</code></strong>, for the AI sessions: the cost estimate with its arithmetic, where every
+      input comes from, tools, known traps, the benchmark and the literature (DOI or arXiv), why each fallback was
+      chosen, the checks with their methods, the conventions, the assumptions, and one brief per track (inputs, first
+      step, output file, hand-over). It is written for a session that has read nothing else, so each teammate's
+      Claude can pick up its track, and this session can apply a fallback later in the day.</p>
 
     <h2>Starter prompts</h2>
     <p>Typing <code>/scope-to-one-day</code> is enough. Telling it who is here and what you can run saves a round of
@@ -304,11 +314,16 @@ We have laptops only.</pre>
       <pre>Use /scope-to-one-day. We have several candidate ideas in our-idea/ and have not chosen yet.
 Compare the strongest two or three and recommend one.</pre>
     </div>
+    <p>When your track starts, in your own Claude Code session:</p>
+    <div class="prompt-card">
+      <button class="copy-btn">Copy</button>
+      <pre>Read plan-ai.md, I'm on track [letter].</pre>
+    </div>
     <p>Later in the day, when things do not go to plan:</p>
     <div class="prompt-card">
       <button class="copy-btn">Copy</button>
-      <pre>We are at the end of First result and nothing works yet. Re-read plan.md,
-apply the matching fallback and update the plan with what changed and why.</pre>
+      <pre>We are at the end of First result and nothing works yet. Re-read plan-ai.md,
+apply the matching fallback and update both plan files with what changed and why.</pre>
     </div>
   </main>
 

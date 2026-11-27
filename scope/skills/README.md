@@ -1,8 +1,9 @@
 # MBI 2026 Scoping Skill
 
 One Claude Code skill for the **Scope** phase (Monday 30 November 2026, 09:15–10:15):
-`/scope-to-one-day` turns your team's research idea into a plan that fits the day, written to
-`plan.md` in your team repository.
+`/scope-to-one-day` turns your team's research idea into a plan that fits the day, written twice in
+your team repository: `plan.md` for the people (decisions only, one screen) and `plan-ai.md` for the
+AI sessions (all the reasoning, numbers and references, with one brief per track).
 
 | Skill | What it does |
 |---|---|
@@ -35,8 +36,9 @@ Start a new Claude Code session after installing.
 1. In your team repository, `git pull` so you see everything your teammates have put in
    `our-idea/`.
 2. Start Claude Code there and type `/scope-to-one-day` (or "let's plan the day").
-3. Answer its questions and decide together. It commits `plan.md` and offers `/log-entry`. Your
-   teammates then `git pull` to get the plan.
+3. Answer its questions and decide together. It commits `plan.md` and `plan-ai.md` and offers
+   `/log-entry`. Your teammates then `git pull` and start their track by telling their own Claude:
+   "Read plan-ai.md, I'm on track B."
 
 One person per team runs it, with the others looking on; anyone can install it. Later in the day,
 ask it again to apply a fallback ("we're at the end of First result and have nothing").
