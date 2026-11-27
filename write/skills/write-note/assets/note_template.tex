@@ -1,0 +1,68 @@
+% Two-page team note in LaTeX, for teams that prefer it to note/note.md.
+% Keep the eight headings and their order: each team's note becomes one section of the joint paper.
+% Two pages, not counting the AI log appendix. Compile from note/: pdflatex note.tex
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{../figures/}}
+\setlength{\parskip}{0.3em}
+
+\begin{document}
+
+\section*{<<Title: the result as a claim>>}
+
+\section*{1. Title, team ID, members}
+<<Title>> \quad Team <<T0n>> \quad <<Member names>>
+
+\section*{2. Question history}
+% Copy the lines Q0 to Final from README.md, unchanged.
+\begin{itemize}\setlength{\itemsep}{0pt}
+  \item Q0 (proposal): ...
+  \item Q1 (sharpened, end of Scope): ...
+  \item Q2 (narrowed, time + reason): ...
+  \item Final (as stated in the note): ...
+\end{itemize}
+
+\section*{3. Approach and methods}
+
+\section*{4. Main result}
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=0.6\textwidth]{<<name>>.pdf}
+  \caption{<<What is plotted; parameters.>>}
+\end{figure}
+% Say which parts of the result were checked and which were not.
+
+\section*{5. Checks table}
+% Copy the table from checks/checks.md unchanged.
+\begin{tabular}{p{3cm}p{3.5cm}p{2cm}p{1.6cm}p{1.6cm}p{3cm}}
+\toprule
+Result & Check & Method & Done by & Outcome & What changed \\
+\midrule
+ & & & & & \\
+\bottomrule
+\end{tabular}
+
+\section*{6. How AI was used}
+% 3--5 bullets: what the AI did, what it got wrong, what people did.
+\begin{itemize}
+  \item
+\end{itemize}
+
+\section*{7. What would come next}
+
+\section*{8. Requested treatment in the joint paper}
+% "Full section" or "brief summary" (same answer as in CONTRIBUTIONS.md).
+
+\section*{References}
+% DOI or arXiv number for every reference.
+
+\section*{Appendix: AI log}
+The log files \texttt{log/P\#\#.md} are attached as they are. They do not count toward the two pages.
+
+\end{document}
